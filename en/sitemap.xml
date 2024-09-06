@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://LizPink.github.io/</loc>
-    <lastmod>2024-09-06T10:58:42+08:00</lastmod>
+    <lastmod>2020-10-09T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
@@ -15,33 +15,17 @@
                 href="https://LizPink.github.io/"
                 />
   </url><url>
-    <loc>https://LizPink.github.io/post/</loc>
-    <lastmod>2024-09-06T10:58:42+08:00</lastmod>
+    <loc>https://LizPink.github.io/about/</loc>
+    <lastmod>2020-10-09T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="https://LizPink.github.io/zh-cn/post/"
+                href="https://LizPink.github.io/zh-cn/%E4%BB%8B%E7%BB%8D/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://LizPink.github.io/post/"
-                />
-  </url><url>
-    <loc>https://LizPink.github.io/p/testmeeeage/</loc>
-    <lastmod>2024-09-06T10:58:42+08:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/archives/</loc>
-    <lastmod>2019-05-28T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://LizPink.github.io/zh-cn/archives/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://LizPink.github.io/archives/"
+                href="https://LizPink.github.io/about/"
                 />
   </url><url>
     <loc>https://LizPink.github.io/page/</loc>
@@ -57,8 +41,20 @@
                 href="https://LizPink.github.io/page/"
                 />
   </url><url>
+    <loc>https://LizPink.github.io/archives/</loc>
+    <lastmod>2019-05-28T00:00:00+00:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://LizPink.github.io/zh-cn/archives/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://LizPink.github.io/archives/"
+                />
+  </url><url>
     <loc>https://LizPink.github.io/categories/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
@@ -68,87 +64,6 @@
                 rel="alternate"
                 hreflang="en"
                 href="https://LizPink.github.io/categories/"
-                />
-  </url><url>
-    <loc>https://LizPink.github.io/tags/css/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/tags/html/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/tags/markdown/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/p/markdown-syntax-guide/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/categories/syntax/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/tags/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://LizPink.github.io/zh-cn/tags/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://LizPink.github.io/tags/"
-                />
-  </url><url>
-    <loc>https://LizPink.github.io/tags/themes/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/categories/themes/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/p/placeholder-text/</loc>
-    <lastmod>2019-03-09T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/tags/tag-with-whitespaces/</loc>
-    <lastmod>2019-03-09T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/categories/test/</loc>
-    <lastmod>2019-03-09T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://LizPink.github.io/zh-cn/categories/test/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://LizPink.github.io/categories/test/"
-                />
-  </url><url>
-    <loc>https://LizPink.github.io/categories/test-with-whitespaces/</loc>
-    <lastmod>2019-03-09T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/tags/text/</loc>
-    <lastmod>2019-03-09T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/p/math-typesetting/</loc>
-    <lastmod>2019-03-08T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/tags/emoji/</loc>
-    <lastmod>2019-03-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/p/emoji-support/</loc>
-    <lastmod>2019-03-05T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/about/</loc>
-    <lastmod>2020-10-09T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://LizPink.github.io/zh-cn/%E5%85%B3%E4%BA%8E/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://LizPink.github.io/about/"
                 />
   </url><url>
     <loc>https://LizPink.github.io/links/</loc>
@@ -174,5 +89,19 @@
                 hreflang="en"
                 href="https://LizPink.github.io/search/"
                 />
+  </url><url>
+    <loc>https://LizPink.github.io/tags/</loc>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://LizPink.github.io/zh-cn/tags/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://LizPink.github.io/tags/"
+                />
+  </url><url>
+    <loc>https://LizPink.github.io/categories/test/</loc>
   </url>
 </urlset>

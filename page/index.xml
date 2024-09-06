@@ -1,24 +1,16 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Pages on Example Site</title>
+        <title>Pages on Liz&#39;s Section</title>
         <link>https://LizPink.github.io/page/</link>
-        <description>Recent content in Pages on Example Site</description>
+        <description>Recent content in Pages on Liz&#39;s Section</description>
         <generator>Hugo -- gohugo.io</generator>
         <language>en</language>
         <copyright>Liz Pink0418</copyright>
-        <lastBuildDate>Tue, 28 May 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://LizPink.github.io/page/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Archives</title>
-        <link>https://LizPink.github.io/archives/</link>
-        <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
-        
-        <guid>https://LizPink.github.io/archives/</guid>
-        <description></description>
-        </item>
-        <item>
+        <lastBuildDate>Wed, 28 Feb 2024 00:00:00 +0000</lastBuildDate><atom:link href="https://LizPink.github.io/page/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>About</title>
         <link>https://LizPink.github.io/about/</link>
-        <pubDate>Thu, 28 Feb 2019 00:00:00 +0000</pubDate>
+        <pubDate>Wed, 28 Feb 2024 00:00:00 +0000</pubDate>
         
         <guid>https://LizPink.github.io/about/</guid>
         <description>&lt;p&gt;Written in Go, Hugo is an open source static site generator available under the &lt;a class=&#34;link&#34; href=&#34;https://github.com/gohugoio/hugo/blob/master/LICENSE&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
@@ -42,6 +34,14 @@
 &lt;p&gt;Learn more and contribute on &lt;a class=&#34;link&#34; href=&#34;https://github.com/gohugoio&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
     &gt;GitHub&lt;/a&gt;.&lt;/p&gt;
 </description>
+        </item>
+        <item>
+        <title>Archives</title>
+        <link>https://LizPink.github.io/archives/</link>
+        <pubDate>Tue, 28 May 2019 00:00:00 +0000</pubDate>
+        
+        <guid>https://LizPink.github.io/archives/</guid>
+        <description></description>
         </item>
         <item>
         <title>Links</title>
