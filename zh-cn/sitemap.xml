@@ -53,8 +53,6 @@
                 href="https://LizPink.github.io/zh-cn/categories/"
                 />
   </url><url>
-    <loc>https://LizPink.github.io/zh-cn/categories/newsteps/step1/</loc>
-  </url><url>
     <loc>https://LizPink.github.io/zh-cn/tags/</loc>
     <xhtml:link
                 rel="alternate"
@@ -67,7 +65,7 @@
                 href="https://LizPink.github.io/zh-cn/tags/"
                 />
   </url><url>
-    <loc>https://LizPink.github.io/zh-cn/%E4%BB%8B%E7%BB%8D/</loc>
+    <loc>https://LizPink.github.io/zh-cn/%E5%85%B3%E4%BA%8E/</loc>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -76,7 +74,7 @@
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="https://LizPink.github.io/zh-cn/%E4%BB%8B%E7%BB%8D/"
+                href="https://LizPink.github.io/zh-cn/%E5%85%B3%E4%BA%8E/"
                 />
   </url><url>
     <loc>https://LizPink.github.io/zh-cn/search/</loc>

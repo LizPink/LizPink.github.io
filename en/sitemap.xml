@@ -15,17 +15,17 @@
                 href="https://LizPink.github.io/"
                 />
   </url><url>
-    <loc>https://LizPink.github.io/about/</loc>
-    <lastmod>2020-10-09T00:00:00+00:00</lastmod>
+    <loc>https://LizPink.github.io/archives/</loc>
+    <lastmod>2019-05-28T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="https://LizPink.github.io/zh-cn/%E4%BB%8B%E7%BB%8D/"
+                href="https://LizPink.github.io/zh-cn/archives/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://LizPink.github.io/about/"
+                href="https://LizPink.github.io/archives/"
                 />
   </url><url>
     <loc>https://LizPink.github.io/page/</loc>
@@ -41,17 +41,17 @@
                 href="https://LizPink.github.io/page/"
                 />
   </url><url>
-    <loc>https://LizPink.github.io/archives/</loc>
-    <lastmod>2019-05-28T00:00:00+00:00</lastmod>
+    <loc>https://LizPink.github.io/about/</loc>
+    <lastmod>2020-10-09T00:00:00+00:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
-                href="https://LizPink.github.io/zh-cn/archives/"
+                href="https://LizPink.github.io/zh-cn/%E5%85%B3%E4%BA%8E/"
                 />
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
-                href="https://LizPink.github.io/archives/"
+                href="https://LizPink.github.io/about/"
                 />
   </url><url>
     <loc>https://LizPink.github.io/categories/</loc>
@@ -101,7 +101,5 @@
                 hreflang="en"
                 href="https://LizPink.github.io/tags/"
                 />
-  </url><url>
-    <loc>https://LizPink.github.io/categories/test/</loc>
   </url>
 </urlset>
