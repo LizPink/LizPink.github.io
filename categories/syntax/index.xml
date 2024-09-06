@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
     <channel>
-        <title>Syntax on 演示站点</title>
+        <title>Syntax on Example Site</title>
         <link>https://LizPink.github.io/categories/syntax/</link>
-        <description>Recent content in Syntax on 演示站点</description>
+        <description>Recent content in Syntax on Example Site</description>
         <generator>Hugo -- gohugo.io</generator>
-        <language>zh-cn</language>
+        <language>en</language>
         <copyright>Liz Pink0418</copyright>
         <lastBuildDate>Mon, 11 Mar 2019 00:00:00 +0000</lastBuildDate><atom:link href="https://LizPink.github.io/categories/syntax/index.xml" rel="self" type="application/rss+xml" /><item>
         <title>Markdown Syntax Guide</title>
