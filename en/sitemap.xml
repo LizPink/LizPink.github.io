@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://LizPink.github.io/</loc>
-    <lastmod>2020-10-09T00:00:00+00:00</lastmod>
+    <lastmod>2024-09-06T10:58:42+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="zh-cn"
@@ -14,6 +14,22 @@
                 hreflang="en"
                 href="https://LizPink.github.io/"
                 />
+  </url><url>
+    <loc>https://LizPink.github.io/post/</loc>
+    <lastmod>2024-09-06T10:58:42+08:00</lastmod>
+    <xhtml:link
+                rel="alternate"
+                hreflang="zh-cn"
+                href="https://LizPink.github.io/zh-cn/post/"
+                />
+    <xhtml:link
+                rel="alternate"
+                hreflang="en"
+                href="https://LizPink.github.io/post/"
+                />
+  </url><url>
+    <loc>https://LizPink.github.io/p/testmeeeage/</loc>
+    <lastmod>2024-09-06T10:58:42+08:00</lastmod>
   </url><url>
     <loc>https://LizPink.github.io/archives/</loc>
     <lastmod>2019-05-28T00:00:00+00:00</lastmod>
@@ -65,19 +81,6 @@
   </url><url>
     <loc>https://LizPink.github.io/p/markdown-syntax-guide/</loc>
     <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/post/</loc>
-    <lastmod>2019-03-11T00:00:00+00:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://LizPink.github.io/zh-cn/post/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://LizPink.github.io/post/"
-                />
   </url><url>
     <loc>https://LizPink.github.io/categories/syntax/</loc>
     <lastmod>2019-03-11T00:00:00+00:00</lastmod>
