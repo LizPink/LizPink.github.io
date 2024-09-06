@@ -2,16 +2,14 @@
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <sitemap>
-    <loc>https://LizPink.github.io/en/sitemap.xml</loc>
+    <loc>https://LizPink.github.io/zh-cn/sitemap.xml</loc>
     
       <lastmod>2024-09-06T10:58:42+08:00</lastmod>
     
   </sitemap>
   
   <sitemap>
-    <loc>https://LizPink.github.io/zh-cn/sitemap.xml</loc>
-    
-      <lastmod>2020-09-09T00:00:00+00:00</lastmod>
+    <loc>https://LizPink.github.io/en/sitemap.xml</loc>
     
   </sitemap>
   
