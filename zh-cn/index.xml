@@ -7,13 +7,36 @@
         <generator>Hugo -- gohugo.io</generator>
         <language>zh-cn</language>
         <copyright>ZipingLi0418</copyright>
-        <lastBuildDate>Fri, 08 Nov 2024 10:57:22 +0800</lastBuildDate><atom:link href="https://LizPink.github.io/zh-cn/index.xml" rel="self" type="application/rss+xml" /><item>
-        <title>Test</title>
-        <link>https://LizPink.github.io/zh-cn/content/post/test/</link>
-        <pubDate>Fri, 08 Nov 2024 10:57:22 +0800</pubDate>
+        <lastBuildDate>Fri, 08 Nov 2024 11:05:53 +0800</lastBuildDate><atom:link href="https://LizPink.github.io/zh-cn/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Weekly Report 4</title>
+        <link>https://LizPink.github.io/zh-cn/p/weekly-report-4/</link>
+        <pubDate>Fri, 08 Nov 2024 11:05:53 +0800</pubDate>
         
-        <guid>https://LizPink.github.io/zh-cn/content/post/test/</guid>
-        <description></description>
+        <guid>https://LizPink.github.io/zh-cn/p/weekly-report-4/</guid>
+        <description>&lt;p&gt;This week&amp;rsquo;s report is posted on 2024.11.08. So it has been nearly a month before &amp;ldquo;last week&amp;rdquo;&amp;hellip;&lt;/p&gt;
+&lt;h3 id=&#34;overviews&#34;&gt;&lt;strong&gt;Overviews&lt;/strong&gt;
+&lt;/h3&gt;&lt;p&gt;这段时间内我完成了这些事情:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;
+&lt;p&gt;学习MIT Open Course, The Missing Semester of your CS education, 讲座Lecture1, Lecture2, 随后我就进行不下去了&amp;hellip; 我感觉操作命令行真的很原始, 学习曲线很高, 但是也确实学习了不少Linux交互语法, 这些学习也是有成果的, 比如现在我操作Hugo命令行时就会上手不少(是的, Hugo也是类似的命令行语法, Git hub也是).&lt;/p&gt;
+&lt;p&gt;但是停止在第二章就不愿意往前学习了, 我已经打算先学习其他课程, 再回头继续学习剩下的章节(比如Vim编辑器, Git版本控制什么的).&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;学习MIT Open Course, Information and Entropy, 第1-5章, 也就是编码 压缩 概率的部分, 剩下的通信部分感觉暂时学不明白, 课程也上传比较古早导致: (1)画质不是很清晰, 看着很费劲; (2)网上没有热度, 因此缺乏相关的讨论, 自己耐着性子学习太费时间了. 于是决定先去学习其他的科目.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;阅读Linear Algebra Done Right, 第4章 Polynomials. 这一章内容比较少, 但是证明过程比较深刻, 需要运用到复分析的知识(我没学过复分析, 所以相对而言理解困难). 但是证明过程难的命题, 都是我们比较熟知得结论, 比如多项式因式分解; 而我们觉得比较新得命题, 证明过程又是完全OK可以理解的(耶). 预计这一周可以完成;&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;学习Coursera&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;阅读Discrete mathematics and its applications; 学习MIT Open course, Mathematics for Computer Science, 第1章.&lt;/p&gt;
+&lt;p&gt;我觉得前者作为离散数学入门真的是太好了, 仔仔细细阅读会有很多收获, 作者写的篇幅巨长(可以称为大部头了), 讲解的很细致,; 缺点是阅读比较费时间, 我完完全全花了3天时间来阅读第1章的命题逻辑和量词逻辑部分(大概有120页).&lt;/p&gt;
+&lt;p&gt;有了前者的学习, 后者的学习也是方便很多. 之所以还要选修后者, 主要是想让自己的学习记录留痕, 也是对未来申请有帮助吧? (能有一个体现在纸面上的东西还是好的&amp;hellip;)&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ol&gt;
+</description>
         </item>
         <item>
         <title>Weekly Report 3</title>

@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://LizPink.github.io/zh-cn/</loc>
-    <lastmod>2024-11-08T10:57:22+08:00</lastmod>
+    <lastmod>2024-11-08T11:05:53+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -15,14 +15,8 @@
                 href="https://LizPink.github.io/zh-cn/"
                 />
   </url><url>
-    <loc>https://LizPink.github.io/zh-cn/content/</loc>
-    <lastmod>2024-11-08T10:57:22+08:00</lastmod>
-  </url><url>
-    <loc>https://LizPink.github.io/zh-cn/content/post/test/</loc>
-    <lastmod>2024-11-08T10:57:22+08:00</lastmod>
-  </url><url>
     <loc>https://LizPink.github.io/zh-cn/categories/</loc>
-    <lastmod>2024-10-11T17:47:38+08:00</lastmod>
+    <lastmod>2024-11-08T11:05:53+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -35,59 +29,19 @@
                 />
   </url><url>
     <loc>https://LizPink.github.io/zh-cn/tags/motivation/</loc>
-    <lastmod>2024-10-11T17:47:38+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://LizPink.github.io/tags/motivation/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://LizPink.github.io/zh-cn/tags/motivation/"
-                />
+    <lastmod>2024-11-08T11:05:53+08:00</lastmod>
   </url><url>
     <loc>https://LizPink.github.io/zh-cn/post/</loc>
-    <lastmod>2024-10-11T17:47:38+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://LizPink.github.io/post/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://LizPink.github.io/zh-cn/post/"
-                />
+    <lastmod>2024-11-08T11:05:53+08:00</lastmod>
   </url><url>
     <loc>https://LizPink.github.io/zh-cn/categories/report/</loc>
-    <lastmod>2024-10-11T17:47:38+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://LizPink.github.io/categories/report/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://LizPink.github.io/zh-cn/categories/report/"
-                />
+    <lastmod>2024-11-08T11:05:53+08:00</lastmod>
   </url><url>
     <loc>https://LizPink.github.io/zh-cn/tags/study/</loc>
-    <lastmod>2024-10-11T17:47:38+08:00</lastmod>
-    <xhtml:link
-                rel="alternate"
-                hreflang="en"
-                href="https://LizPink.github.io/tags/study/"
-                />
-    <xhtml:link
-                rel="alternate"
-                hreflang="zh-cn"
-                href="https://LizPink.github.io/zh-cn/tags/study/"
-                />
+    <lastmod>2024-11-08T11:05:53+08:00</lastmod>
   </url><url>
     <loc>https://LizPink.github.io/zh-cn/tags/</loc>
-    <lastmod>2024-10-11T17:47:38+08:00</lastmod>
+    <lastmod>2024-11-08T11:05:53+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -98,6 +52,9 @@
                 hreflang="zh-cn"
                 href="https://LizPink.github.io/zh-cn/tags/"
                 />
+  </url><url>
+    <loc>https://LizPink.github.io/zh-cn/p/weekly-report-4/</loc>
+    <lastmod>2024-11-08T11:05:53+08:00</lastmod>
   </url><url>
     <loc>https://LizPink.github.io/zh-cn/p/weekly-report-3/</loc>
     <lastmod>2024-10-11T17:47:38+08:00</lastmod>
