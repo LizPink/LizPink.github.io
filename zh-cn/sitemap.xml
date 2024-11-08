@@ -3,7 +3,7 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>https://LizPink.github.io/zh-cn/</loc>
-    <lastmod>2024-10-11T17:47:38+08:00</lastmod>
+    <lastmod>2024-11-08T10:57:22+08:00</lastmod>
     <xhtml:link
                 rel="alternate"
                 hreflang="en"
@@ -14,6 +14,12 @@
                 hreflang="zh-cn"
                 href="https://LizPink.github.io/zh-cn/"
                 />
+  </url><url>
+    <loc>https://LizPink.github.io/zh-cn/content/</loc>
+    <lastmod>2024-11-08T10:57:22+08:00</lastmod>
+  </url><url>
+    <loc>https://LizPink.github.io/zh-cn/content/post/test/</loc>
+    <lastmod>2024-11-08T10:57:22+08:00</lastmod>
   </url><url>
     <loc>https://LizPink.github.io/zh-cn/categories/</loc>
     <lastmod>2024-10-11T17:47:38+08:00</lastmod>
