@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <title>Report on Liz&#39;s Section</title>
+        <link>https://LizPink.github.io/categories/report/</link>
+        <description>Recent content in Report on Liz&#39;s Section</description>
+        <generator>Hugo -- gohugo.io</generator>
+        <language>en</language>
+        <copyright>ZipingLi0418</copyright>
+        <lastBuildDate>Wed, 13 Nov 2024 01:57:57 +0800</lastBuildDate><atom:link href="https://LizPink.github.io/categories/report/index.xml" rel="self" type="application/rss+xml" /><item>
+        <title>Weekly Report 5</title>
+        <link>https://LizPink.github.io/p/weekly-report-5/</link>
+        <pubDate>Wed, 13 Nov 2024 01:57:57 +0800</pubDate>
+        
+        <guid>https://LizPink.github.io/p/weekly-report-5/</guid>
+        <description>&lt;p&gt;So far, it&amp;rsquo;s time to establish my English channel! To date I decide to only upload some study report, usually very neat. So let&amp;rsquo;s begin!&lt;/p&gt;
+&lt;p&gt;In the past three months, I actually have studies a lot of stuff, thanks to the fact that there is only 2 credits chosen this semester. So in general, I learned Some courses :&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;1. Crash Course on Computer Science&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Reference:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.bilibili.com/video/BV1EW411u7th?p=1&amp;amp;vd_source=eb54fab8ff9874cf7378b4cfd5ece052&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;https://www.bilibili.com/video/BV1EW411u7th?p=1&amp;vd_source=eb54fab8ff9874cf7378b4cfd5ece052&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Time line:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Strat Date: 2024/09&lt;/li&gt;
+&lt;li&gt;End Date: 2024/09&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Review:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This course is about 40+ Hours but cover a large variety of topics (almost all!) in computer science, including the history of primitive computing machines and modern computers; the hardware, form vacuum tubes to semiconductors, and software of computer; the major disciplines  of computer science, such as complexity, database, net, cryptology, computer version, graphics and so on. Though I didn&amp;rsquo;t fully understanding every episode it offered, this give a comprehensive understanding of what computer science is and how it studies.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;2.Information Theory and Entropy&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Reference:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://ocw.mit.edu/courses/6-050j-information-and-entropy-spring-2008/resources/mit6_050js08_textbook/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Information and Entropy | Information and Entropy | Electrical Engineering and Computer Science | MIT OpenCourseWare&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Time Line:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Start: 2024/09&lt;/li&gt;
+&lt;li&gt;Pause:2024/10, finished 5 chapters/ 9 chapters.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Review:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;I finished the first four chapters on the theorems of information, encoding, compression, error correction and probability. However, because this course was uploaded a very long time ago(about nearly 10 years!), the quality of the video isn&amp;rsquo;t very clear, and there is no blogs communicating on this course, so I often felt helpless when I encounter some puzzles. But I still think this course is worth learning.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;3. Missing Semester on your Computer Science Education&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Reference:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://missing-semester-cn.github.io/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;MIT - the missing semester of your cs education (missing-semester-cn.github.io)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.gnu.org/software/bash/manual/html_node/Quoting.html&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;[Bash引用手册] Quoting (Bash Reference Manual) (gnu.org)&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Time line:&lt;/strong&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Start Date:2024/10&lt;/li&gt;
+&lt;li&gt;Pause: From 2024/10, because it is too hard and require many pre-knowledge.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;strong&gt;Review:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;This course mainly focuses on some useful tools based on command lines, most of which rely on a language like Unix or Bash(I don&amp;rsquo;t have many knowledge in this terminology). I think this course is worth studying because you will encounter many situations where dealing with command lines is a mandatory. For example, I use Hugo to update my personal site, and it requires some command language just like Bash I learned in this course. However, this course requires much pre-knowledge than I expected, so I stop learning after two or three lectures. Maybe I will continue later in this year?&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;4. Mathematics for Computer Science&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Reference:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://openlearninglibrary.mit.edu/courses/course-v1:OCW&amp;#43;6.042J&amp;#43;2T2019/course/&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Course | 6.042J | 2019 Fall | MIT Open Learning Library&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.bilibili.com/video/BV1dh4y1o7x9/?spm_id_from=333.337.search-card.all.click&amp;amp;vd_source=eb54fab8ff9874cf7378b4cfd5ece052&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;【麻省理工-离散数学 | 2010 Fall】（中英字幕）_哔哩哔哩_bilibili&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;strong&gt;5.From Nand to Tetris&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Reference:&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a class=&#34;link&#34; href=&#34;https://www.coursera.org/learn/build-a-computer/home/welcome&#34;  target=&#34;_blank&#34; rel=&#34;noopener&#34;
+    &gt;Coursera | Online Courses From Top Universities. Join for Free&lt;/a&gt;&lt;/p&gt;
+</description>
+        </item>
+        
+    </channel>
+</rss>
