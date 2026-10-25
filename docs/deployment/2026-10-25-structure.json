@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-25",
+  "url": "https://lizpink.github.io/",
+  "repository": "LizPink/LizPink.github.io",
+  "branch": "main",
+  "source_directory": "dist",
+  "commit": "a29064e85dfc79a47f4f3b4eab95c374cc83aca1",
+  "parent_commit": "8f58faf67165e22a4212ed20255361b666b11a52",
+  "deployment_run_url": "https://github.com/LizPink/LizPink.github.io/actions/runs/40183276723",
+  "deployment_status": "success",
+  "backup_branch": "codex/backup-before-structure-20261025",
+  "verification": {
+    "old_root_app_js_status": 404,
+    "files": 22,
+    "http_and_sha256_matches": 22,
+    "failures": []
+  },
+  "changes": [
+    "Group JavaScript, CSS, fonts and media under assets",
+    "Add concise README for the published repository",
+    "Keep old test website backup branch unchanged"
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-25",
+  "scope": "Asset directory reorganization and concise README",
+  "javascript_syntax_files": 6,
+  "local_resource_references": 19,
+  "resource_paths_missing": 0,
+  "unchanged_logic_modules": [
+    "app.js",
+    "command-input.js",
+    "commands.js",
+    "summaries.js",
+    "theme.js"
+  ],
+  "path_only_changes": [
+    "index.html",
+    "assets/css/styles.css",
+    "assets/js/content.js"
+  ],
+  "script_load_order": "preserved",
+  "readme_links": "passed",
+  "files": 22,
+  "local_http_matches": 22,
+  "browser_interaction": "Not rerun; behavior sources are unchanged except asset paths"
+}

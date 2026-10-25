@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="540" viewBox="0 0 960 540" role="img" aria-labelledby="title desc">
+<title id="title">Demo geometry study — replace later</title><desc id="desc">An amber wireframe cube, coordinate axes and a perspective grid. This is a placeholder illustration, not a personal project.</desc>
+<defs><pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" stroke="#634829" stroke-opacity=".22"/></pattern><radialGradient id="glow"><stop stop-color="#392a19"/><stop offset="1" stop-color="#15130f"/></radialGradient><filter id="bloom"><feGaussianBlur stdDeviation="6"/></filter></defs>
+<path fill="url(#glow)" d="M0 0H960V540H0Z"/><path fill="url(#grid)" d="M0 0H960V540H0Z"/>
+<g font-family="Consolas, monospace" font-size="13" fill="#b9a37c"><text x="36" y="38">CG / COORDINATE SPACE</text><text x="36" y="510">DEMO / REPLACE LATER</text><text x="730" y="510">01 — WIREFRAME</text></g>
+<path d="M36 57H924 M36 480H924" stroke="#59452b"/>
+<g stroke="#6e5836" stroke-width="1" opacity=".45"><path d="M95 439L455 301L866 439 M181 439L465 301L780 439 M274 439L474 301L691 439 M366 439L480 301L599 439 M36 439H924 M128 405H826 M220 371H727 M310 337H629" fill="none"/></g>
+<g fill="none" stroke="#ffb957" stroke-width="5" opacity=".25" filter="url(#bloom)"><path d="M326 228L481 146L653 223L503 316Z M326 228V348L503 433L653 335V223 M503 316V433 M481 146V269L326 348 M481 269L653 335"/></g>
+<g fill="none" stroke="#f3b45d" stroke-width="2.2" stroke-linejoin="round"><path d="M326 228L481 146L653 223L503 316Z M326 228V348L503 433L653 335V223 M503 316V433"/><path d="M481 146V269L326 348 M481 269L653 335" stroke="#99713c" stroke-dasharray="6 6"/></g>
+<g fill="#f3b45d"><circle cx="326" cy="228" r="4"/><circle cx="481" cy="146" r="4"/><circle cx="653" cy="223" r="4"/><circle cx="503" cy="316" r="4"/><circle cx="326" cy="348" r="4"/><circle cx="503" cy="433" r="4"/><circle cx="653" cy="335" r="4"/></g>
+<g fill="none" stroke-width="1.5"><path d="M174 331V206 M168 214L174 204L180 214" stroke="#b3cf82"/><path d="M174 331L263 366 M251 355L265 367L249 367" stroke="#f3b45d"/><path d="M174 331L108 380 M122 378L106 382L112 368" stroke="#a9a091"/></g>
+<g font-family="Consolas, monospace" font-size="14"><text x="167" y="189" fill="#b3cf82">Y</text><text x="277" y="374" fill="#f3b45d">X</text><text x="89" y="400" fill="#a9a091">Z</text></g>
+<g font-family="Consolas, monospace" font-size="12" fill="#a3957f"><path d="M655 223H728V198H852" fill="none" stroke="#776043"/><text x="738" y="188">8 VERTICES</text><text x="738" y="217">12 EDGES</text><text x="738" y="246">LOCAL → WORLD</text></g>
+<g transform="translate(815 83)" font-family="Consolas, monospace" font-size="12"><rect width="109" height="27" fill="#2b2419" stroke="#856337"/><text x="54.5" y="18" fill="#f3b45d" text-anchor="middle">DEMO</text></g></svg>

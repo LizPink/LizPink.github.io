@@ -1,0 +1,27 @@
+{
+  "date": "2026-10-25",
+  "url": "https://lizpink.github.io/",
+  "repository": "LizPink/LizPink.github.io",
+  "branch": "main",
+  "source_directory": "dist",
+  "commit": "8f58faf67165e22a4212ed20255361b666b11a52",
+  "tree": "88507867df1c205ed39ee7d09b5de7e0458d5404",
+  "deployment_run_url": "https://github.com/LizPink/LizPink.github.io/actions/runs/40181839001",
+  "deployment_status": "success",
+  "backup_branch": "codex/backup-test-site-20261025",
+  "retired_source_repository": "LizPink/hugo-LizPinksite-main",
+  "retired_workflow": ".github/workflows/site0-deploy.yaml",
+  "retired_workflow_deletion_commit": "eca4f0d2bad3b7263e3b3e56aace54d3093b3f96",
+  "retired_source_repository_deleted": false,
+  "verification": {
+    "homepage_http_status": 200,
+    "homepage_title": "LizPink · 个人终端",
+    "published_files": 21,
+    "http_200_files": 21,
+    "sha256_matches_against_local_dist": 21,
+    "legacy_archives_http_status": 404,
+    "javascript_syntax_checks": "6 passed",
+    "browser_interaction_check": "Not completed: browser control timed out"
+  },
+  "maintenance": "Publish updated dist contents to the root of LizPink/LizPink.github.io main. Sites hosting is separate and does not automatically synchronize to GitHub Pages."
+}

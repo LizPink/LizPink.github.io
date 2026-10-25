@@ -1,0 +1,705 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-25T06:56:43.952Z",
+  "title": "Design System: LizPink 个人终端",
+  "extensions": {
+    "extraction": {
+      "mode": "scan",
+      "sources": [
+        "dist/index.html",
+        "dist/assets/css/styles.css",
+        "dist/assets/js/app.js",
+        "dist/assets/js/theme.js",
+        "dist/assets/js/commands.js",
+        "dist/assets/js/summaries.js"
+      ],
+      "scope": "最新图示优先：满视口统一screen背景，零外框/内框/套窗内缩，四入口侧栏依次home/0、life/1、resume/2、research/3。目录每次载入收起，左缘临时展开，目录旁图钉固定；本次会话固定选择跨导航保留，刷新清除。自介并入resume展开详情；8个公开命令由commands.js统一派生解析路由、Tab候选和浏览路线与操作两组平面帮助。先短摘要、按需详情；普通流prompt自动跟随，阅读历史暂停。",
+      "primitiveSource": "docs/DESIGN.md frontmatter；运行来源为 dist/assets/css/styles.css。"
+    },
+    "colorMeta": {
+      "amber-bg": {
+        "role": "neutral",
+        "displayName": "琥珀 · 标志/选择/遮罩局部",
+        "cssVariable": "--bg",
+        "theme": "amber"
+      },
+      "amber-chrome": {
+        "role": "neutral",
+        "displayName": "琥珀 · 主题轨道",
+        "cssVariable": "--chrome",
+        "theme": "amber"
+      },
+      "amber-screen": {
+        "role": "neutral",
+        "displayName": "琥珀 · 页面统一背景",
+        "cssVariable": "--screen",
+        "theme": "amber"
+      },
+      "amber-text": {
+        "role": "neutral",
+        "displayName": "琥珀 · 主文字",
+        "cssVariable": "--text",
+        "theme": "amber"
+      },
+      "amber-muted": {
+        "role": "neutral",
+        "displayName": "琥珀 · 辅助文字",
+        "cssVariable": "--muted",
+        "theme": "amber"
+      },
+      "amber-accent": {
+        "role": "primary",
+        "displayName": "琥珀 · 强调色",
+        "cssVariable": "--accent",
+        "theme": "amber"
+      },
+      "amber-accent-soft": {
+        "role": "primary",
+        "displayName": "琥珀 · 柔和强调底色",
+        "cssVariable": "--accent-soft",
+        "theme": "amber"
+      },
+      "amber-line": {
+        "role": "neutral",
+        "displayName": "琥珀 · 控件边线",
+        "cssVariable": "--line",
+        "theme": "amber"
+      },
+      "amber-line-soft": {
+        "role": "neutral",
+        "displayName": "琥珀 · 细分隔",
+        "cssVariable": "--line-soft",
+        "theme": "amber"
+      },
+      "green-bg": {
+        "role": "neutral",
+        "displayName": "荧绿 · 标志/选择/遮罩局部",
+        "cssVariable": "--bg",
+        "theme": "green"
+      },
+      "green-chrome": {
+        "role": "neutral",
+        "displayName": "荧绿 · 主题轨道",
+        "cssVariable": "--chrome",
+        "theme": "green"
+      },
+      "green-screen": {
+        "role": "neutral",
+        "displayName": "荧绿 · 页面统一背景",
+        "cssVariable": "--screen",
+        "theme": "green"
+      },
+      "green-text": {
+        "role": "neutral",
+        "displayName": "荧绿 · 主文字",
+        "cssVariable": "--text",
+        "theme": "green"
+      },
+      "green-muted": {
+        "role": "neutral",
+        "displayName": "荧绿 · 辅助文字",
+        "cssVariable": "--muted",
+        "theme": "green"
+      },
+      "green-accent": {
+        "role": "primary",
+        "displayName": "荧绿 · 强调色",
+        "cssVariable": "--accent",
+        "theme": "green"
+      },
+      "green-accent-soft": {
+        "role": "primary",
+        "displayName": "荧绿 · 柔和强调底色",
+        "cssVariable": "--accent-soft",
+        "theme": "green"
+      },
+      "green-line": {
+        "role": "neutral",
+        "displayName": "荧绿 · 控件边线",
+        "cssVariable": "--line",
+        "theme": "green"
+      },
+      "green-line-soft": {
+        "role": "neutral",
+        "displayName": "荧绿 · 细分隔",
+        "cssVariable": "--line-soft",
+        "theme": "green"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "首页问候",
+        "purpose": "衬线38px，760px以下30px，360px以下28px。"
+      },
+      "title": {
+        "displayName": "结果标题",
+        "purpose": "衬线32px，760px以下28px。"
+      },
+      "interface": {
+        "displayName": "外层界面",
+        "purpose": "衬线17px，中文系统宋体回退。"
+      },
+      "screen": {
+        "displayName": "终端正文",
+        "purpose": "中文说明与终端正文衬线16px/1.7。"
+      },
+      "menu": {
+        "displayName": "四入口侧栏",
+        "purpose": "目录标题与菜单项统一衬线16px/1.5，编号12px等宽。"
+      },
+      "command": {
+        "displayName": "原生输入",
+        "purpose": "IBM Plex Mono 400，16px/1.6；镜像块光标。"
+      },
+      "logo": {
+        "displayName": "原lp_标志",
+        "purpose": "32px方块、18px等宽字；760px以下28px方块、16px字。同排姓名24px，手机22px。"
+      },
+      "summary-title": {
+        "displayName": "摘要标题",
+        "purpose": "衬线18px、500字重，行高1.5。"
+      },
+      "summary": {
+        "displayName": "默认摘要",
+        "purpose": "衬线16px、400字重、行高1.7，最长72ch。"
+      },
+      "details": {
+        "displayName": "按需详情",
+        "purpose": "17px衬线/1.9，沿用原富文层级。"
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "screen-on",
+        "value": "screen-on 340ms ease-out both",
+        "purpose": "首次屏幕clip/opacity显像。"
+      },
+      {
+        "name": "entry-reveal",
+        "value": "entry-reveal 150ms ease-out both",
+        "purpose": "新结果显现。"
+      },
+      {
+        "name": "block-cursor",
+        "value": "cursor-blink 950ms steps(1,end) infinite",
+        "purpose": "聚焦输入时块光标；页面隐藏暂停。"
+      },
+      {
+        "name": "mobile-menu",
+        "value": "menu-enter 200ms ease-out both",
+        "purpose": "手机目录滑入。"
+      },
+      {
+        "name": "theme-thumb",
+        "value": "transform 180ms ease",
+        "purpose": "主题开关滑块移动。"
+      },
+      {
+        "name": "desktop-peek",
+        "value": "menu-enter 160ms ease-out both",
+        "purpose": "桌面临时预览覆盖滑入；reduced-motion关闭。"
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "compact-desktop",
+        "value": "1000px",
+        "condition": "max-width"
+      },
+      {
+        "name": "mobile-drawer",
+        "value": "760px",
+        "condition": "max-width"
+      },
+      {
+        "name": "small-mobile",
+        "value": "360px",
+        "condition": "max-width"
+      }
+    ],
+    "layout": {
+      "shellWidth": "100%",
+      "shellHeight": "100dvh",
+      "shellHeightFallback": "100vh",
+      "bodyOverflow": "clip",
+      "outerOverflow": "clip",
+      "outerClipSelectors": [
+        "html",
+        "body",
+        ".site-shell",
+        ".terminal-frame",
+        ".frame-layout",
+        ".frame-main"
+      ],
+      "contentScrollContainer": "main overflow:auto",
+      "scrollBoundary": "只修改main.scrollTop；详情用scrollWithinTerminal，delta=target.top-main.top-24；返回输入由RAF设main.scrollTop=main.scrollHeight，候选过高时将prompt回调到主区顶部8px以保持可见；不使用scrollIntoView滚动祖先。",
+      "frameBorder": "none",
+      "toolbarMinHeight": "52px",
+      "toolbarPadding": "3px 16px",
+      "desktopMenuDefault": "closed",
+      "expandedColumns": "208px minmax(0, 1fr)",
+      "compactExpandedColumns": "196px minmax(0, 1fr)",
+      "frameMainPadding": "0",
+      "screenPadding": "24px 32px",
+      "screenOverflow": "auto",
+      "mobileShellWidth": "100%",
+      "mobileToolbarMinHeight": "52px",
+      "mobileMenuDefault": "closed",
+      "mobileMenuWidth": "min(268px, 84%)",
+      "mobileBackdropOpacity": 0.7,
+      "mobileFrameMainPadding": "0",
+      "mobileScreenPadding": "24px",
+      "smallMobileScreenHorizontalPadding": "24px",
+      "commandPlacement": "normal flow after terminal-records",
+      "commandDocked": false,
+      "commandSticky": false,
+      "formBorder": "none",
+      "formMinHeight": "48px",
+      "formMarginTop": "20px",
+      "entryMarginTop": "24px",
+      "recordLimit": 5,
+      "themeControlWidth": "78px",
+      "themeControlMinHeight": "44px",
+      "thumbSize": "30px 22px",
+      "thumbTranslation": "40px",
+      "logoSize": "32px",
+      "mobileLogoSize": "28px",
+      "logoFont": "18px/1 \"Cascadia Code\", \"SFMono-Regular\", Consolas, \"Microsoft YaHei\", monospace",
+      "mobileLogoFontSize": "16px",
+      "logoLetterSpacing": "-2px",
+      "referenceWidth": "min(100%, 820px)",
+      "referenceFirstColumn": "minmax(140px, 180px)",
+      "mediaAspectRatio": "16 / 9",
+      "mediaObjectFit": "contain",
+      "shellDisplay": "flex",
+      "shellPadding": "0",
+      "toolbarGap": "16px",
+      "mobileBrandFontSize": "22px",
+      "wordmarkGap": "10px",
+      "mobileWordmarkGap": "8px",
+      "mobileToolbarGap": "12px",
+      "mobileToolbarHorizontalPadding": "12px",
+      "formWidth": "100%",
+      "separateMasthead": false,
+      "separateFooter": false,
+      "submitButton": false,
+      "compactVisibility": "1000px以下隐藏状态；桌面目录旁为图钉，手机同处为关闭按钮。",
+      "mobileVisibility": "760px以下隐藏路径与主题名称。",
+      "shellMargin": "0",
+      "pageBackground": "var(--screen)",
+      "toolbarBackground": "var(--screen)",
+      "sidebarBackground": "var(--screen)",
+      "frameBackground": "var(--screen)",
+      "mainBackground": "var(--screen)",
+      "mainBorder": "none",
+      "mobileClosedScreenLeftPadding": "52px",
+      "menuLabelDisplay": "16px/1.5 var(--font-body)",
+      "desktopRevealWidth": "20px",
+      "desktopRevealHeight": "100%",
+      "desktopRevealChevron": "18px 24px",
+      "mobileRevealSize": "44px 44px",
+      "mobileRevealPosition": "top:calc(50% - 22px);left:0",
+      "desktopPeekWidth": "208px",
+      "compactPeekWidth": "196px",
+      "peekPosition": "absolute overlay",
+      "peekContentShift": false,
+      "brandFontSize": "24px",
+      "mobileEntryMarginTop": "20px",
+      "echoMarginBottom": "8px",
+      "summaryMaxWidth": "72ch",
+      "summaryFactsColumns": "60px minmax(0, 1fr)",
+      "mobileSummaryFactsColumns": "52px minmax(0, 1fr)",
+      "detailsRowMinHeight": "44px",
+      "detailsBodyMarginTop": "12px",
+      "returnToInputPosition": "absolute in .frame-main; right:12px; bottom:12px",
+      "returnToInputMinHeight": "44px",
+      "returnToInputPadding": "8px 14px",
+      "returnToInputBorder": "1px solid var(--line)",
+      "returnToInputBackground": "var(--screen)",
+      "mainScrollPaddingBottom": "68px",
+      "returnControlAddsLayoutHeight": false,
+      "mobileReferenceFirstColumn": "110px",
+      "menuPinLocation": ".sidebar-header beside 目录",
+      "menuPinSize": "44px",
+      "helpTermColumns": "8ch max-content",
+      "helpRowMinHeight": "28px",
+      "helpRowPadding": "2px 0",
+      "helpGroupMarginTop": "16px",
+      "helpDescriptionLineHeight": 1.5
+    },
+    "interaction": {
+      "sidebar": [
+        "home",
+        "life",
+        "resume",
+        "research"
+      ],
+      "profile": "Student与四兴趣集中在resume摘要；完整about.paragraphs并入resume展开详情的个人介绍。",
+      "legacyInfo": "about/info等旧别名与旧链接内部兼容转resume，不列入公开命令、Tab候选或帮助。",
+      "home": "仅问候与terminal-hint，不重复身份/兴趣/简介。",
+      "session": "最多五条回显+短摘要+按需详情与唯一新prompt；默认跟随输入，手动阅读暂停；侧栏清会话，home/clear回首页。",
+      "input": "原生单input保留编辑/选区/中文输入，Enter隐式提交，enterkeyhint=send，无执行箭头/底线/dock/sticky；镜像块光标。",
+      "tab": "非Shift Tab保持input，唯一匹配补全、多匹配循环、空输入可用、无匹配不跳焦；ShiftTab离开。",
+      "accessibility": "combobox关联listbox/option；手机抽屉inert、焦点循环；关闭后聚焦可见入口。",
+      "shortcuts": "/返回输入，↑↓回调历史，Escape清空输入并可关闭未固定目录或手机抽屉。",
+      "blankClick": "仅主屏空白点击且无文本选择时聚焦输入。",
+      "status": "真实input同步就绪/输入中，无假延迟。",
+      "toolbar": "仅logo/姓名、路径/状态与主题；图钉/手机关闭按钮位于.sidebar-header。",
+      "menu": "每次载入closed；左缘悬停/点击/键盘激活临时展开，图钉aria-pressed切换固定。pointerleave180ms仅作用于peek，目录保有键盘焦点时保留；setMenu清理timer。固定跨导航保留，刷新清除。",
+      "visibility": "标签页隐藏暂停blink；OS减少动态效果关闭位移和闪烁。",
+      "help": "commands.js直接渲染浏览路线、操作两组平面列表及快捷键，共8个公开命令，无details；CSS Grid命令列固定8ch，或N独立对齐，不用制表符。",
+      "shortcutDetails": "open展开最近记录详情并阅读；close收起并回输入；/、编辑、Tab、↑↓恢复跟随。",
+      "commands": {
+        "module": "dist/assets/js/commands.js",
+        "public": [
+          "home",
+          "life",
+          "resume",
+          "research",
+          "open",
+          "close",
+          "clear",
+          "help"
+        ],
+        "publicNumbers": {
+          "0": "home",
+          "1": "life",
+          "2": "resume",
+          "3": "research"
+        },
+        "derived": [
+          "parser routes",
+          "Tab completions",
+          "help"
+        ],
+        "legacyAliases": "内部兼容，不公开列出；about/info转resume。",
+        "theme": "不列入帮助或补全；旧命令只提示使用右上角开关。",
+        "routes": [
+          "home",
+          "life",
+          "resume",
+          "research",
+          "help"
+        ]
+      },
+      "pathOrder": [
+        {
+          "id": "life",
+          "number": "01"
+        },
+        {
+          "id": "resume",
+          "number": "02"
+        },
+        {
+          "id": "research",
+          "number": "03"
+        }
+      ],
+      "routeScope": "只保留home/life/resume/research/help视图；原项目、档案与联系内容及相关路由、数字4/5和别名均已删除。无效hash回home，旧命令未识别，不迁入life。"
+    },
+    "themeBehavior": {
+      "available": [
+        "amber",
+        "green"
+      ],
+      "default": "amber",
+      "control": "唯一role=switch；checked=green。760px以下当前主题文字隐藏，无障碍语义保持完整。",
+      "priority": [
+        "有效URL theme",
+        "有效保存偏好",
+        "amber"
+      ],
+      "rememberOnly": [
+        "手动开关"
+      ],
+      "url": "已有theme时同步手动选择，保留其他参数和hash。",
+      "initialScript": "theme.js在CSS前执行。",
+      "legacyCommand": "theme或theme参数仅提示使用右上角开关。"
+    },
+    "media": {
+      "width": "100%",
+      "video": {
+        "controls": true,
+        "preload": "none",
+        "playsInline": true,
+        "autoplay": false
+      },
+      "captions": "可用中文 VTT；替换真实视频时同时替换或移除示例字幕。",
+      "examples": "就近标识；example:false 仅去除外部标识，媒体内 DEMO 需替换真实文件。",
+      "emptyPath": "items:[] 不显示条目，保留标题、介绍与待整理提示。",
+      "captionIDs": "每次构建递增唯一",
+      "initialMediaDOM": false
+    },
+    "focus": {
+      "outline": "2px solid var(--accent)",
+      "offset": "5px",
+      "input": "原生输入自身无轮廓/底线，聚焦时通过镜像块光标显示当前位置。"
+    },
+    "fonts": {
+      "reading": {
+        "cssVariable": "--font-body",
+        "localFile": "dist/assets/fonts/SourceSerif4Variable-Roman.ttf.woff2",
+        "bytes": 429100,
+        "source": "Adobe官方Source Serif发行文件，WOFF2/VAR目录",
+        "format": "WOFF2 / TrueType",
+        "style": "normal",
+        "weightRange": [
+          200,
+          900
+        ],
+        "opticalSizeRange": [
+          8,
+          60
+        ],
+        "display": "swap",
+        "opticalSizing": "auto",
+        "preloaded": true,
+        "license": "SIL Open Font License 1.1",
+        "licenseFile": "dist/assets/fonts/LICENSE.md",
+        "fallback": [
+          "Noto Serif SC",
+          "Source Han Serif SC",
+          "Songti SC",
+          "SimSun",
+          "serif"
+        ],
+        "chineseFontsBundled": false,
+        "roles": [
+          "标题",
+          "中文说明",
+          "摘要",
+          "帮助解释",
+          "界面",
+          "按需详情"
+        ]
+      },
+      "command": {
+        "cssVariable": "--font-mono",
+        "family": "IBM Plex Mono",
+        "localFiles": [
+          {
+            "path": "dist/assets/fonts/IBMPlexMono-Regular.woff2",
+            "weight": 400,
+            "preloaded": true
+          },
+          {
+            "path": "dist/assets/fonts/IBMPlexMono-Medium.woff2",
+            "weight": 500,
+            "preloaded": false
+          }
+        ],
+        "source": "IBM官方Plex仓库",
+        "sourceUrl": "https://github.com/IBM/plex",
+        "style": "normal",
+        "display": "swap",
+        "stack": [
+          "IBM Plex Mono",
+          "Cascadia Mono",
+          "Consolas",
+          "Microsoft YaHei",
+          "monospace"
+        ],
+        "roles": [
+          "命令输入",
+          "真实命令回显",
+          "补全候选",
+          "帮助中的命令",
+          "路径",
+          "快捷键",
+          "侧栏编号"
+        ],
+        "license": "SIL Open Font License 1.1",
+        "licenseFile": "dist/assets/fonts/IBM-Plex-Mono-LICENSE.txt"
+      },
+      "note": "字体随网站本地提供；中文沿既有系统衬线栈回退。",
+      "logo": {
+        "stack": [
+          "Cascadia Code",
+          "SFMono-Regular",
+          "Consolas",
+          "Microsoft YaHei",
+          "monospace"
+        ],
+        "purpose": "原lp_标志保留既有字体栈。"
+      }
+    },
+    "reducedMotion": "prefers-reduced-motion:reduce关闭动画、过渡与空间位移；页面隐藏时暂停块光标闪烁。",
+    "menuStates": {
+      "closed": {
+        "default": "每次载入默认；刷新不记忆pin",
+        "visible": "左缘按钮",
+        "desktopTrigger": "精细鼠标悬停、点击或键盘激活进入peek",
+        "mobileTrigger": "点击/键盘激活打开抽屉"
+      },
+      "pinned": {
+        "default": false,
+        "trigger": "目录旁图钉；aria-pressed=true",
+        "layout": "208px网格列，1000px以下196px",
+        "persistence": "本次会话跨导航保持，直到取消固定；刷新清除",
+        "close": "再次点击图钉取消固定并进入peek"
+      },
+      "peek": {
+        "trigger": "桌面左缘悬停/点击/键盘激活，或取消固定",
+        "layout": "absolute覆盖，data-menu-peek=true；主内容坐标不变",
+        "pin": "目录旁图钉",
+        "close": "移出180ms且目录无键盘焦点、目录与左缘均未hover；Escape也可关闭",
+        "timer": "仅peek安排关闭，每次setMenu先清理旧timer"
+      },
+      "mobile-open": {
+        "layout": "左侧min(268px,84%)抽屉与遮罩，frame-main inert；隐藏图钉，显示关闭按钮",
+        "focus": "Tab在关闭按钮与路线间循环；选择聚焦内容，主动关闭回左缘",
+        "close": "选择/关闭按钮/Escape/遮罩"
+      },
+      "breakpointReset": "跨760px进入手机时关闭抽屉，返回桌面时沿用本次会话固定选择"
+    },
+    "summaryPipeline": {
+      "module": "dist/assets/js/summaries.js",
+      "api": "window.LIZPINK_SUMMARIES.create(route)",
+      "dataSources": [
+        "dist/assets/js/content.js"
+      ],
+      "default": "先短衬线摘要，再附原生details/summary展开入口；初始不创建完整图文或媒体DOM。help直接呈现，无details。",
+      "routes": {
+        "life": "内容类型/数量与示例状态；介绍仅在详情出现。",
+        "resume": "Student、兴趣、履历项/PDF待补状态、示例媒体类型与数量；完整个人介绍在展开详情中。",
+        "research": "内容类型/数量与示例状态；介绍仅在详情出现。",
+        "help": "从commands.js渲染浏览路线、操作两组平面列表与快捷键，共8个公开命令，无需展开。"
+      },
+      "maintenance": "这里只维护摘要措辞/标签；真实内容由content.js维护。"
+    },
+    "lazyDetails": {
+      "firstBuild": "第一次summary激活/toggle open或open命令，调用原富文renderer；withView隔离目标。",
+      "collapsed": "保留已建body，不重复构建；关闭时暂停其中video。",
+      "subsequentCommands": "暂停旧记录video，最多五条记录。",
+      "media": "图片loading=lazy、decoding=async；视频preload=none；caption ID使用全局递增序号保持唯一。",
+      "openCommand": "仅最近记录若有details：populate、open、暂停跟随、聚焦summary并滚到起点。",
+      "closeCommand": "收起最近记录details并返回输入/恢复跟随。"
+    },
+    "outputFollow": {
+      "state": "followingOutput",
+      "initial": true,
+      "following": "ResizeObserver观察records、commandArea、main；requestAnimationFrame合并滚到底，新prompt保持可见。",
+      "resume": [
+        "提交命令",
+        "beforeinput编辑",
+        "Tab补全",
+        "↑↓历史",
+        "/",
+        "返回输入",
+        "手动滑到距底部32px内"
+      ],
+      "pause": [
+        "向上wheel",
+        "touchmove",
+        "非输入区滚动键",
+        "滚动条拖动",
+        "focus进入历史记录",
+        "展开details"
+      ],
+      "reading": "暂停时不因内容尺寸变化强拉底部；新prompt仍为普通流，不sticky/dock。",
+      "returnControl": "仅!followingOutput且prompt未完整可见时显示；按钮位于frame-main右下，不占页脚。",
+      "commands": "open进入阅读；close和/恢复输入跟随。"
+    },
+    "validation": {
+      "status": "2026-10-25已通过浏览器核验",
+      "scope": "1280×720、390×844、320×400；默认收起、固定跨导航、取消固定后收起、刷新复位、11项平面帮助、补全焦点、按需详情、旧别名兼容、手机焦点循环；手机无横向溢出，控制台error/warn均为0。",
+      "currentRound": {
+        "status": "2026-10-25已通过浏览器核验",
+        "scope": "1661×990桌面、320×640窄屏：路线顺序、8项公开命令、两组帮助、数字列对齐、数字1–3跳转与Tab候选一致；无横向溢出，控制台error/warn为0。以上11项命令记录属于上一轮。"
+      },
+      "cleanupRound": {
+        "status": "2026-10-25已通过检查",
+        "scope": "项目、档案、联系旧命令不再识别，旧文章链接显示首页；三路线与图片/视频详情正常，320×640下8项补全焦点正常且无横向溢出，控制台error/warn为0。数据、渲染器、摘要、专用CSS及旧入口已删除，仅保留五个视图与8项公开命令。此前验证记录属于删除清理前。"
+      }
+    }
+  },
+  "components": [
+    {
+      "name": "原方块标志与姓名",
+      "kind": "custom",
+      "refersTo": "logo-mark",
+      "description": "标志与姓名合入统一工具栏，桌面32px方块与24px姓名。",
+      "html": "<a class=\"ds-wordmark\" href=\"#home\" aria-label=\"LizPink 首页\"><span class=\"ds-logo\" aria-hidden=\"true\">lp<span>_</span></span><span>LizPink<span aria-hidden=\"true\">.</span></span></a>",
+      "css": ".ds-wordmark{display:flex;align-items:center;gap:10px;min-width:0;color:var(--text);font:500 24px/1.2 var(--font-body);text-decoration:none;white-space:nowrap}.ds-wordmark:hover{color:var(--accent)}.ds-logo{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:32px;height:32px;background:var(--accent);color:var(--bg);font:18px/1 \"Cascadia Code\",\"SFMono-Regular\",Consolas,\"Microsoft YaHei\",monospace;letter-spacing:-2px}.ds-wordmark:focus-visible{outline:2px solid var(--accent);outline-offset:5px}"
+    },
+    {
+      "name": "单主题开关",
+      "kind": "button",
+      "refersTo": "theme-track",
+      "description": "两个色点、单滑块与当前名称；checked为荧绿。",
+      "html": "<div class=\"ds-theme-control\"><button class=\"ds-theme-toggle\" type=\"button\" role=\"switch\" aria-checked=\"false\" aria-label=\"荧绿主题\"><span class=\"ds-theme-dot ds-amber\" aria-hidden=\"true\"></span><span class=\"ds-theme-dot ds-green\" aria-hidden=\"true\"></span><span class=\"ds-thumb\" aria-hidden=\"true\"></span></button><span class=\"ds-theme-label\" aria-hidden=\"true\">琥珀</span></div>",
+      "css": ".ds-theme-control{display:flex;align-items:center;gap:12px;font-family:var(--font-body)}.ds-theme-toggle{position:relative;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;width:78px;min-height:44px;padding:0 15px;border:0;background:transparent;cursor:pointer}.ds-theme-toggle::before{content:\"\";position:absolute;inset:7px 0;border:1px solid var(--line);border-radius:18px;background:var(--chrome)}.ds-theme-dot{position:relative;z-index:1;width:9px;height:9px;border-radius:50%}.ds-amber{background:#e6bc76}.ds-green{background:#9ff279}.ds-thumb{position:absolute;top:11px;left:4px;width:30px;height:22px;border:1px solid var(--accent);border-radius:13px;background:var(--accent-soft);transition:transform 180ms ease}.ds-theme-toggle[aria-checked=\"true\"] .ds-thumb{transform:translateX(40px)}.ds-theme-label{min-width:2em;color:var(--muted);font-size:14px;white-space:nowrap}.ds-theme-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:5px}"
+    },
+    {
+      "name": "四入口侧栏",
+      "kind": "nav",
+      "refersTo": "menu-item",
+      "description": "依次首页、生活01、经历02、研究03；默认收起，由左缘临时展开或图钉固定。",
+      "html": "<nav id=\"ds-route-menu\" class=\"ds-menu\" aria-label=\"网站目录\"><button class=\"ds-menu-item\" type=\"button\" aria-current=\"page\">首页<span>home</span></button><button class=\"ds-menu-item\" type=\"button\">生活与记录<span>01</span></button><button class=\"ds-menu-item\" type=\"button\">经历与能力<span>02</span></button><button class=\"ds-menu-item\" type=\"button\">研究与探索<span>03</span></button></nav>",
+      "css": ".ds-menu{padding:16px 16px 18px;border-right:1px solid var(--line-soft);background:var(--screen)}.ds-menu-item{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:44px;padding:10px 12px;border:0;border-radius:0;background:transparent;color:var(--muted);font:16px/1.5 var(--font-body);text-align:left;white-space:nowrap;cursor:pointer}.ds-menu-item span{color:var(--muted);font:12px/1.6 var(--font-mono)}.ds-menu-item:hover,.ds-menu-item[aria-current=\"page\"]{color:var(--accent)}.ds-menu-item[aria-current=\"page\"]{text-decoration:underline;text-underline-offset:6px}.ds-menu-item:focus-visible{outline:2px solid var(--accent);outline-offset:5px}"
+    },
+    {
+      "name": "原生终端输入",
+      "kind": "input",
+      "refersTo": "command-input",
+      "description": "唯一单input原生表单，Enter或手机发送键提交；无执行按钮。",
+      "html": "<form class=\"ds-command\"><label for=\"ds-command-input\">&gt;</label><div class=\"ds-editor\"><input id=\"ds-command-input\" class=\"ds-input\" type=\"text\" enterkeyhint=\"send\" role=\"combobox\" aria-label=\"输入命令\" aria-expanded=\"false\" aria-autocomplete=\"list\" placeholder=\"help 查看命令\"><span class=\"ds-cursor-layer\" aria-hidden=\"true\"><span class=\"ds-block-cursor\"></span></span></div></form>",
+      "css": ".ds-command{display:flex;align-items:center;gap:13px;width:100%;min-width:0;min-height:48px;margin:20px 0 0;padding:0;font:400 16px/1.6 var(--font-mono)}.ds-command label{color:var(--accent);font-size:18px}.ds-editor{position:relative;flex:1;min-width:0;overflow:hidden;font:inherit}.ds-input{display:block;width:100%;min-width:0;padding:11px 1ch 11px 0;border:0;border-radius:0;background:transparent;color:var(--text);font:inherit}.ds-input::placeholder{color:var(--muted);opacity:1}.ds-input:focus-visible{outline:none}.ds-input:focus{caret-color:transparent}.ds-input:focus::placeholder{color:transparent}.ds-cursor-layer{position:absolute;top:50%;left:0;display:none;transform:translateY(-50%);pointer-events:none}.ds-editor:focus-within .ds-cursor-layer{display:block}.ds-block-cursor{display:inline-block;width:.65ch;height:1.1em;vertical-align:-.18em;background:var(--accent);animation:ds-cursor-blink 950ms steps(1,end) infinite}@keyframes ds-cursor-blink{0%,52%{opacity:1}53%,100%{opacity:0}}@media(prefers-reduced-motion:reduce){.ds-block-cursor{animation:none}}"
+    },
+    {
+      "name": "目录旁图钉",
+      "kind": "button",
+      "refersTo": "menu-pin",
+      "description": "桌面44px点击区、20px图钉；aria-pressed表达固定状态，手机改显示关闭按钮。",
+      "html": "<div class=\"ds-sidebar-header\"><p class=\"ds-sidebar-label\">目录</p><button class=\"ds-menu-pin\" type=\"button\" aria-label=\"固定目录\" aria-pressed=\"false\" aria-controls=\"ds-route-menu\" title=\"固定目录\"><svg class=\"ds-pin-icon\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M16 9V3H8v6l-3 3v2h14v-2l-3-3Z\"/><path d=\"M12 14v7\"/></svg></button></div>",
+      "css": ".ds-sidebar-header{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;margin-bottom:12px}.ds-sidebar-label{margin:0 12px;color:var(--muted);font:16px/1.5 var(--font-body)}.ds-menu-pin{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;min-width:44px;min-height:44px;margin-left:auto;padding:0;border:0;border-radius:0;background:transparent;color:var(--muted);cursor:pointer}.ds-pin-icon{display:block;width:20px;height:20px;fill:none;transform:rotate(-25deg)}.ds-menu-pin[aria-pressed=\"true\"]{color:var(--accent)}.ds-menu-pin[aria-pressed=\"true\"] .ds-pin-icon{fill:var(--accent-soft);transform:none}.ds-menu-pin:hover{color:var(--accent)}.ds-menu-pin:focus-visible{outline:2px solid var(--accent);outline-offset:5px}"
+    },
+    {
+      "name": "短摘要与原生详情",
+      "kind": "custom",
+      "refersTo": "details-summary",
+      "description": "默认衬线短摘要；原生details首次展开才创建完整个人介绍、富文与媒体。",
+      "html": "<section class=\"ds-output-summary\"><p class=\"ds-summary-title\">经历与能力</p><p class=\"ds-summary-description\">学生 / Student</p><dl class=\"ds-summary-facts\"><div><dt>简历</dt><dd>经历待补充 · PDF 待添加</dd></div></dl></section><details class=\"ds-output-details\"><summary><span>展开经历与图文</span></summary><div class=\"ds-details-body\"></div></details>",
+      "css": ".ds-output-summary{max-width:72ch;color:var(--text);font:400 16px/1.7 var(--font-body)}.ds-summary-title{margin:0;color:var(--text);font:500 18px/1.5 var(--font-body)}.ds-summary-description{margin:8px 0 12px;max-width:72ch;color:var(--muted);font-size:16px;line-height:1.7}.ds-summary-facts{margin:12px 0}.ds-summary-facts>div{display:grid;grid-template-columns:60px minmax(0,1fr);gap:8px 12px;margin:6px 0}.ds-summary-facts dt,.ds-summary-facts dd{margin:0}.ds-summary-facts dt{color:var(--muted)}.ds-output-details{margin-top:8px}.ds-output-details>summary{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:8px 0;color:var(--accent);font:400 16px/1.7 var(--font-body);list-style:none;cursor:pointer;text-decoration:underline;text-underline-offset:4px}.ds-output-details>summary::-webkit-details-marker{display:none}.ds-output-details>summary::before{content:\"\";flex-shrink:0;width:6px;height:6px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(-45deg)}.ds-output-details[open]>summary::before{transform:rotate(45deg)}.ds-details-body{margin-top:12px;color:var(--text);font:17px/1.9 var(--font-body)}"
+    },
+    {
+      "name": "返回输入",
+      "kind": "button",
+      "refersTo": "follow-return",
+      "description": "仅手动阅读且prompt未完整可见时显示；实际定位在主区右下12px。",
+      "html": "<button class=\"ds-follow-return\" type=\"button\">返回输入</button>",
+      "css": ".ds-follow-return{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 14px;border:1px solid var(--line);background:var(--screen);color:var(--accent);font:400 14px/1.6 var(--font-body);cursor:pointer}.ds-follow-return:hover{border-color:var(--accent)}.ds-follow-return:focus-visible{outline:2px solid var(--accent);outline-offset:5px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "融入背景的个人终端",
+    "overview": "用户图示与最新明确修订是最高优先约束。网页铺满视口，页面、工具栏、侧栏、框架和主区共用屏幕底色；不使用居中限宽、外框、主区内框或套窗内缩。仅内部工具栏与侧栏保留细分隔线。\n\n保留 `lp_` 与 LizPink 并排及右侧主题开关。侧栏依次为首页、生活与记录01、经历与能力02、研究与探索03，每次载入默认收起；左缘临时展开，目录旁图钉固定。自介、Student与四兴趣并入经历与能力，完整个人介绍在展开详情中。首页保持问候和末句提示。原生命令、五条会话与Tab补全延续，8个公开命令统一由commands.js管理；当前版本已于2026-10-25发布至 lizpink.github.io。\n\n默认先用短摘要确认内容，富文和媒体按需展开。新提示符自动跟随可见，阅读历史或展开详情时暂停，不强拉到底；输入仍处于普通流。",
+    "keyCharacteristics": [
+      "满视口、统一背景、零套窗内缩。",
+      "默认收起的四入口侧栏、左缘临时展开与图钉固定。",
+      "关闭、固定、临时预览、手机抽屉四态。",
+      "短摘要与按需详情，自动跟随与阅读保护。"
+    ],
+    "rules": [
+      {
+        "name": "The Two Themes Rule",
+        "body": "默认琥珀，另有荧绿；一个两档switch及当前名称，checked表示荧绿。有效URL优先于有效保存偏好，再回退琥珀；只有手动切换开关保存，已有参数同步且保留hash。成功切换由开关、主题名称和颜色反馈；theme不列入帮助或补全，输入旧命令提示使用右上角开关。",
+        "section": "colors"
+      }
+    ],
+    "dos": [
+      "**Do** 遵从最新图示，让页面铺满视口并与背景融合。",
+      "**Do** 明确区分closed、pinned、peek和mobile-open，保证焦点、计时器及覆盖布局稳定。",
+      "**Do** 保留原生输入、五条会话、Tab规则与现有内容真实性。",
+      "**Do** 先显示短摘要，按需创建详情，并在阅读历史时暂停跟随。"
+    ],
+    "donts": [
+      "**Don't** 恢复限宽居中、外框、内框、套窗内缩或页面背景分层。",
+      "**Don't** 将临时peek当固定目录推动主内容，或让旧计时器关闭已固定的目录。",
+      "**Don't** 恢复独立站点指南、版权条、侧栏次级链接或执行箭头。",
+      "**Don't** 初始创建全部富文媒体，或在阅读期间强行滚回新提示符。"
+    ]
+  }
+}
