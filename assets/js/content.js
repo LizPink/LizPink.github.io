@@ -31,9 +31,9 @@ window.LIZPINK_CONTENT = {
   samples: {
     profile: { example: true, type: "text", title: "一段经历，放在这里", text: "这里可以写一段真实的学习或实践经历：做了什么、负责什么、学到了什么。学校、时间和技能等具体信息，留待之后补充。" },
     question: { example: true, type: "text", title: "从一个问题开始", text: "这里可以记录一个感兴趣的问题、相关阅读和尝试过的方法。暂时没有结果也可以，学习过程本身就值得保存。" },
-    geometry: { example: true, type: "image", title: "一张项目截图的位置", text: "这张几何示意图用于展示图片排版。之后可以换成项目截图、实验结果图或作品照片。", src: "./media/demo-geometry.svg", alt: "示例图片：琥珀色的几何线框与坐标轴，不代表个人项目成果。", caption: "图片示例 · 几何示意图，待替换" },
-    animation: { example: true, type: "video", title: "让一个想法动起来", text: "这里可以放实验、游戏或图形作品的演示视频。先用一段无声几何动画看看播放效果。", src: "./media/demo-orbit.mp4", poster: "./media/demo-orbit-poster.svg", captions: "./media/demo-orbit.zh.vtt", caption: "视频示例 · 无声线框几何旋转动画，待替换" },
+    geometry: { example: true, type: "image", title: "一张项目截图的位置", text: "这张几何示意图用于展示图片排版。之后可以换成项目截图、实验结果图或作品照片。", src: "./assets/media/demo-geometry.svg", alt: "示例图片：琥珀色的几何线框与坐标轴，不代表个人项目成果。", caption: "图片示例 · 几何示意图，待替换" },
+    animation: { example: true, type: "video", title: "让一个想法动起来", text: "这里可以放实验、游戏或图形作品的演示视频。先用一段无声几何动画看看播放效果。", src: "./assets/media/demo-orbit.mp4", poster: "./assets/media/demo-orbit-poster.svg", captions: "./assets/media/demo-orbit.zh.vtt", caption: "视频示例 · 无声线框几何旋转动画，待替换" },
     journal: { example: true, type: "text", title: "留下一小段日常", text: "一本书、一款游戏，或某个突然想记下来的想法，都可以放在这里。之后用自己的文字替换这一段即可。" },
-    notebook: { example: true, type: "image", title: "给兴趣留一点空间", text: "这里可以放随手记录、游戏截图、读书片段或生活照片。先留一张学习流程示意图，看看图片和文字放在一起的感觉。", src: "./media/demo-notebook.svg", alt: "示例图片：绿色节点组成的学习流程示意图，待替换。", caption: "图片示例 · 学习流程示意图，待替换" }
+    notebook: { example: true, type: "image", title: "给兴趣留一点空间", text: "这里可以放随手记录、游戏截图、读书片段或生活照片。先留一张学习流程示意图，看看图片和文字放在一起的感觉。", src: "./assets/media/demo-notebook.svg", alt: "示例图片：绿色节点组成的学习流程示意图，待替换。", caption: "图片示例 · 学习流程示意图，待替换" }
   }
 };
