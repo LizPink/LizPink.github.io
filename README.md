@@ -1,6 +1,6 @@
 # LizPink 个人终端
 
-[在线访问](https://lizpink.github.io/) · [项目源码](https://github.com/LizPink/LizPink.github.io/tree/codex/site-source)
+[在线访问](https://lizpink.github.io/) · [项目源码](https://github.com/LizPink/LizPink.github.io)
 
 使用 HTML、CSS 和 JavaScript 编写的个人网站，包含生活、经历和研究三个栏目，支持目录导航、终端命令及琥珀／荧绿主题。直接维护静态文件，无需安装依赖或构建。
 
@@ -10,7 +10,6 @@
 lizpink-terminal/
 ├── dist/                      # 网站源码与发布目录
 │   ├── index.html             # 页面入口
-│   ├── README.md              # GitHub 发布仓库的说明
 │   ├── favicon.svg
 │   ├── .nojekyll
 │   └── assets/
@@ -25,6 +24,8 @@ lizpink-terminal/
 │   ├── verification/          # 验证记录
 │   ├── deployment/            # 发布记录
 │   └── archive/               # 旧版文档
+├── .github/workflows/
+│   └── deploy-pages.yml        # 推送 main 后自动发布 dist/
 ├── .openai/hosting.json        # Sites 托管配置
 └── .impeccable/design.json     # 设计数据
 ```
@@ -58,12 +59,7 @@ python -m http.server 4173 --bind 127.0.0.1 --directory dist
 
 ## 同步与发布
 
-本地通过 `origin` 连接 `LizPink/LizPink.github.io`，当前维护分支为 `codex/site-source`：
-
-- `codex/site-source`：完整项目，包含 `dist/`、文档和配置。
-- `main`：GitHub Pages 的发布文件，目录对应 `dist/` 内部。
-
-在维护分支保存修改：
+本地 `main` 跟踪远程 `origin/main`，完整项目统一保存在主分支。修改后提交并推送：
 
 ```sh
 git add .
@@ -71,7 +67,7 @@ git commit -m "Update website"
 git push
 ```
 
-推送维护分支会同步完整项目。发布网站时，将 `dist/` **内部文件**同步到 `main` 根目录，包含 `.nojekyll`，同步移除已废弃文件。GitHub Pages 部署成功后检查公开网址。`main` 根目录对应本地的 `dist/`，使用其中的 README。
+每次推送到 `main`，GitHub Actions 会自动将 `dist/` 发布到原网址。可以在仓库的 [Actions](https://github.com/LizPink/LizPink.github.io/actions/workflows/deploy-pages.yml) 查看发布进度。GitHub Pages 的发布来源为 **GitHub Actions**。
 
 Sites 使用同一份 `dist/`，独立发布；更新 Sites 不会自动同步 GitHub Pages。
 

@@ -238,6 +238,10 @@ frontmatter 记录当前组件使用的18个颜色；运行来源为 `dist/asset
 
 命令模式独立存储当前激活状态。按 `/`、点击输入或“/ 输入命令”进入；同一输入行右侧的控件变为“Esc 返回阅读”，分隔线与编辑区域强调当前状态。输入期间保持底部停靠，执行后继续可输入；滚动不改变草稿与焦点。`Esc` 先关闭候选，再退出到正文，保留草稿与阅读位置；按钮可直接返回阅读。初始不进入命令模式。组合输入、其他编辑区、文字选择、媒体与目录上下文不触发快捷唤起。
 
+## 维护与发布
+
+完整项目统一维护在 `main`，本地分支跟踪 `origin/main`。推送后的自动发布由 `.github/workflows/deploy-pages.yml` 负责，GitHub Pages 使用 `dist/` 作为发布内容；源码、文档和设计数据保留在项目各自目录中。发布状态以对应 GitHub Actions 任务结果为准，历史回执保留其原有版本与发布方式。
+
 ## Verification
 
 以下为历史版本检查摘要；原始记录见 [interaction-history.json](verification/interaction-history.json)，其中截图文件名对应 `docs/previews/`。当前使用与维护入口见[项目 README](../README.md)，整理前的完整说明见[旧版 README](archive/README-2026-10-25.md)。

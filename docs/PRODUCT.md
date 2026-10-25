@@ -38,9 +38,9 @@
 
 简历先保留短介绍，`resume.sections` 和 `pdfUrl` 可日后补充。三路线引用同一份 `samples`；文字、图像和视频示例均就近标识，不视为个人经历或成果，可替换或隐藏。删除的项目、档案与联系内容不迁入生活路线。
 
-2026-10-25，当前版本已发布至 [lizpink.github.io](https://lizpink.github.io/)，公开仓库 `LizPink/LizPink.github.io` 的 `main` 根目录对应本项目 `dist/`。私有旧源仓库 `LizPink/hugo-LizPinksite-main` 保留，旧 `site0-deploy.yaml` 发布流程已移除；两个仓库均有 `codex/backup-test-site-20261025` 备份分支。首次部署提交、发布任务与验证范围见 [部署回执](deployment/2026-10-25-initial.json)；整理前的完整说明保存在 [旧版 README](archive/README-2026-10-25.md)。
+网站公开地址为 [lizpink.github.io](https://lizpink.github.io/)。私有旧源仓库 `LizPink/hugo-LizPinksite-main` 保留，旧 `site0-deploy.yaml` 发布流程已移除；两个仓库均有 `codex/backup-test-site-20261025` 备份分支。2026-10-25 首次部署提交、发布任务与验证范围见 [部署回执](deployment/2026-10-25-initial.json)；整理前的完整说明保存在 [旧版 README](archive/README-2026-10-25.md)。
 
-以后修改 `dist/` 需同步到公开仓库并等待 GitHub Pages 发布成功。Sites 与 GitHub Pages 独立部署；更新 Sites 不会自动同步 GitHub。
+维护与发布约定：完整项目统一保存在 `LizPink/LizPink.github.io` 的 `main` 分支，本地 `main` 跟踪 `origin/main`。提交并推送后，由 `.github/workflows/deploy-pages.yml` 自动将 `dist/` 发布到 GitHub Pages；网页文件保留在项目的 `dist/` 中。每次更新后检查发布任务结果。Sites 与 GitHub Pages 独立部署；更新 Sites 不会自动同步 GitHub。
 
 | 内容 | 维护位置 |
 | --- | --- |
