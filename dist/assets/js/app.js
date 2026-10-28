@@ -229,12 +229,13 @@
     resetCompletion();
     const base = commandCatalog.normalize(route);
     activeRoute = routes.includes(base) ? base : "home";
+    // Route visibility also applies to keyboard commands that append output.
+    document.querySelector("#intro").hidden = activeRoute !== "home";
+    document.querySelector("#terminal-hint").hidden = activeRoute !== "home";
     records.querySelectorAll("video").forEach(video => video.pause());
     if (!append || activeRoute === "home") {
       followingOutput = true;
       records.replaceChildren();
-      document.querySelector("#intro").hidden = activeRoute !== "home";
-      document.querySelector("#terminal-hint").hidden = activeRoute !== "home";
     }
     view.removeAttribute("id");
     view = $("div", "terminal-result");

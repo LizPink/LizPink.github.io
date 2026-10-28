@@ -53,36 +53,40 @@
   const setStyle = (element, key, value) => {
     if (element.style[key] !== value) element.style[key] = value;
   };
+  const setProperty = (element, key, value) => {
+    if (element.style.getPropertyValue(key) !== value) element.style.setProperty(key, value);
+  };
   function refresh() {
     cancelAnimationFrame(scheduled);
+    scheduled = null;
     const frameRect = frame.getBoundingClientRect();
     const mainStyle = getComputedStyle(main);
     const left = parseFloat(mainStyle.paddingLeft);
     const right = parseFloat(mainStyle.paddingRight) + main.offsetWidth - main.clientWidth;
 
     // Inline and docked prompts share one element, draft, selection and IME state.
-    composer.style.setProperty("--command-left", `${left}px`);
-    composer.style.setProperty("--command-right", `${right}px`);
+    setProperty(composer, "--command-left", `${left}px`);
+    setProperty(composer, "--command-right", `${right}px`);
     // Preserve an equal-height slot so docking leaves the scroll range stable.
-    setStyle(slot, "marginTop", "14px");
-    setStyle(slot, "height", `${composer.offsetHeight}px`);
+    const height = composer.offsetHeight;
+    setStyle(slot, "height", `${height}px`);
     const origin = slot.getBoundingClientRect();
     const viewport = main.getBoundingClientRect();
     const visible = origin.top >= viewport.top && origin.bottom <= viewport.bottom - 4;
+    const popupHeight = suggestions.scrollHeight;
     docked = commandActive || !visible;
     composer.dataset.docked = String(docked);
     frame.dataset.inputDocked = String(docked);
-    const height = composer.offsetHeight;
-    const top = docked ? frameRect.height - height : slot.getBoundingClientRect().top - frameRect.top;
+    const top = docked ? frameRect.height - height : origin.top - frameRect.top;
     setStyle(composer, "top", `${Math.max(0, top)}px`);
     const above = Math.max(0, top - 8);
     const below = Math.max(0, frameRect.height - top - height - 8);
-    const opensAbove = docked || above >= Math.min(suggestions.scrollHeight, 220) || above >= below;
+    const opensAbove = docked || above >= Math.min(popupHeight, 220) || above >= below;
     composer.dataset.popup = opensAbove ? "above" : "below";
     setStyle(suggestions, "maxHeight", `${Math.min(220, opensAbove ? above : below)}px`);
   }
   function schedule() {
-    cancelAnimationFrame(scheduled);
+    if (scheduled != null) return;
     scheduled = requestAnimationFrame(refresh);
   }
   window.LIZPINK_INPUT = {
@@ -90,7 +94,7 @@
     leaveCommandMode: () => setCommandMode(false),
     protectReading: () => reading() || docked || commandActive, refresh
   };
-  main.addEventListener("scroll", refresh, {passive:true});
+  main.addEventListener("scroll", schedule, {passive:true});
   new ResizeObserver(schedule).observe(frame);
   new ResizeObserver(schedule).observe(composer);
   new ResizeObserver(schedule).observe(records);
