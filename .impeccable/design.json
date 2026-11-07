@@ -21,113 +21,113 @@
       "primitiveSource": "docs/DESIGN.md frontmatter；基础运行样式为dist/assets/css/styles.css，内容目录与阅读媒体覆盖样式为dist/assets/css/content-sidebar.css。"
     },
     "colorMeta": {
-      "amber-bg": {
+      "dark-bg": {
         "role": "neutral",
-        "displayName": "琥珀 · 标志/选择/遮罩局部",
+        "displayName": "深色模式 · 标志/选择/遮罩局部",
         "cssVariable": "--bg",
-        "theme": "amber"
+        "theme": "dark"
       },
-      "amber-chrome": {
+      "dark-chrome": {
         "role": "neutral",
-        "displayName": "琥珀 · 主题轨道",
+        "displayName": "深色模式 · 模式按钮悬停底色",
         "cssVariable": "--chrome",
-        "theme": "amber"
+        "theme": "dark"
       },
-      "amber-screen": {
+      "dark-screen": {
         "role": "neutral",
-        "displayName": "琥珀 · 页面统一背景",
+        "displayName": "深色模式 · 页面统一背景",
         "cssVariable": "--screen",
-        "theme": "amber"
+        "theme": "dark"
       },
-      "amber-text": {
+      "dark-text": {
         "role": "neutral",
-        "displayName": "琥珀 · 主文字",
+        "displayName": "深色模式 · 主文字",
         "cssVariable": "--text",
-        "theme": "amber"
+        "theme": "dark"
       },
-      "amber-muted": {
+      "dark-muted": {
         "role": "neutral",
-        "displayName": "琥珀 · 辅助文字",
+        "displayName": "深色模式 · 辅助文字",
         "cssVariable": "--muted",
-        "theme": "amber"
+        "theme": "dark"
       },
-      "amber-accent": {
+      "dark-accent": {
         "role": "primary",
-        "displayName": "琥珀 · 强调色",
+        "displayName": "深色模式 · 强调色",
         "cssVariable": "--accent",
-        "theme": "amber"
+        "theme": "dark"
       },
-      "amber-accent-soft": {
+      "dark-accent-soft": {
         "role": "primary",
-        "displayName": "琥珀 · 柔和强调底色",
+        "displayName": "深色模式 · 柔和强调底色",
         "cssVariable": "--accent-soft",
-        "theme": "amber"
+        "theme": "dark"
       },
-      "amber-line": {
+      "dark-line": {
         "role": "neutral",
-        "displayName": "琥珀 · 控件边线",
+        "displayName": "深色模式 · 控件边线",
         "cssVariable": "--line",
-        "theme": "amber"
+        "theme": "dark"
       },
-      "amber-line-soft": {
+      "dark-line-soft": {
         "role": "neutral",
-        "displayName": "琥珀 · 细分隔",
+        "displayName": "深色模式 · 细分隔",
         "cssVariable": "--line-soft",
-        "theme": "amber"
+        "theme": "dark"
       },
-      "green-bg": {
+      "light-bg": {
         "role": "neutral",
-        "displayName": "荧绿 · 标志/选择/遮罩局部",
+        "displayName": "浅色模式 · 标志/选择/遮罩局部",
         "cssVariable": "--bg",
-        "theme": "green"
+        "theme": "light"
       },
-      "green-chrome": {
+      "light-chrome": {
         "role": "neutral",
-        "displayName": "荧绿 · 主题轨道",
+        "displayName": "浅色模式 · 模式按钮悬停底色",
         "cssVariable": "--chrome",
-        "theme": "green"
+        "theme": "light"
       },
-      "green-screen": {
+      "light-screen": {
         "role": "neutral",
-        "displayName": "荧绿 · 页面统一背景",
+        "displayName": "浅色模式 · 页面统一背景",
         "cssVariable": "--screen",
-        "theme": "green"
+        "theme": "light"
       },
-      "green-text": {
+      "light-text": {
         "role": "neutral",
-        "displayName": "荧绿 · 主文字",
+        "displayName": "浅色模式 · 主文字",
         "cssVariable": "--text",
-        "theme": "green"
+        "theme": "light"
       },
-      "green-muted": {
+      "light-muted": {
         "role": "neutral",
-        "displayName": "荧绿 · 辅助文字",
+        "displayName": "浅色模式 · 辅助文字",
         "cssVariable": "--muted",
-        "theme": "green"
+        "theme": "light"
       },
-      "green-accent": {
+      "light-accent": {
         "role": "primary",
-        "displayName": "荧绿 · 强调色",
+        "displayName": "浅色模式 · 强调色",
         "cssVariable": "--accent",
-        "theme": "green"
+        "theme": "light"
       },
-      "green-accent-soft": {
+      "light-accent-soft": {
         "role": "primary",
-        "displayName": "荧绿 · 柔和强调底色",
+        "displayName": "浅色模式 · 柔和强调底色",
         "cssVariable": "--accent-soft",
-        "theme": "green"
+        "theme": "light"
       },
-      "green-line": {
+      "light-line": {
         "role": "neutral",
-        "displayName": "荧绿 · 控件边线",
+        "displayName": "浅色模式 · 控件边线",
         "cssVariable": "--line",
-        "theme": "green"
+        "theme": "light"
       },
-      "green-line-soft": {
+      "light-line-soft": {
         "role": "neutral",
-        "displayName": "荧绿 · 细分隔",
+        "displayName": "浅色模式 · 细分隔",
         "cssVariable": "--line-soft",
-        "theme": "green"
+        "theme": "light"
       }
     },
     "typographyMeta": {
@@ -137,19 +137,19 @@
       },
       "title": {
         "displayName": "结果标题",
-        "purpose": "衬线32px，760px以下28px。"
+        "purpose": "栏目标题衬线26px、500字重、行高1.4；760px以下24px。"
       },
       "interface": {
         "displayName": "外层界面",
-        "purpose": "衬线17px，中文系统宋体回退。"
+        "purpose": "本地Noto Sans SC黑体17px，常规400；系统黑体与无衬线回退。"
       },
       "screen": {
         "displayName": "终端正文",
-        "purpose": "中文说明与终端正文衬线16px/1.7。"
+        "purpose": "中文说明与终端正文Noto Sans SC黑体16px/1.7、400字重。"
       },
       "menu": {
         "displayName": "内容目录与栏目入口",
-        "purpose": "栏目入口逐行单列显示首页/生活/经历/项目短名，保留15px/1.5字体；内容标题17px/1.55，窄容器16px；日期12px。内容列表不显示正文摘要或类型标签，其余字体与配色不变。"
+        "purpose": "栏目入口逐行单列显示首页/生活/经历/项目短名，使用Noto Sans SC黑体15px/1.5；内容标题17px/1.55，窄容器16px；日期12px。内容列表不显示正文摘要或类型标签。"
       },
       "command": {
         "displayName": "原生输入",
@@ -157,19 +157,27 @@
       },
       "logo": {
         "displayName": "原lp_标志",
-        "purpose": "32px方块、18px等宽字；760px以下28px方块、16px字。同排姓名24px，手机22px。"
+        "purpose": "32px方块、18px等宽字；760px以下28px方块、16px字。同排姓名24px，手机22px。 姓名与首页问候、栏目标题共用--font-heading衬线栈。"
       },
       "summary-title": {
         "displayName": "摘要标题",
-        "purpose": "衬线18px、500字重，行高1.5。"
+        "purpose": "栏目标题使用--font-heading衬线26px、500字重、行高1.4；760px以下24px。"
       },
       "summary": {
         "displayName": "默认摘要",
-        "purpose": "衬线16px、400字重、行高1.7，最长72ch。"
+        "purpose": "Noto Sans SC黑体16px、400字重、行高1.7，最长72ch。"
       },
       "details": {
         "displayName": "按需详情",
-        "purpose": "17px衬线/1.9，沿用原富文层级。"
+        "purpose": "17px Noto Sans SC黑体/1.9，沿用原富文层级；分节标题同用黑体。"
+      },
+      "help-footer": {
+        "displayName": "帮助页底部快捷键",
+        "purpose": "kbd为IBM Plex Mono14px、500字重，说明为14px Noto Sans SC黑体；弹性换行。"
+      },
+      "command-hint": {
+        "displayName": "闲置与空输入提示",
+        "purpose": "闲置提示与编辑态空输入提示均为Noto Sans SC黑体，桌面14px、手机13px，行高1.5；手机分行。"
       }
     },
     "shadows": [],
@@ -200,9 +208,9 @@
         "purpose": "手机目录滑入。"
       },
       {
-        "name": "theme-thumb",
-        "value": "transform 180ms ease",
-        "purpose": "主题开关滑块移动。"
+        "name": "theme-option",
+        "value": "color, background-color, border-color 140ms ease-out",
+        "purpose": "外观模式按钮用颜色、边框与浅底反馈悬停和选中，无滑块位移；减少动态效果时关闭过渡。"
       },
       {
         "name": "sidebar-resize",
@@ -268,10 +276,8 @@
       "formMarginTop": "20px",
       "entryMarginTop": "24px",
       "recordLimit": 1,
-      "themeControlWidth": "78px",
-      "themeControlMinHeight": "44px",
-      "thumbSize": "30px 22px",
-      "thumbTranslation": "40px",
+      "themeControlWidth": "92px；所有屏幕宽度仅显示两个44px图标按钮",
+      "themeControlMinHeight": "46px（两个44px按钮与外侧1px边框）",
       "logoSize": "32px",
       "mobileLogoSize": "28px",
       "logoFont": "18px/1 \"Cascadia Code\", \"SFMono-Regular\", Consolas, \"Microsoft YaHei\", monospace",
@@ -294,7 +300,7 @@
       "separateFooter": false,
       "submitButton": false,
       "compactVisibility": "1000px以下隐藏状态；目录收起按钮在所有设备位于侧栏顶部。",
-      "mobileVisibility": "760px以下隐藏路径与主题名称，360px及以下目录按钮只显示SVG并保留无障碍名称。",
+      "mobileVisibility": "760px以下隐藏路径；模式按钮在所有宽度都仅显示太阳/月亮SVG，保留无障碍名称；360px及以下目录按钮只显示SVG并保留无障碍名称。",
       "shellMargin": "0",
       "pageBackground": "var(--screen)",
       "toolbarBackground": "var(--screen)",
@@ -336,7 +342,20 @@
       "sidebarContentLayout": "顶部44px收起按钮与逐行单列的首页/生活/经历/项目四个短名入口；下方内容列表仅显示可选日期和标题并独立滚动，不显示摘要或类型标签",
       "mediaWidth": "min(100%, 960px, 媒体原始宽度)",
       "mediaAlignment": "figure在阅读区水平居中，图注与媒体同宽并左对齐",
-      "detailsMaxWidth": "none；段落仍限制72ch"
+      "detailsMaxWidth": "none；段落仍限制72ch",
+      "themeOptionMinWidth": "44px",
+      "themeOptionMinHeight": "44px",
+      "themeControlRadius": "7px",
+      "themeOptionRadius": "6px",
+      "themeSelectionRadius": "4px",
+      "themeSelectionInset": "4px",
+      "smallMobileToolbarBreakpoint": "360px",
+      "smallMobileToolbarPadding": "3px 8px",
+      "smallMobileToolbarGap": "6px",
+      "smallMobileWordmarkSize": "20px",
+      "smallMobileWordmarkGap": "6px",
+      "smallMobileWordmarkOverflow": "过长姓名省略，保持左右目录和模式按钮44px命中区",
+      "themeOptionPadding": "0"
     },
     "interaction": {
       "sidebar": [
@@ -383,7 +402,7 @@
           "help"
         ],
         "legacyAliases": "不兼容历史命令和旧路由；仅保留现行命令的数字与中文简写。",
-        "theme": "仅通过右上角开关切换，不提供theme命令。",
+        "theme": "仅通过右上角浅色模式/深色模式按钮切换，不提供theme命令。",
         "routes": [
           "home",
           "life",
@@ -430,22 +449,27 @@
     },
     "themeBehavior": {
       "available": [
-        "amber",
-        "green"
+        "dark",
+        "light"
       ],
-      "default": "amber",
-      "control": "唯一role=switch；checked=green。760px以下当前主题文字隐藏，无障碍语义保持完整。",
+      "default": "dark",
+      "control": "role=group、名称为外观模式；两个44px原生按钮仅显示太阳和月亮SVG，分别通过aria-label和title标明浅色模式、深色模式，aria-pressed仅对当前模式为true。所有屏幕宽度均无可见模式文字。",
       "priority": [
         "有效URL theme",
         "有效保存偏好",
-        "amber"
+        "dark"
       ],
       "rememberOnly": [
-        "手动开关"
+        "主动选择模式按钮"
       ],
-      "url": "已有theme时同步手动选择，保留其他参数和hash。",
-      "initialScript": "theme.js在CSS前执行。",
-      "legacyCommand": "theme或theme参数仅提示使用右上角开关。"
+      "url": "已有theme时同步主动选择为light或dark，保留其他参数和hash；没有theme参数时不新增。",
+      "initialScript": "theme.js在CSS前应用背景、color-scheme和浏览器theme-color；DOMContentLoaded后同步按钮。默认深色，不根据系统外观自动切换。",
+      "legacyCommand": "不提供theme命令，使用右上角浅色/深色模式按钮。",
+      "legacyPreferences": "旧URL和保存偏好中的amber、green均映射为dark；初始化只读取，不写回保存偏好。",
+      "palettes": {
+        "dark": "保留琥珀正文#e9dcc0与强调色#e6bc76、近黑背景#080a08；辅助文字提高至#b8aa8e。",
+        "light": "暖白背景#f7f6f2、深墨正文#171d23、辅助文字#343c45与墨蓝强调色#24445f。"
+      }
     },
     "media": {
       "width": "min(100%, var(--media-width), var(--asset-width, var(--media-width)))",
@@ -473,39 +497,42 @@
     "fonts": {
       "reading": {
         "cssVariable": "--font-body",
-        "localFile": "dist/assets/fonts/SourceSerif4Variable-Roman.ttf.woff2",
-        "bytes": 429100,
-        "source": "Adobe官方Source Serif发行文件，WOFF2/VAR目录",
-        "format": "WOFF2 / TrueType",
+        "family": "Noto Sans SC",
+        "localCss": "dist/assets/fonts/noto-sans-sc.css",
+        "localDirectory": "dist/assets/fonts/noto-sans-sc/",
+        "filePattern": "NotoSansSC-000.woff2–NotoSansSC-100.woff2",
+        "fileCount": 101,
+        "source": "Google Fonts现代CSS的WOFF2 unicode-range分片，本地自托管；来源说明随字体保存。",
+        "sourceFile": "dist/assets/fonts/NotoSansSC-README.md",
+        "format": "WOFF2",
         "style": "normal",
         "weightRange": [
-          200,
-          900
-        ],
-        "opticalSizeRange": [
-          8,
-          60
+          400,
+          700
         ],
         "display": "swap",
-        "opticalSizing": "auto",
-        "preloaded": true,
+        "unicodeRange": true,
+        "localLookup": false,
+        "preloaded": false,
         "license": "SIL Open Font License 1.1",
-        "licenseFile": "dist/assets/fonts/LICENSE.md",
+        "licenseFile": "dist/assets/fonts/NotoSansSC-OFL.txt",
         "fallback": [
-          "Noto Serif SC",
-          "Source Han Serif SC",
-          "Songti SC",
-          "SimSun",
-          "serif"
+          "Microsoft YaHei",
+          "PingFang SC",
+          "Segoe UI",
+          "sans-serif"
         ],
-        "chineseFontsBundled": false,
+        "chineseFontsBundled": true,
         "roles": [
-          "标题",
+          "正文",
           "中文说明",
           "摘要",
           "帮助解释",
           "界面",
-          "按需详情"
+          "按需详情",
+          "正文分节标题",
+          "闲置与空输入提示",
+          "Markdown语义粗体与表头"
         ]
       },
       "command": {
@@ -546,7 +573,7 @@
         "license": "SIL Open Font License 1.1",
         "licenseFile": "dist/assets/fonts/IBM-Plex-Mono-LICENSE.txt"
       },
-      "note": "字体随网站本地提供；中文沿既有系统衬线栈回退。",
+      "note": "正文Noto Sans SC覆盖400–700字重，正文与界面仍使用400/500，语义粗体可使用真实700；字体以101份unicode-range WOFF2分片随站点自托管，运行时不请求外部字体服务，也不依赖访客本地字体安装。Source Serif 4仅用于首页问候、栏目标题和站点名称，其中文标题沿系统衬线栈回退；命令等宽字体保持IBM Plex Mono。",
       "logo": {
         "stack": [
           "Cascadia Code",
@@ -556,6 +583,41 @@
           "monospace"
         ],
         "purpose": "原lp_标志保留既有字体栈。"
+      },
+      "heading": {
+        "cssVariable": "--font-heading",
+        "localFile": "dist/assets/fonts/SourceSerif4Variable-Roman.ttf.woff2",
+        "bytes": 429100,
+        "source": "Adobe官方Source Serif发行文件，WOFF2/VAR目录",
+        "format": "WOFF2 / TrueType",
+        "style": "normal",
+        "weightRange": [
+          200,
+          900
+        ],
+        "opticalSizeRange": [
+          8,
+          60
+        ],
+        "display": "swap",
+        "opticalSizing": "auto",
+        "preloaded": true,
+        "license": "SIL Open Font License 1.1",
+        "licenseFile": "dist/assets/fonts/LICENSE.md",
+        "fallback": [
+          "Noto Serif SC",
+          "Source Han Serif SC",
+          "Songti SC",
+          "SimSun",
+          "serif"
+        ],
+        "chineseFontsBundled": false,
+        "roles": [
+          "首页问候h1",
+          "栏目标题.summary-title",
+          "站点名称.wordmark"
+        ],
+        "family": "Source Serif 4"
       }
     },
     "reducedMotion": "prefers-reduced-motion:reduce关闭动画、过渡与空间位移；页面隐藏时暂停块光标闪烁。",
@@ -657,15 +719,15 @@
       "refersTo": "logo-mark",
       "description": "标志与姓名合入统一工具栏，桌面32px方块与24px姓名。",
       "html": "<a class=\"ds-wordmark\" href=\"#home\" aria-label=\"LizPink 首页\"><span class=\"ds-logo\" aria-hidden=\"true\">lp<span>_</span></span><span>LizPink<span aria-hidden=\"true\">.</span></span></a>",
-      "css": ".ds-wordmark{display:flex;align-items:center;gap:10px;min-width:0;color:var(--text);font:500 24px/1.2 var(--font-body);text-decoration:none;white-space:nowrap}.ds-wordmark:hover{color:var(--accent)}.ds-logo{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:32px;height:32px;background:var(--accent);color:var(--bg);font:18px/1 \"Cascadia Code\",\"SFMono-Regular\",Consolas,\"Microsoft YaHei\",monospace;letter-spacing:-2px}.ds-wordmark:focus-visible{outline:2px solid var(--accent);outline-offset:5px}"
+      "css": ".ds-wordmark{display:flex;align-items:center;gap:10px;min-width:0;color:var(--text);font:500 24px/1.2 var(--font-heading);text-decoration:none;white-space:nowrap}.ds-wordmark:hover{color:var(--accent)}.ds-logo{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:32px;height:32px;background:var(--accent);color:var(--bg);font:18px/1 \"Cascadia Code\",\"SFMono-Regular\",Consolas,\"Microsoft YaHei\",monospace;letter-spacing:-2px}.ds-wordmark:focus-visible{outline:2px solid var(--accent);outline-offset:5px}"
     },
     {
-      "name": "单主题开关",
-      "kind": "button",
-      "refersTo": "theme-track",
-      "description": "两个色点、单滑块与当前名称；checked为荧绿。",
-      "html": "<div class=\"ds-theme-control\"><button class=\"ds-theme-toggle\" type=\"button\" role=\"switch\" aria-checked=\"false\" aria-label=\"荧绿主题\"><span class=\"ds-theme-dot ds-amber\" aria-hidden=\"true\"></span><span class=\"ds-theme-dot ds-green\" aria-hidden=\"true\"></span><span class=\"ds-thumb\" aria-hidden=\"true\"></span></button><span class=\"ds-theme-label\" aria-hidden=\"true\">琥珀</span></div>",
-      "css": ".ds-theme-control{display:flex;align-items:center;gap:12px;font-family:var(--font-body)}.ds-theme-toggle{position:relative;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;width:78px;min-height:44px;padding:0 15px;border:0;background:transparent;cursor:pointer}.ds-theme-toggle::before{content:\"\";position:absolute;inset:7px 0;border:1px solid var(--line);border-radius:18px;background:var(--chrome)}.ds-theme-dot{position:relative;z-index:1;width:9px;height:9px;border-radius:50%}.ds-amber{background:#e6bc76}.ds-green{background:#9ff279}.ds-thumb{position:absolute;top:11px;left:4px;width:30px;height:22px;border:1px solid var(--accent);border-radius:13px;background:var(--accent-soft);transition:transform 180ms ease}.ds-theme-toggle[aria-checked=\"true\"] .ds-thumb{transform:translateX(40px)}.ds-theme-label{min-width:2em;color:var(--muted);font-size:14px;white-space:nowrap}.ds-theme-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:5px}"
+      "name": "浅色与深色模式选择",
+      "kind": "custom",
+      "refersTo": "theme-control",
+      "description": "太阳与月亮SVG组成两段图标按钮，所有宽度均无可见模式文字；原生按钮aria-label/title表达名称，aria-pressed表示选中。外侧7px圆角边框、内侧4px圆角选中底色；每个44px，组宽92px。默认深色，保留琥珀配色并提高辅助文字明度；浅色为暖白与深墨蓝。",
+      "html": "<div class=\"ds-theme-control\" role=\"group\" aria-label=\"外观模式\">\r\n        <button class=\"ds-theme-option\" type=\"button\" data-theme-option=\"light\" aria-pressed=\"false\" aria-label=\"浅色模式\" title=\"浅色模式\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"4\"/><path d=\"M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42\"/></svg></button>\r\n        <button class=\"ds-theme-option\" type=\"button\" data-theme-option=\"dark\" aria-pressed=\"true\" aria-label=\"深色模式\" title=\"深色模式\"><svg width=\"16\" height=\"16\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M20.9 13.1A9 9 0 0 1 10.9 3.1a9 9 0 1 0 10 10Z\"/></svg></button>\r\n      </div>",
+      "css": ".ds-theme-control { display: inline-flex; align-items: center; flex-shrink: 0; gap: 2px; margin-left: auto; border: 1px solid var(--line-soft); border-radius: 7px; }\r\n.ds-theme-option { position: relative; isolation: isolate; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; width: 44px; min-width: 44px; min-height: 44px; padding: 0; border-radius: 6px; color: var(--muted); transition: color 140ms ease-out; }\r\n.ds-theme-option::before { content: \"\"; position: absolute; z-index: -1; inset: 4px; border: 1px solid transparent; border-radius: 4px; transition: background-color 140ms ease-out, border-color 140ms ease-out; }\r\n.ds-theme-option svg { display: block; flex-shrink: 0; }\r\n.ds-theme-option:hover { color: var(--text); }\r\n.ds-theme-option:hover::before { background: var(--chrome); }\r\n.ds-theme-option[aria-pressed=\"true\"] { color: var(--accent); }\r\n.ds-theme-option[aria-pressed=\"true\"]::before { border-color: var(--accent); background: var(--accent-soft); }\r\n.ds-theme-option:focus-visible { outline-offset: -2px; }\n.ds-theme-option:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}@media(prefers-reduced-motion:reduce){.ds-theme-option,.ds-theme-option::before{transition:none}}"
     },
     {
       "name": "可调宽内容目录",
@@ -695,9 +757,9 @@
       "name": "短摘要与原生详情",
       "kind": "custom",
       "refersTo": "details-summary",
-      "description": "栏目保留衬线摘要与按需原生details；摘要条目标题可以直接选择单条reader，完整图文不预先创建。 所有原生details按钮文字统一为“展开”/“收起”。",
+      "description": "栏目使用黑体摘要、衬线栏目标题与按需原生details；摘要条目标题可以直接选择单条reader，完整图文不预先创建。所有原生details按钮文字统一为“展开”/“收起”。",
       "html": "<section class=\"ds-output-summary\"><p class=\"ds-summary-title\">经历</p><p class=\"ds-summary-description\">学生 / Student</p><dl class=\"ds-summary-facts\"><div><dt>简历</dt><dd>经历待补充 · PDF 待添加</dd></div></dl></section><details class=\"ds-output-details\"><summary><span>展开</span></summary><div class=\"ds-details-body\"></div></details>",
-      "css": ".ds-output-summary{max-width:72ch;color:var(--text);font:400 16px/1.7 var(--font-body)}.ds-summary-title{margin:0;color:var(--text);font:500 18px/1.5 var(--font-body)}.ds-summary-description{margin:8px 0 12px;max-width:72ch;color:var(--muted);font-size:16px;line-height:1.7}.ds-summary-facts{margin:12px 0}.ds-summary-facts>div{display:grid;grid-template-columns:60px minmax(0,1fr);gap:8px 12px;margin:6px 0}.ds-summary-facts dt,.ds-summary-facts dd{margin:0}.ds-summary-facts dt{color:var(--muted)}.ds-output-details{margin-top:8px}.ds-output-details>summary{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:8px 0;color:var(--accent);font:400 16px/1.7 var(--font-body);list-style:none;cursor:pointer;text-decoration:underline;text-underline-offset:4px}.ds-output-details>summary::-webkit-details-marker{display:none}.ds-output-details>summary::before{content:\"\";flex-shrink:0;width:6px;height:6px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(-45deg)}.ds-output-details[open]>summary::before{transform:rotate(45deg)}.ds-details-body{margin-top:12px;color:var(--text);font:17px/1.9 var(--font-body)}"
+      "css": ".ds-output-summary{max-width:72ch;color:var(--text);font:400 16px/1.7 var(--font-body)}.ds-summary-title{margin:0;color:var(--text);font:500 26px/1.4 var(--font-heading)}.ds-summary-description{margin:8px 0 12px;max-width:72ch;color:var(--muted);font-size:16px;line-height:1.7}.ds-summary-facts{margin:12px 0}.ds-summary-facts>div{display:grid;grid-template-columns:60px minmax(0,1fr);gap:8px 12px;margin:6px 0}.ds-summary-facts dt,.ds-summary-facts dd{margin:0}.ds-summary-facts dt{color:var(--muted)}.ds-output-details{margin-top:8px}.ds-output-details>summary{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:8px 0;color:var(--accent);font:400 16px/1.7 var(--font-body);list-style:none;cursor:pointer;text-decoration:underline;text-underline-offset:4px}.ds-output-details>summary::-webkit-details-marker{display:none}.ds-output-details>summary::before{content:\"\";flex-shrink:0;width:6px;height:6px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(-45deg)}.ds-output-details[open]>summary::before{transform:rotate(45deg)}.ds-details-body{margin-top:12px;color:var(--text);font:17px/1.9 var(--font-body)}"
     },
     {
       "name": "返回输入",
@@ -710,7 +772,7 @@
   ],
   "narrative": {
     "northStar": "融入背景的个人终端",
-    "overview": "用户图示与最新明确修订是最高优先约束。网页铺满视口，页面、工具栏、侧栏、框架和主区共用屏幕底色；不使用居中限宽、外框、主区内框或套窗内缩。仅内部工具栏与目录边界保留细分隔线。\n\n工具栏目录按钮与lp_、LizPink同组，右侧保留主题开关。桌面内容目录默认200px展开，支持180–420px调宽与收起；手机默认关闭，以抽屉展开。目录顶部逐行单列显示首页、生活、经历、项目，内容列表只显示可选日期和标题；人工日期明确标为示例日期。选择条目在右侧显示单条正文并支持#project/geometry等链接。\n\n文字左对齐并保持72ch阅读行宽，媒体按原比例、原始宽度和960px上限适度居中，图注与媒体同宽。自介仍集中在经历；首页保持问候和自动聚焦的命令区。有效栏目命令、数字0–3和help每次替换旧输出并从顶部阅读；↑↓保留命令输入历史，未知命令不清屏。原生输入、可打断渐显及阅读保护延续。发布状态以对应部署任务结果为准。\n\n栏目统一显示首页、生活、经历、项目，英文route保持不变。公开命令共7个；帮助标题与help描述均为帮助，open/close描述与详情按钮统一展开/收起。数字和中文别名回显规范英文，历史回调保留原输入。成功Tab补全仅清空底部反馈文字，候选列表与选区保留，错误说明仍可用。",
+    "overview": "用户图示与最新明确修订是最高优先约束。网页铺满视口，页面、工具栏、侧栏、框架和主区共用屏幕底色；不使用居中限宽、外框、主区内框或套窗内缩。仅内部工具栏与目录边界保留细分隔线。\n\n工具栏目录按钮与lp_、LizPink同组，右侧提供仅太阳/月亮图标的浅色/深色模式按钮。桌面内容目录默认200px展开，支持180–420px调宽与收起；手机默认关闭，以抽屉展开。目录顶部逐行单列显示首页、生活、经历、项目，内容列表只显示可选日期和标题；人工日期明确标为示例日期。选择条目在右侧显示单条正文并支持#project/geometry等链接。\n\n文字左对齐并保持72ch阅读行宽，媒体按原比例、原始宽度和960px上限适度居中，图注与媒体同宽。自介仍集中在经历；首页保持问候和自动聚焦的命令区。有效栏目命令、数字0–3和help每次替换旧输出并从顶部阅读；↑↓保留命令输入历史，未知命令不清屏。原生输入、可打断渐显及阅读保护延续。发布状态以对应部署任务结果为准。\n\n栏目统一显示首页、生活、经历、项目，英文route保持不变。公开命令共7个；帮助标题与help描述均为帮助，open/close描述与详情按钮统一展开/收起。数字和中文别名回显规范英文，历史回调保留原输入。成功Tab补全仅清空底部反馈文字，候选列表与选区保留，错误说明仍可用。",
     "keyCharacteristics": [
       "满视口、统一背景、零套窗内缩。",
       "桌面默认展开、可调宽与折叠的内容目录；手机抽屉。",
@@ -720,7 +782,7 @@
     "rules": [
       {
         "name": "The Two Themes Rule",
-        "body": "默认琥珀，另有荧绿；一个两档switch及当前名称，checked表示荧绿。有效URL优先于有效保存偏好，再回退琥珀；只有手动切换开关保存，已有参数同步且保留hash。成功切换由开关、主题名称和颜色反馈；theme不列入帮助或补全，输入旧命令提示使用右上角开关。",
+        "body": "默认深色模式，保留原有琥珀正文与强调色，提高辅助文字明度；浅色模式使用暖白背景与墨蓝强调色，删除荧绿配色。工具栏以太阳/月亮SVG组成两段图标按钮，所有宽度均不显示模式文字；aria-label/title标明完整名称，aria-pressed表示当前选择，每个按钮保留44px命中区。有效URL优先于有效保存偏好，再回退dark；旧amber/green值均映射dark。只有主动选择按钮保存，已有theme参数同步且保留其他参数与hash。初始化在CSS前应用模式，不随系统外观自动切换；theme不列入帮助或补全。",
         "section": "colors"
       }
     ],

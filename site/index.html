@@ -1,14 +1,15 @@
 <!doctype html>
-<html lang="zh-CN" data-theme="amber">
+<html lang="zh-CN" data-theme="dark">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#191a17">
+  <meta name="theme-color" content="#080a08">
   <title>{{SITE_NAME}} · 个人终端</title>
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="preload" href="./assets/fonts/SourceSerif4Variable-Roman.ttf.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="./assets/fonts/IBMPlexMono-Regular.woff2" as="font" type="font/woff2" crossorigin>
   <script src="./assets/js/theme.js"></script>
+  <link rel="stylesheet" href="./assets/fonts/noto-sans-sc.css">
   <link rel="stylesheet" href="./assets/css/styles.css">
   <link rel="stylesheet" href="./assets/css/command-input.css">
   <link rel="stylesheet" href="./assets/css/content-sidebar.css">
@@ -39,9 +40,9 @@
         <span class="terminal-status"><span class="status-light" aria-hidden="true"></span><span id="terminal-status">就绪</span></span>
       <div class="toolbar-end">
         <button id="outline-toggle" type="button" aria-label="显示本页目录" aria-expanded="false" aria-keyshortcuts="Control+Alt+B" title="显示本页目录（Ctrl+Alt+B）" hidden><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M15 4v16"/></svg><span>本页目录</span></button>
-      <div class="theme-control">
-        <button id="theme-toggle" type="button" role="switch" aria-checked="false" aria-label="荧绿主题" title="切换为荧绿主题"><span class="theme-dot amber" aria-hidden="true"></span><span class="theme-dot green" aria-hidden="true"></span><span class="theme-thumb" aria-hidden="true"></span></button>
-        <span id="theme-label" aria-hidden="true">琥珀</span>
+      <div class="theme-control" role="group" aria-label="外观模式">
+        <button class="theme-option" type="button" data-theme-option="light" aria-pressed="false" aria-label="浅色模式" title="浅色模式"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"/></svg></button>
+        <button class="theme-option" type="button" data-theme-option="dark" aria-pressed="true" aria-label="深色模式" title="深色模式"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13.1A9 9 0 0 1 10.9 3.1a9 9 0 1 0 10 10Z"/></svg></button>
       </div>
       </div>
       </header>

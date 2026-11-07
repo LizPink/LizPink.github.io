@@ -1,8 +1,8 @@
 # LizPink 个人终端
 
-[在线访问](https://lizpink.github.io/) · [项目源码](https://github.com/LizPink/LizPink.github.io)
+[在线访问](https://lizpink.github.io/)
 
-一个使用 HTML、CSS 和 JavaScript 编写的个人网站，网站基于 GPT-6.1 VibeCoding。
+个人网站项目，项目基于 GPT-6.1 VibeCoding 构建。
 
 ## 项目结构
 
@@ -35,7 +35,17 @@ lizpink-terminal/
 │       │   ├── sidebar-shortcuts.js  # 左右目录快捷键
 │       │   ├── output-motion.js      # 分段输出动效
 │       │   └── theme.js              # 主题切换与偏好
-│       └── fonts/             # 本地字体及授权说明
+│       └── fonts/                    # 随网站发布的字体及授权说明
+│           ├── noto-sans-sc.css      # 中文字体按字形范围加载
+│           ├── noto-sans-sc/         # 101 份 Noto Sans SC WOFF2 分片
+│           │   └── NotoSansSC-000.woff2 … NotoSansSC-100.woff2
+│           ├── NotoSansSC-README.md  # 中文字体来源、字重与发布说明
+│           ├── NotoSansSC-OFL.txt    # 中文字体许可
+│           ├── SourceSerif4Variable-Roman.ttf.woff2  # 标题与站点名称
+│           ├── LICENSE.md           # Source Serif 4 许可
+│           ├── IBMPlexMono-Regular.woff2  # 命令、路径与输入
+│           ├── IBMPlexMono-Medium.woff2   # 命令与快捷键强调
+│           └── IBM-Plex-Mono-LICENSE.txt # IBM Plex Mono 许可
 ├── scripts/
 │   ├── build-content.mjs      # 解析配置与 Markdown，生成内容和素材
 │   ├── asset-version.mjs      # 按文件内容生成资源版本，减少旧缓存影响
@@ -45,32 +55,29 @@ lizpink-terminal/
 ├── dist/                      # 自动生成的发布目录，不提交或手工编辑
 ├── node_modules/              # 安装依赖时自动生成，已gitignore，不提交
 ├── .build/                    # 临时构建目录与构建锁，不提交
-├── tests/                     # 内容构建、资源版本、命令、目录与动效检查
+├── tests/                     # 构建、交互、主题与字体检查
+│   ├── article-outline.test.cjs   # 本页目录与章节定位
+│   ├── asset-version.test.cjs     # 静态资源版本
+│   ├── build-content.test.cjs     # 内容解析与素材生成
+│   ├── commands.test.cjs          # 命令解析、补全与帮助
+│   ├── content-index.test.cjs     # 内容索引、日期与路由
+│   ├── content-sidebar.test.cjs   # 左侧目录与宽度调整
+│   ├── font-assets.test.cjs       # 本地字体完整性与中文字形覆盖
+│   ├── image-viewer.test.cjs      # 图片预览与位置恢复
+│   ├── output-motion.test.cjs     # 输出动效与生命周期
+│   ├── sidebar-shortcuts.test.cjs # 目录快捷键
+│   ├── site-build.test.cjs        # 整站构建与本地服务
+│   ├── summaries.test.cjs         # 分区概览与最近内容
+│   └── theme.test.cjs             # 深浅模式、偏好与旧配色兼容
 ├── docs/                      # 维护、产品与设计说明
 │   ├── CONTENT.md             # 发布文章、图片、视频及 PDF 的操作指南
 │   ├── PRODUCT.md             # 产品行为与功能约定
 │   └── DESIGN.md              # 界面设计与交互约定
 ├── .github/workflows/
 │   └── deploy-pages.yml       # 推送 main 后检查、构建并发布 dist/
-├── .openai/hosting.json        # Sites 托管配置
-├── .impeccable/design.json     # 设计数据
+├── .openai/hosting.json       # Sites 托管配置
+├── .impeccable/design.json    # 设计数据
 ├── package.json               # 项目依赖与开发、构建、检查命令
 ├── package-lock.json          # 锁定依赖版本
 └── .gitignore                 # 排除生成文件与本地依赖
 ```
-
-每篇内容文件夹都包含 `index.md`，图片、视频、封面和字幕与正文放在一起。可选的 PDF 简历放入 `content/files/`，并在 `content/site.yml` 中配置链接。构建会生成 `dist/assets/js/content.js` 和 `dist/assets/content/`，日常更新修改对应的源文件即可。
-
-点击正文图片可在同页暗背景中居中预览，按 `Esc`、右上角×或图片外空白关闭，回到原来的阅读位置。图片仍使用原有 Markdown 写法。
-
-首页显示问候、职业、关注内容和个人介绍；`role` 只填“学生”，界面自动显示与关注行一致的普通次要文字色的“职业：学生”。顶层 `description` 已删除，也不再生成description meta标签。“关注”行使用主区实际可用宽度，空间不足时自然换行；个人介绍仍保持可读行宽。分区只维护 `paths[].description`，进入生活、经历或项目时显示常驻说明和最多10条最近内容（日期＋标题），不足10条按实际显示，不显示媒体数量。日期优先 `updatedAt`，其次 `publishedAt`，无日期置后；左侧保留按相同规则排序的全部内容。`open`/`close` 切换分区全文与概览，标题和说明始终保留；经历还保留常驻简历行，有PDF显示链接，无PDF显示“PDF待添加”。
-
-正文标题下始终显示“创建于 … · 更新于 …”：`publishedAt` 表示创建/首次发布日期；`updatedAt` 可省略，未提供有效值时“更新于”回退显示创建日期，新文章只需填写一份日期。只有更新日期时“创建于”显示“—”，两者都没有时两项均显示“—”。此回退只影响显示，不补写Markdown或使用文件修改时间；列表和左栏仍只显示一个有效日期，继续更新日期优先。
-
-## 本地维护
-
-使用 Node.js 22 或更新版本。`node_modules/` 是安装后自动生成的实际依赖目录，已由gitignore排除。首次运行 `npm ci` 安装项目依赖，然后运行 `npm run dev`，打开终端提示的本地地址。修改 `content/` 中的 Markdown、配置或素材后，预览会自动更新；错误内容会在终端提示，保留上一版可用预览。
-
-运行 `npm test` 构建并检查，`npm run build` 仅生成发布文件。推送 `main` 后由 GitHub Actions 自动构建并发布；功能分支供本地体验，推送不会更新线上网站。
-
-新增文章、图片、视频、字幕和 PDF 的具体步骤见 [内容维护指南](docs/CONTENT.md)。

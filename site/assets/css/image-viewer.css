@@ -1,4 +1,10 @@
 .image-viewer {
+  /* The image stage keeps its dark surround in either page mode. */
+  color-scheme: dark;
+  --bg: #151812;
+  --text: #e9dcc0;
+  --muted: #b8aa8e;
+  --accent: #e6bc76;
   position: fixed;
   inset: 0;
   width: 100vw;

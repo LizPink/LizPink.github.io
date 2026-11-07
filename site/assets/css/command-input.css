@@ -10,14 +10,14 @@
 .command-composer #command-input:focus + .cursor-layer { display: block; }
 .command-composer .block-cursor { border: 1px solid var(--accent); background: transparent; opacity: 1; animation: none; }
 html:not([data-page-hidden="true"]) .command-composer[data-page-focused="true"] #command-input:focus + .cursor-layer .block-cursor { background: var(--accent); animation: cursor-blink 950ms steps(1, end) infinite; }
-.command-idle-hint { position: absolute; top: 50%; left: 0; display: none; align-items: center; gap: 12px; min-height: 44px; max-width: 100%; padding-right: 8px; transform: translateY(-50%); color: var(--muted); font: 13px/1.5 var(--font-body); text-align: left; transition: color 120ms ease-out; }
+.command-idle-hint { position: absolute; top: 50%; left: 0; display: none; align-items: center; gap: 12px; min-height: 44px; max-width: 100%; padding-right: 8px; transform: translateY(-50%); color: var(--muted); font: 14px/1.5 var(--font-body); text-align: left; transition: color 120ms ease-out; }
 .command-idle-hint::before { content: ""; flex-shrink: 0; width: .65ch; height: 1.1em; border: 1px solid var(--accent); font: 400 16px/1.6 var(--font-mono); }
 .command-idle-copy { display: flex; flex-wrap: wrap; align-items: baseline; column-gap: 8px; }
 .command-idle-copy > span { white-space: nowrap; }
 .command-composer[data-command-mode="false"] #command-input:placeholder-shown ~ .command-idle-hint { display: inline-flex; }
 .command-idle-hint:hover { color: var(--text); }
 .command-idle-hint:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-.command-empty-help { position: absolute; top: 50%; left: 18px; right: 0; display: none; transform: translateY(-50%); color: var(--muted); font: 13px/1.5 var(--font-body); pointer-events: none; }
+.command-empty-help { position: absolute; top: 50%; left: 18px; right: 0; display: none; transform: translateY(-50%); color: var(--muted); font: 14px/1.5 var(--font-body); pointer-events: none; }
 .command-composer[data-command-mode="true"] #command-input:placeholder-shown ~ .command-empty-help { display: block; }
 .command-composer #command-form { margin-top: 0; flex: 1; }
 .command-composer .command-suggestions { position: absolute; left: var(--command-left, 32px); right: var(--command-right, 32px); bottom: 100%; max-width: none; max-height: min(220px, 35dvh); overflow: auto; overscroll-behavior: contain; margin: 0; padding: 8px 16px; border: 1px solid var(--line-soft); background: var(--screen); }
@@ -32,7 +32,7 @@ html:not([data-page-hidden="true"]) .command-composer[data-page-focused="true"] 
   .command-composer .command-suggestions { padding: 8px 12px; gap: 0 12px; }
   .command-composer .command-row { gap: 8px; }
   .command-mode-toggle { min-width: 90px; font-size: 12px; }
-  .command-idle-hint, .command-empty-help { font-size: 12px; }
+  .command-idle-hint, .command-empty-help { font-size: 13px; }
   .command-idle-copy { flex-direction: column; }
   .command-idle-separator { display: none; }
 }

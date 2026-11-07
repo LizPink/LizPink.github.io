@@ -252,9 +252,12 @@
 }
 
 @media (max-width: 360px) {
+  .frame-toolbar { gap: 6px; padding-right: 8px; padding-left: 8px; }
   #menu-reveal { width: 44px; padding: 0; }
   #menu-reveal > span { display: none; }
-  .toolbar-start { gap: 6px; }
+  .toolbar-start { gap: 6px; flex-shrink: 1; }
+  .wordmark { gap: 6px; flex-shrink: 1; font-size: 20px; }
+  .wordmark > span:last-child { overflow: hidden; text-overflow: ellipsis; }
 }
 
 @media (max-width: 760px) and (max-height: 540px) {

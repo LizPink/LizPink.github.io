@@ -379,10 +379,9 @@
       else focusCommand();
       return;
     }
-    const themeToggle = event.target.closest("#theme-toggle");
-    if (themeToggle) {
-      const next = window.LIZPINK_THEME.current() === "amber" ? "green" : "amber";
-      setTheme(next);
+    const themeOption = event.target.closest("[data-theme-option]");
+    if (themeOption) {
+      setTheme(themeOption.dataset.themeOption);
       return;
     }
     const contentButton = event.target.closest("[data-content-key][data-content-route]");

@@ -2,24 +2,24 @@
 name: LizPink 个人终端
 description: 满视口统一背景、可调内容目录、Markdown单条阅读与终端交互
 colors:
-  amber-bg: "#151812"
-  amber-chrome: "#20231c"
-  amber-screen: "#080a08"
-  amber-text: "#e9dcc0"
-  amber-muted: "#a99f89"
-  amber-accent: "#e6bc76"
-  amber-accent-soft: "#292719"
-  amber-line: "#454b3c"
-  amber-line-soft: "#30372c"
-  green-bg: "#0b100d"
-  green-chrome: "#121714"
-  green-screen: "#020503"
-  green-text: "#c3f3b9"
-  green-muted: "#8eae89"
-  green-accent: "#9ff279"
-  green-accent-soft: "#17291a"
-  green-line: "#34523b"
-  green-line-soft: "#203928"
+  dark-bg: "#151812"
+  dark-chrome: "#20231c"
+  dark-screen: "#080a08"
+  dark-text: "#e9dcc0"
+  dark-muted: "#b8aa8e"
+  dark-accent: "#e6bc76"
+  dark-accent-soft: "#292719"
+  dark-line: "#454b3c"
+  dark-line-soft: "#30372c"
+  light-bg: "#f7f6f2"
+  light-chrome: "#e9e8e2"
+  light-screen: "#f7f6f2"
+  light-text: "#171d23"
+  light-muted: "#343c45"
+  light-accent: "#24445f"
+  light-accent-soft: "#e5ebef"
+  light-line: "#8c949b"
+  light-line-soft: "#d8dbda"
 typography:
   display:
     fontFamily: '"Source Serif 4", "Noto Serif SC", "Source Han Serif SC", "Songti SC", SimSun, serif'
@@ -32,15 +32,16 @@ typography:
     fontWeight: 500
     lineHeight: 1.4
   interface:
-    fontFamily: '"Source Serif 4", "Noto Serif SC", "Source Han Serif SC", "Songti SC", SimSun, serif'
+    fontFamily: '"Noto Sans SC", "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif'
     fontSize: "17px"
     lineHeight: 1.9
   screen:
-    fontFamily: '"Source Serif 4", "Noto Serif SC", "Source Han Serif SC", "Songti SC", SimSun, serif'
+    fontFamily: '"Noto Sans SC", "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif'
     fontSize: "16px"
     fontWeight: 400
     lineHeight: 1.7
   menu:
+    fontFamily: '"Noto Sans SC", "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif'
     fontSize: "16px"
     lineHeight: 1.5
   command:
@@ -59,18 +60,18 @@ typography:
     fontWeight: 500
     lineHeight: 1.4
   summary:
-    fontFamily: '"Source Serif 4", "Noto Serif SC", "Source Han Serif SC", "Songti SC", SimSun, serif'
+    fontFamily: '"Noto Sans SC", "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif'
     fontSize: "16px"
     fontWeight: 400
     lineHeight: 1.7
   details:
-    fontFamily: '"Source Serif 4", "Noto Serif SC", "Source Han Serif SC", "Songti SC", SimSun, serif'
+    fontFamily: '"Noto Sans SC", "Microsoft YaHei", "PingFang SC", "Segoe UI", sans-serif'
     fontSize: "17px"
     lineHeight: 1.9
 rounded:
   square: "0"
-  switch-track: "18px"
-  switch-thumb: "13px"
+  theme-control: "7px"
+  theme-selection: "4px"
   dot: "50%"
 spacing:
   small: "8px"
@@ -81,35 +82,34 @@ spacing:
   output: "32px"
 components:
   logo-mark:
-    backgroundColor: "{colors.amber-accent}"
-    textColor: "{colors.amber-bg}"
+    backgroundColor: "{colors.dark-accent}"
+    textColor: "{colors.dark-bg}"
     width: "32px"
     height: "32px"
-  theme-track:
-    backgroundColor: "{colors.amber-chrome}"
-    rounded: "{rounded.switch-track}"
-    width: "78px"
+  theme-control:
+    backgroundColor: "transparent"
+    rounded: "{rounded.theme-control}"
+  theme-option:
+    backgroundColor: "{colors.dark-accent-soft}"
+    textColor: "{colors.dark-accent}"
+    rounded: "{rounded.theme-selection}"
+    minWidth: "44px"
     height: "44px"
-  theme-thumb:
-    backgroundColor: "{colors.amber-accent-soft}"
-    rounded: "{rounded.switch-thumb}"
-    width: "30px"
-    height: "22px"
   menu-item:
     backgroundColor: "transparent"
-    textColor: "{colors.amber-muted}"
+    textColor: "{colors.dark-muted}"
     padding: "10px 12px"
   menu-toggle:
     backgroundColor: "transparent"
-    textColor: "{colors.amber-muted}"
+    textColor: "{colors.dark-muted}"
     width: "44px"
     height: "44px"
   command-input:
     backgroundColor: "transparent"
-    textColor: "{colors.amber-text}"
+    textColor: "{colors.dark-text}"
     padding: "11px 1ch 11px 0"
   details-summary:
-    textColor: "{colors.amber-accent}"
+    textColor: "{colors.dark-accent}"
     padding: "8px 0"
     height: "44px"
 ---
@@ -138,27 +138,27 @@ components:
 
 ## Colors
 
-frontmatter 记录当前组件使用的18个颜色；运行来源为 `site/assets/css/styles.css`，不改变既有主题。
+frontmatter 记录深色与浅色模式的18个颜色；运行来源为 `site/assets/css/styles.css`。深色保留原琥珀正文与强调色，辅助文字提高明度；浅色使用暖白背景、深墨文字与墨蓝强调色。
 
 ### Primary
 
-强调色用于标志、提示符、块光标、链接与当前菜单；柔和强调底色用于滑块、代码和候选。亮文字直接对比深色背景，不为全部文字添加光晕。
+强调色用于标志、提示符、块光标、链接与当前菜单；柔和强调底色用于模式选中项、代码和候选。深色模式使用琥珀强调与暖白文字，浅色模式使用墨蓝强调与深墨文字，不为文字添加光晕。
 
 ### Neutral
 
-`screen` 是页面、工具栏、侧栏、框架和主区的统一底色。`text` 与 `muted` 承担正文和说明；两级线色用于内部细分隔及控件。`bg` 保留在标志镂空文字、选择和遮罩等局部，`chrome` 仅用于主题开关轨道，不形成页面分层。
+`screen` 是页面、工具栏、侧栏、框架和主区的统一底色。`text` 与 `muted` 承担正文和说明；两级线色用于内部细分隔及控件。`bg` 保留在标志镂空文字、选择和遮罩等局部，`chrome` 用于模式按钮悬停，不形成页面分层。图片预览沿用黑色遮罩及局部深色文字变量，避免浅色模式下控件失去对比。
 
-**The Two Themes Rule.** 默认琥珀，另有荧绿；一个两档switch及当前名称，checked表示荧绿。有效URL优先于有效保存偏好，再回退琥珀；只有手动切换开关保存，已有参数同步且保留hash。成功切换仅通过开关状态、当前主题名称与页面颜色反馈；`theme` 不列入帮助和补全，输入旧命令提示使用右上角开关。
+**The Two Themes Rule.** 首次访问默认深色模式，不跟随系统浅色设置；另有浅色模式。右上角使用同一组内的两个原生图标按钮，太阳对应浅色、月亮对应深色；所有屏幕宽度都不显示模式文字，aria-label与title保留完整名称，aria-pressed表达当前选项。选中项同时使用强调图标、柔和底色与细轮廓。有效URL优先于有效保存偏好，再回退深色；旧 amber/green 链接与偏好均映射为深色。只有手动选择模式才保存，已有参数同步且保留其他参数与hash。CSS前应用主题，DOM加载后同步按钮状态；切换不增加终端输出。`theme` 不列入帮助和补全。
 
 ## Typography
 
-标题、中文说明、摘要与界面使用本地Source Serif 4及中文系统衬线回退；命令输入、回显、路径和快捷键使用本地IBM Plex Mono。终端正文16px、行高1.7；输入和回显16px、行高1.6。
+正文、中文说明、摘要、帮助解释与界面使用本地Noto Sans SC（思源黑体），由 `--font-body` 统一控制；正文常规字重400，既有小标题和条目标题保留500，Markdown的strong、b及表头可使用真实700粗体。仅首页问候 `h1`、栏目标题 `.summary-title` 与站点名称 `.wordmark` 使用 `--font-heading`，保留本地Source Serif 4及中文系统衬线回退；其余正文分节标题随黑体。命令输入、回显、路径和快捷键继续使用本地IBM Plex Mono。终端正文16px、行高1.7；输入和回显16px、行高1.6。
 
 首页role只配置“学生”值，“职业：”由UI添加，整行与关注行使用相同的普通次要文字色var(--muted)，不使用黄色强调。interests形成的“关注”行利用.frame-main剩余空间，不受72ch限制，真实空间不足时自然换行；about段落仍最大72ch且左对齐，窄屏不产生横向溢出。
 
-分区概览16px衬线、400字重、行高1.7，栏目标题使用h2、26px、500字重、行高1.4；说明最长72ch，最近列表仅显示日期与标题，不显示媒体数量。事实标签与值分列，480px及以下改为上下排列。详情使用17px衬线、行高1.9，分节标题为h3、经历条目为h4，不再重复栏目标题。Markdown源使用h2/h3章节，渲染时按文章所在层级调整。内容目录标题16px衬线、行高1.5；栏目按钮15px，条目标题17px，日期12px等宽，目录仅保留分区、日期和标题。帮助中的命令使用15px、500字重等宽，中文解释使用16px衬线、行高1.5；命令列固定8ch，“或N”独立对齐，使用CSS Grid而非制表符。命令按钮最小高度44px，组间距16px。
+分区概览16px黑体、400字重、行高1.7，栏目标题使用h2衬线、26px、500字重、行高1.4；说明最长72ch，最近列表仅显示日期与标题，不显示媒体数量。事实标签与值分列，480px及以下改为上下排列。详情使用17px黑体、行高1.9，分节标题为h3、经历条目为h4，不再重复栏目标题。Markdown源使用h2/h3章节，渲染时按文章所在层级调整。内容目录标题16px黑体、行高1.5；栏目按钮15px，条目标题17px，日期12px等宽，目录仅保留分区、日期和标题。帮助中的命令使用15px、500字重等宽，中文解释使用16px黑体、行高1.5；命令列固定8ch，“或N”独立对齐，使用CSS Grid而非制表符。底部六条快捷键的kbd使用14px、500字重IBM Plex Mono，说明使用14px黑体，可自然换行。命令按钮最小高度44px，组间距16px。闲置提示与编辑态空输入提示统一使用桌面14px、手机13px黑体，避免切换输入状态时字号缩小。
 
-衬线字体为 `site/assets/fonts/SourceSerif4Variable-Roman.ttf.woff2`，常规体字重200–900、自动光学字号。IBM Plex Mono来自 [IBM官方仓库](https://github.com/IBM/plex)，本地文件为 `site/assets/fonts/IBMPlexMono-Regular.woff2`（400）与 `site/assets/fonts/IBMPlexMono-Medium.woff2`（500），等宽回退为Cascadia Mono、Consolas、Microsoft YaHei、monospace。三份字体均使用 `font-display:swap`；预加载Source Serif 4与IBM Regular。许可分别见 `site/assets/fonts/LICENSE.md` 和 `site/assets/fonts/IBM-Plex-Mono-LICENSE.txt`（SIL OFL 1.1）。中文依次回退Noto Serif SC、Source Han Serif SC、Songti SC、SimSun、serif，未打包中文字体。
+Noto Sans SC通过本地 `site/assets/fonts/noto-sans-sc.css` 声明，支持400–700字重；101份WOFF2分片位于 `site/assets/fonts/noto-sans-sc/`，以unicode-range按所需字符加载。正文与界面仍使用400/500，700用于语义粗体。字体声明不使用local()，运行时不依赖外部字体服务或访客本地安装。来源说明见 `site/assets/fonts/NotoSansSC-README.md`，许可见 `site/assets/fonts/NotoSansSC-OFL.txt`（SIL OFL 1.1），正文回退为Microsoft YaHei、PingFang SC、Segoe UI、sans-serif。标题衬线字体为 `site/assets/fonts/SourceSerif4Variable-Roman.ttf.woff2`，常规体字重200–900、自动光学字号，中文依次回退Noto Serif SC、Source Han Serif SC、Songti SC、SimSun、serif。IBM Plex Mono来自 [IBM官方仓库](https://github.com/IBM/plex)，本地文件为 `site/assets/fonts/IBMPlexMono-Regular.woff2`（400）与 `site/assets/fonts/IBMPlexMono-Medium.woff2`（500），等宽回退为Cascadia Mono、Consolas、Microsoft YaHei、monospace。字体使用 `font-display:swap`；预加载Source Serif 4与IBM Regular。原有两类字体许可分别见 `site/assets/fonts/LICENSE.md` 和 `site/assets/fonts/IBM-Plex-Mono-LICENSE.txt`。
 
 首页问候38px、栏目标题26px，760px以下为30px与24px，360px以下问候28px。图文条目标题23px，760px以下21px。标志保留既有Cascadia Code等宽栈：32px方块、18px字、字距-2px，姓名24px衬线；手机为28px方块、16px字与22px姓名。
 
@@ -170,7 +170,7 @@ frontmatter 记录当前组件使用的18个颜色；运行来源为 `site/asset
 
 桌面目录默认200px，占独立网格列；折叠后主区全宽。拖动separator可调180–420px，并给主内容至少320px；空间不足时夹取宽度。左右键每次16px，Home/End最小/最大，双击恢复200px，Escape取消拖动。主区独立滚动，内边距24px 32px，1000px以下水平28px。
 
-760px以下目录为宽min(320px,90%)的左侧抽屉，不提供调宽分隔条，通过工具栏打开；主区内边距24px 20px。高度不超过540px时目录整体滚动，收起按钮所在标题行保持可见，避免四行栏目挤压内容列表。工具栏隐藏路径和主题名称，1000px以下隐藏状态。输入行最小48px，闲置提示及编辑态返回阅读按钮最小44px；窄屏帮助12px可换行。记录间距桌面24px、手机20px，事实标签480px以下上下排列，屏幕仅显示当前页面，↑↓仍可回调命令历史。
+760px以下目录为宽min(320px,90%)的左侧抽屉，不提供调宽分隔条，通过工具栏打开；主区内边距24px 20px。高度不超过540px时目录整体滚动，收起按钮所在标题行保持可见，避免四行栏目挤压内容列表。工具栏隐藏路径，模式按钮在所有宽度都只显示图标，1000px以下隐藏状态。输入行最小48px，闲置提示及编辑态返回阅读按钮最小44px；窄屏闲置与空输入提示13px并分行。记录间距桌面24px、手机20px，事实标签480px以下上下排列，屏幕仅显示当前页面，↑↓仍可回调命令历史。
 
 栏目details展开行最小44px，正文相距16px。详情及单条reader使用剩余主区；文字最大72ch且左对齐，媒体自身最大960px并在该主区居中，按自然比例显示，小媒体不放大。图片普通点击在同页暗背景中居中预览，关闭后返回原图与原滚动位置；修饰点击及不支持同页预览时保留原图外链。命令区保留等高原位，原位不可见或有输出的命令模式停底，退出且原位可见时回流。
 
@@ -213,7 +213,7 @@ content-index.js负责栏目归属、hash及日期。点击目录条目或最近
 
 页面与背景相融，不用阴影、扫描线或额外窗框。桌面目录占独立列，手机抽屉层级覆盖，遮罩不透明度.7。
 
-首页问候220ms淡入；命令回显100ms、输出180ms、详情展开160ms淡入；输入模式颜色和详情箭头140ms过渡，模式按钮文字颜色120ms。输出不再以clip-path裁切，也不移动正在被测量定位的正文或对输入位置添加过渡。首条输出贴齐主区顶部内边距，home之外的问候立即退出布局，键盘切换和目录导航均从顶部开始。块光标950ms、主题滑块180ms；目录宽度实时调整、手机抽屉200ms。系统减少动态效果关闭动画与位移；未激活使用静态空心光标；只有input聚焦、页面有焦点且可见时，实心编辑光标才闪烁。减少动态效果时保持实心静态。状态直接跟随输入，不模拟等待。
+首页问候220ms淡入；命令回显100ms、输出180ms、详情展开160ms淡入；输入模式颜色和详情箭头140ms过渡。输出不再以clip-path裁切，也不移动正在被测量定位的正文或对输入位置添加过渡。首条输出贴齐主区顶部内边距，home之外的问候立即退出布局，键盘切换和目录导航均从顶部开始。块光标950ms、模式按钮图标与底色140ms；目录宽度实时调整、手机抽屉200ms。系统减少动态效果关闭动画与位移；未激活使用静态空心光标；只有input聚焦、页面有焦点且可见时，实心编辑光标才闪烁。减少动态效果时保持实心静态。状态直接跟随输入，不模拟等待。
 
 ### 流式展示
 
@@ -227,7 +227,7 @@ content-index.js负责栏目归属、hash及日期。点击目录条目或最近
 
 页面与内容方角、内部细线。工具栏入口与内部收起按钮最小44px，提供无障碍名称及状态；分隔条在悬停、聚焦或拖动时强调，目录控件和条目使用内侧焦点轮廓，避免裁切。
 
-主题开关78×44px，轨道圆角18px，滑块30×22px、圆角13px、横移40px；色点9px。块光标宽.65ch、高1.1em。输入无底线、无独立执行箭头；命令模式用编辑区柔和强调底色表达激活状态，输入区顶部不显示分隔线。
+模式按钮组使用1px细边框、7px圆角，无阴影；每个按钮44×44px，仅显示16px线性太阳/月亮图标，不显示模式文字，整个按钮组宽92px。选中底片内缩4px、圆角4px，保留选中轮廓；所有屏幕宽度保留完整aria-label、title与aria-pressed状态。360px以下工具栏左右8px、组间距6px、姓名20px，过长姓名省略，确保左右目录按钮同时出现时仍完整显示。块光标宽.65ch、高1.1em。输入无底线、无独立执行箭头；命令模式用编辑区柔和强调底色表达激活状态，输入区顶部不显示分隔线。
 
 详情采用原生details/summary与CSS细chevron，关闭时向右、展开时向下；不增加额外卡片外壳。
 
@@ -242,7 +242,7 @@ content-index.js负责栏目归属、hash及日期。点击目录条目或最近
 - **首页与概览数据**：name用于品牌，首页展示greeting、role、interests和about；role只填“学生”，职业标签由UI添加且使用与关注行一致的普通次要文字色，关注行按主区剩余宽度排布，about保持可读限宽。顶层description已删除，不再生成description meta。paths只保留description，原introduction合并删除。life/resume/project展示常驻说明和最多10条更新日期优先的最近内容；左侧仍是全量，界面不显示媒体数量。help正文依次显示“浏览路线”“操作”和“侧栏快捷键”，底部仅保留六条编辑快捷键；文章数据由构建器生成，命令来自commands.js。
 - **内容**：站点资料在content/site.yml，每篇在content/entries/{key}/index.md，媒体随篇保存，归属由sections决定。构建时解析Markdown和媒体引用，图片与MP4分别生成图片和视频；同名.poster.*与.zh.vtt作为封面/字幕。原始HTML显示为文本，未引用素材不展示。元信息与生成数据不含example/dateExample；当前content/entries/仅保留.gitkeep，不预置文章或素材，站点资料与简历配置保持。替换媒体同步alt、图注、封面与字幕。此前移除的旧独立页面不恢复，也不迁入life。
 - **图片预览**：`site/assets/js/image-viewer.js` 与 `site/assets/css/image-viewer.css` 提供同页居中预览，保持原比例并适应可见区域，小图不强行放大。仅使用暗背景与右上角×关闭入口，`Esc`或图片外空白也可关闭；关闭后焦点回原图且保留原滚动位置。预览内Esc优先关闭图片，不触发背后命令模式。`Ctrl`/`Meta`/`Shift`点击保留原图外链，无法使用同页预览时沿用链接；视频仍为原生控件，不增加轮播、缩放或Markdown配置。
-- **主题与焦点**：保持单switch语义、保存规则和动态状态；按钮/链接焦点为2px强调轮廓；正文偏移5px，目录控件、条目与分隔柄使用内侧轮廓。
+- **主题与焦点**：模式组内两个原生按钮支持Tab、Enter和Space，aria-pressed与页面同步，只有主动选择才保存；按钮/链接焦点为2px强调轮廓；正文偏移5px，模式按钮、目录控件、条目与分隔柄使用内侧轮廓。
 - **控件选择与鼠标焦点**：按钮、原生summary、工具栏、目录和帮助快捷键文字使用user-select:none，正文与输入继续可选择复制。仅鼠标主键按下按钮时阻止默认获焦，click仍执行；保留键盘Tab及Enter/Space、触摸、链接、原生details和媒体行为，不移除tabindex或全局隐藏焦点。
 
 ## Do's and Don'ts
