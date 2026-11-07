@@ -93,11 +93,26 @@
       node.append(section);
     });
 
+    const sidebarKeys = element("section", "help-group");
+    sidebarKeys.append(element("h3", "help-group-title", "侧栏快捷键"));
+    const sidebarList = element("dl", "help-commands help-sidebar-shortcuts");
+    [
+      ["Ctrl+Alt+A", "显示/隐藏左侧目录"],
+      ["Ctrl+Alt+B", "显示/隐藏右侧目录"]
+    ].forEach(([key, meaning]) => {
+      const row = element("div");
+      const term = element("dt");
+      term.append(element("kbd", "", key));
+      row.append(term, element("dd", "", meaning));
+      sidebarList.append(row);
+    });
+    sidebarKeys.append(sidebarList);
+    node.append(sidebarKeys);
+
     const keys = element("div", "help-keys");
     [
       ["Enter", "执行"], ["Tab", "补全"], ["↑ ↓", "历史"],
-      ["/", "开始输入"], ["Esc", "返回阅读"], ["Shift+Tab", "离开"],
-      ["Ctrl+Alt+A", "切换左侧目录"], ["Ctrl+Alt+B", "切换右侧目录"]
+      ["/", "开始输入"], ["Esc", "返回阅读"], ["Shift+Tab", "离开"]
     ].forEach(([key, meaning]) => {
       const pair = element("span", "help-key");
       pair.append(element("kbd", "", key), element("span", "", meaning));

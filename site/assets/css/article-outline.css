@@ -1,7 +1,15 @@
 .frame-main { container: reader / inline-size; }
 .article-layout, .article-body { min-width: 0; }
 
-.article-outline { min-width: 0; margin: 0 0 24px; color: var(--muted); font: 14px/1.6 var(--font-body); }
+.article-outline {
+  min-width: 0;
+  margin: 0 0 24px;
+  color: var(--muted);
+  font: 14px/1.6 var(--font-body);
+  -webkit-user-select: none;
+  user-select: none;
+  cursor: default;
+}
 .article-outline[hidden] { display: none; }
 .article-outline-title { display: none; margin: 0 0 10px; color: var(--muted); font: 500 14px/1.6 var(--font-body); }
 .article-outline-details > summary {

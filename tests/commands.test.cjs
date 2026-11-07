@@ -79,15 +79,15 @@ test("completion and typo suggestions exclude clear while keeping useful current
   }
 });
 
-test("real help uses short names, two groups and exactly seven complete command rows", () => {
+test("real help adds the sidebar group after seven complete public command rows", () => {
   const api = load();
   const help = api.renderHelp();
   assert.equal(help.children[0].tagName, "h2");
   assert.equal(text(help.children[0]), "帮助");
   const groups = help.children.filter(node => node.className === "help-group");
-  assert.deepEqual(groups.map(group => text(group.children[0])), ["浏览路线", "操作"]);
-  assert.deepEqual(groups.map(group => group.children[1].children.length), [4, 3]);
-  const rows = groups.flatMap(group => group.children[1].children);
+  assert.deepEqual(groups.map(group => text(group.children[0])), ["浏览路线", "操作", "侧栏快捷键"]);
+  assert.deepEqual(groups.map(group => group.children[1].children.length), [4, 3, 2]);
+  const rows = groups.slice(0, 2).flatMap(group => group.children[1].children);
   assert.deepEqual(rows.map(row => row.children[0].children[0].dataset.command), names);
   rows.forEach((row, index) => {
     const [term, description] = row.children;
@@ -101,14 +101,23 @@ test("real help uses short names, two groups and exactly seven complete command 
   assert.equal(text(help).includes("clear"), false);
 });
 
-test("help retains its keyboard reference and concise Escape instruction", () => {
+test("help places sidebar shortcuts in body rows and retains six footer references", () => {
   const help = load().renderHelp();
+  const groups = help.children.filter(node => node.className === "help-group");
+  const sidebar = groups[2].children[1];
+  assert.equal(sidebar.tagName, "dl");
+  assert.deepEqual(sidebar.children.map(row => row.children.map(text)), [
+    ["Ctrl+Alt+A", "显示/隐藏左侧目录"],
+    ["Ctrl+Alt+B", "显示/隐藏右侧目录"]
+  ]);
+  sidebar.children.forEach(row => {
+    assert.equal(row.children[0].tagName, "dt");
+    assert.equal(row.children[0].children[0].tagName, "kbd");
+    assert.equal(row.children[1].tagName, "dd");
+  });
   const keys = help.children.find(node => node.className === "help-keys");
-  assert.deepEqual(keys.children.map(pair => text(pair.children[0])), ["Enter", "Tab", "↑ ↓", "/", "Esc", "Shift+Tab", "Ctrl+Alt+A", "Ctrl+Alt+B"]);
+  assert.deepEqual(keys.children.map(pair => text(pair.children[0])), ["Enter", "Tab", "↑ ↓", "/", "Esc", "Shift+Tab"]);
   const escape = keys.children.find(pair => text(pair.children[0]) === "Esc");
   assert.equal(text(escape.children[1]), "返回阅读");
-  const left = keys.children.find(pair => text(pair.children[0]) === "Ctrl+Alt+A");
-  const right = keys.children.find(pair => text(pair.children[0]) === "Ctrl+Alt+B");
-  assert.equal(text(left.children[1]), "切换左侧目录");
-  assert.equal(text(right.children[1]), "切换右侧目录");
+  assert.equal(text(keys).includes("Ctrl+Alt"), false);
 });

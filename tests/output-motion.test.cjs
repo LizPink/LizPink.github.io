@@ -137,12 +137,16 @@ test("real summaries retain every node/content and reveal only summary units wit
   }
 });
 
-test("real help keeps each command/number/description together and batches headings with first rows", () => {
+test("real help reveals command and sidebar shortcut rows whole, batching headings with first rows", () => {
   const env = harness();
   const output = env.output("help");
   env.api.play(output);
   const rows = output.querySelectorAll(".help-commands > div");
-  assert.equal(rows.length, 7);
+  assert.equal(rows.length, 9);
+  assert.equal(rows.filter(row => row.querySelector(".help-command")).length, 7);
+  const sidebarRows = output.querySelectorAll(".help-sidebar-shortcuts > div");
+  assert.equal(sidebarRows.length, 2);
+  assert.deepEqual(sidebarRows.map(row => row.querySelector("kbd").textContent), ["Ctrl+Alt+A", "Ctrl+Alt+B"]);
   rows.forEach(row => {
     assert.equal(env.calls.filter(call => call.node === row).length, 1);
     assert.equal(env.calls.some(call => row.contains(call.node) && call.node !== row), false);
