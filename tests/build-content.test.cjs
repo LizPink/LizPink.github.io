@@ -190,6 +190,74 @@ test("Chinese/spaced image, uppercase MP4, optional poster/subtitles and PDF pro
   }
 });
 
+test("multiple nested videos retain their own posters, captions, copy paths and independent versions", async t => {
+  const videos = [
+    { src: "videos/demo-a.mp4", poster: "videos/demo-a.poster.svg", captions: "videos/demo-a.zh.vtt" },
+    { src: "videos/demo-b.mp4", poster: "videos/demo-b.poster.png", captions: "videos/demo-b.zh.vtt" },
+    { src: "videos/one/demo.mp4", poster: "videos/one/demo.poster.svg", captions: "videos/one/demo.zh.vtt" },
+    { src: "videos/two/demo.mp4", poster: "videos/two/demo.poster.svg", captions: "videos/two/demo.zh.vtt" }
+  ];
+  const files = { "photos/a.svg": "<svg><title>Photo</title></svg>" };
+  videos.forEach((video, index) => {
+    files[video.src] = `video bytes ${index}`;
+    files[video.poster] = `poster bytes ${index}`;
+    files[video.captions] = `WEBVTT\n\n00:00.000 --> 00:01.000\nCaption ${index}\n`;
+  });
+  const f = await fixture(t, { entries: [{ key: "multiple", files,
+    body: ["![Photo](./photos/a.svg)", ...videos.map((video, index) => `![Video ${index}](./${video.src})`)].join("\n\n")
+  }] });
+  function urlFor(tag, attribute) {
+    const match = tag.match(new RegExp(`\\b${attribute}="([^"]+)"`));
+    assert.ok(match, `${attribute} must be present`);
+    const url = new URL(match[1].replace(/&amp;/g, "&"), "https://example.test/");
+    assert.match(url.searchParams.get("v") || "", /^[0-9a-f]{16}$/);
+    return url;
+  }
+  function players(body) {
+    const blocks = [...body.matchAll(/<video\b([^>]*)>([\s\S]*?)<\/video>/g)];
+    assert.equal(blocks.length, 4);
+    const result = new Map();
+    for (const [, attributes, children] of blocks) {
+      const src = urlFor(attributes, "src"), poster = urlFor(attributes, "poster");
+      const tracks = [...children.matchAll(/<track\b[^>]*>/g)];
+      assert.equal(tracks.length, 1);
+      assert.match(tracks[0][0], /kind="captions"/);
+      const captions = urlFor(tracks[0][0], "src");
+      result.set(src.pathname, { src, poster, captions });
+    }
+    assert.equal(result.size, 4);
+    return result;
+  }
+  const sample = (await f.build()).samples.multiple;
+  assert.deepEqual(sample.mediaCounts, { images: 1, videos: 4 });
+  assert.equal(sample.type, "video");
+  assert.match(sample.body, /src="\.\/assets\/content\/multiple\/photos\/a\.svg\?v=[0-9a-f]{16}"/);
+  const before = players(sample.body);
+  for (const video of videos) {
+    const player = before.get(`/assets/content/multiple/${video.src}`);
+    assert.ok(player, video.src);
+    assert.equal(player.poster.pathname, `/assets/content/multiple/${video.poster}`);
+    assert.equal(player.captions.pathname, `/assets/content/multiple/${video.captions}`);
+  }
+  for (const [name, bytes] of Object.entries(files)) {
+    assert.equal(await fs.readFile(path.join(f.outputDir, "assets/content/multiple", name), "utf8"), bytes, name);
+  }
+  for (const role of ["src", "poster", "captions"]) {
+    assert.notEqual(before.get("/assets/content/multiple/videos/one/demo.mp4")[role].search,
+      before.get("/assets/content/multiple/videos/two/demo.mp4")[role].search, `${role}: same basename must not share versions`);
+    const name = videos[2][role];
+    await write(path.join(f.contentDir, "entries/multiple", name), `${files[name]} changed`);
+  }
+  const after = players((await f.build()).samples.multiple.body);
+  for (const video of videos) {
+    const key = `/assets/content/multiple/${video.src}`;
+    for (const role of ["src", "poster", "captions"]) {
+      if (video === videos[2]) assert.notEqual(after.get(key)[role].href, before.get(key)[role].href);
+      else assert.equal(after.get(key)[role].href, before.get(key)[role].href, `${video.src} ${role} must stay unchanged`);
+    }
+  }
+});
+
 test("changing only asset bytes updates its URL and generated script without changing routes or author query parameters", async t => {
   const files = { "pic.svg": "<svg/>\n", "clip.mp4": "video bytes", "clip.poster.png": "poster bytes",
     "clip.zh.vtt": "WEBVTT\n", "guide.pdf": "%PDF-test" };
@@ -422,6 +490,7 @@ test("importing a builder copy does not execute its CLI or generate output", asy
   const copy = path.join(root, "scripts/build-content.mjs");
   await write(copy, await fs.readFile(script));
   await write(path.join(root, "scripts/asset-version.mjs"), await fs.readFile(path.join(project, "scripts/asset-version.mjs")));
+  await write(path.join(root, "scripts/content-dates.mjs"), await fs.readFile(path.join(project, "scripts/content-dates.mjs")));
   const result = spawnSync(process.execPath, ["--input-type=module", "-e", `await import(${JSON.stringify(pathToFileURL(copy).href)});`], { cwd: root, encoding: "utf8" });
   assert.equal(result.status, 0, result.stderr || result.error?.message);
   assert.equal(result.stdout, "");

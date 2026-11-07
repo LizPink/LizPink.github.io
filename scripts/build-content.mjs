@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import MarkdownIt from "markdown-it";
 import { parseDocument } from "yaml";
 import { assetVersion, withAssetVersion } from "./asset-version.mjs";
+import { applyGitUpdateDates } from "./content-dates.mjs";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const routeNames = { life: "生活", resume: "经历", project: "项目" };
@@ -371,6 +372,7 @@ export async function buildContent({ contentDir = path.join(projectRoot, "conten
     const entry = await readEntry(entryDir, directory.name);
     entries.set(entry.key, entry);
   }
+  await applyGitUpdateDates(entries, contentDir);
   for (const route of content.paths) route.items = [...entries.values()]
     .filter(entry => entry.metadata.sections.includes(route.id)).sort(entryOrder).map(entry => entry.key);
   const assets = new Map();

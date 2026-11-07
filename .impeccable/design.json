@@ -442,8 +442,8 @@
         "metadataModule": "dist/assets/js/content-index.js",
         "sidebarModule": "dist/assets/js/content-sidebar.js",
         "source": "dist/assets/js/content.js的paths和samples；home/help合并去重，其余栏目按各自items筛选。",
-        "row": "仅显示可选日期与标题；无日期时省略，dateExample:true仍明确显示示例日期。不显示类型标签、示例类型标签或正文摘要。",
-        "dates": "优先有效publishedAt，否则有效updatedAt；真实日期显示发布/更新。dateExample:true明确显示示例日期，不代表真实发表或更新时间。",
+        "row": "首行显示分区与可选有效日期，下方显示标题；无日期时省略日期。不显示类型标签、示例徽标或正文摘要。",
+        "dates": "生成网站时由scripts/content-dates.mjs计算：手填updatedAt优先，否则取整篇目录最近一次后续内容提交的Asia/Shanghai日期，再回退publishedAt。首次创建无后续提交时使用publishedAt；Git缺失、历史不完整或不可用时也回退创建日期。未提交改动、仅构建及修改其他内容不产生新日期，不写回Markdown、不使用文件mtime。手填YYYY-MM-DD不转换时区。列表按有效更新日期优先降序、无则创建日期，无日期置后；正文分别显示创建于和更新于，缺失项为—。",
         "selection": "点击目录条目或摘要标题链接，在主区仅显示选中条目的h2标题、日期、正文和媒体；URL与当前条目同步。"
       }
     },
@@ -733,8 +733,8 @@
       "name": "可调宽内容目录",
       "kind": "nav",
       "refersTo": "menu-item",
-      "description": "桌面默认200px展开，可在180–420px内调整并收起；首页、生活、经历、项目逐行单列显示。内容列表只显示可选日期与标题，示例日期明确标记；点击单条在主区阅读，手机为默认关闭的抽屉。",
-      "html": "<nav class=\"ds-menu\" aria-label=\"网站目录\"><div class=\"ds-sidebar-header\"><p>内容目录</p><button type=\"button\" aria-label=\"收起目录\">收起</button></div><div class=\"ds-sidebar-routes\"><button class=\"ds-menu-item\" type=\"button\">首页<span>0</span></button><button class=\"ds-menu-item\" type=\"button\">生活<span>01</span></button><button class=\"ds-menu-item\" type=\"button\">经历<span>02</span></button><button class=\"ds-menu-item\" type=\"button\" aria-current=\"page\">项目<span>03</span></button></div><ul class=\"ds-content-list\"><li><button class=\"ds-content-item\" type=\"button\" aria-current=\"location\"><span class=\"ds-content-meta\"><time datetime=\"2026-10-22\">示例日期 2026.10.22</time></span><span class=\"ds-content-title\">一张项目截图的位置</span></button></li></ul></nav>",
+      "description": "桌面默认200px展开，可在180–420px内调整并收起；首页、生活、经历、项目逐行单列显示。内容列表显示分区、有效日期与标题，按更新日期优先降序；点击单条在主区阅读，手机为默认关闭的抽屉。",
+      "html": "<nav class=\"ds-menu\" aria-label=\"网站目录\"><div class=\"ds-sidebar-header\"><p>内容目录</p><button type=\"button\" aria-label=\"收起目录\">收起</button></div><div class=\"ds-sidebar-routes\"><button class=\"ds-menu-item\" type=\"button\">首页<span>0</span></button><button class=\"ds-menu-item\" type=\"button\">生活<span>01</span></button><button class=\"ds-menu-item\" type=\"button\">经历<span>02</span></button><button class=\"ds-menu-item\" type=\"button\" aria-current=\"page\">项目<span>03</span></button></div><ul class=\"ds-content-list\"><li><button class=\"ds-content-item\" type=\"button\" aria-current=\"location\"><span class=\"ds-content-meta\"><time datetime=\"2026-10-22\">项目 2026.10.22</time></span><span class=\"ds-content-title\">一张项目截图的位置</span></button></li></ul></nav>",
       "css": ".ds-menu{display:flex;flex-direction:column;width:200px;max-width:100%;padding:12px;background:var(--screen)}.ds-sidebar-header{display:flex;align-items:center;justify-content:space-between;min-height:44px;gap:8px}.ds-sidebar-header p{margin:0;font:500 16px/1.5 var(--font-body)}.ds-sidebar-routes{display:grid;grid-template-columns:minmax(0,1fr);gap:4px}.ds-menu-item{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;padding:8px 10px;border:0;background:transparent;color:var(--muted);font:15px/1.5 var(--font-body);text-align:left}.ds-menu-item span{font:12px/1.6 var(--font-mono)}.ds-menu-item[aria-current=\"page\"]{color:var(--accent)}.ds-content-list{list-style:none;margin:20px 0 0;padding:0}.ds-content-item{display:flex;flex-direction:column;gap:6px;width:100%;min-height:44px;padding:12px;border:0;border-left:1px solid transparent;background:transparent;color:var(--text);text-align:left}.ds-content-item[aria-current=\"location\"]{border-left-color:var(--accent)}.ds-content-item[aria-current=\"location\"] .ds-content-title{color:var(--accent)}.ds-content-meta{color:var(--muted);font:12px/1.5 var(--font-body)}.ds-content-title{font:500 17px/1.55 var(--font-body)}.ds-content-item:hover,.ds-menu-item:hover{background:var(--accent-soft)}.ds-content-item:focus-visible,.ds-menu-item:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}"
     },
     {
@@ -772,11 +772,11 @@
   ],
   "narrative": {
     "northStar": "融入背景的个人终端",
-    "overview": "用户图示与最新明确修订是最高优先约束。网页铺满视口，页面、工具栏、侧栏、框架和主区共用屏幕底色；不使用居中限宽、外框、主区内框或套窗内缩。仅内部工具栏与目录边界保留细分隔线。\n\n工具栏目录按钮与lp_、LizPink同组，右侧提供仅太阳/月亮图标的浅色/深色模式按钮。桌面内容目录默认200px展开，支持180–420px调宽与收起；手机默认关闭，以抽屉展开。目录顶部逐行单列显示首页、生活、经历、项目，内容列表只显示可选日期和标题；人工日期明确标为示例日期。选择条目在右侧显示单条正文并支持#project/geometry等链接。\n\n文字左对齐并保持72ch阅读行宽，媒体按原比例、原始宽度和960px上限适度居中，图注与媒体同宽。自介仍集中在经历；首页保持问候和自动聚焦的命令区。有效栏目命令、数字0–3和help每次替换旧输出并从顶部阅读；↑↓保留命令输入历史，未知命令不清屏。原生输入、可打断渐显及阅读保护延续。发布状态以对应部署任务结果为准。\n\n栏目统一显示首页、生活、经历、项目，英文route保持不变。公开命令共7个；帮助标题与help描述均为帮助，open/close描述与详情按钮统一展开/收起。数字和中文别名回显规范英文，历史回调保留原输入。成功Tab补全仅清空底部反馈文字，候选列表与选区保留，错误说明仍可用。",
+    "overview": "用户图示与最新明确修订是最高优先约束。网页铺满视口，页面、工具栏、侧栏、框架和主区共用屏幕底色；不使用居中限宽、外框、主区内框或套窗内缩。仅内部工具栏与目录边界保留细分隔线。\n\n工具栏目录按钮与lp_、LizPink同组，右侧提供仅太阳/月亮图标的浅色/深色模式按钮。桌面内容目录默认200px展开，支持180–420px调宽与收起；手机默认关闭，以抽屉展开。目录顶部逐行单列显示首页、生活、经历、项目，内容列表显示分区、有效日期和标题，按更新日期优先降序。选择条目在右侧显示单条正文并支持#project/geometry等链接。\n\n文字左对齐并保持72ch阅读行宽，媒体按原比例、原始宽度和960px上限适度居中，图注与媒体同宽。自介仍集中在经历；首页保持问候和自动聚焦的命令区。有效栏目命令、数字0–3和help每次替换旧输出并从顶部阅读；↑↓保留命令输入历史，未知命令不清屏。原生输入、可打断渐显及阅读保护延续。发布状态以对应部署任务结果为准。\n\n栏目统一显示首页、生活、经历、项目，英文route保持不变。公开命令共7个；帮助标题与help描述均为帮助，open/close描述与详情按钮统一展开/收起。数字和中文别名回显规范英文，历史回调保留原输入。成功Tab补全仅清空底部反馈文字，候选列表与选区保留，错误说明仍可用。",
     "keyCharacteristics": [
       "满视口、统一背景、零套窗内缩。",
       "桌面默认展开、可调宽与折叠的内容目录；手机抽屉。",
-      "日期与标题组成的精简内容列表及可分享的单条reader；示例日期明确。",
+      "分区、日期与标题组成的精简内容列表及可分享的单条reader；更新日期优先排序。",
       "72ch左对齐文字，原比例媒体适度居中；命令输入与阅读保护延续。"
     ],
     "rules": [
