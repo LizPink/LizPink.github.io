@@ -392,6 +392,12 @@
     event.preventDefault();
     if (!commandComposing) execute(input.value);
   });
+  document.addEventListener("pointerdown", event => {
+    // Mouse activation should not steal editing focus; keyboard and touch stay native.
+    if (event.pointerType === "mouse" && event.button === 0 && event.target.closest("button")) {
+      event.preventDefault();
+    }
+  }, true);
   document.querySelector(".skip-link").addEventListener("click", event => {
     event.preventDefault();
     beginReading();
