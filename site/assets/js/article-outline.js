@@ -5,6 +5,10 @@
   const sessions = new Set();
   const mounted = new WeakMap();
   const WIDE_WIDTH = 1000;
+  // Null preserves the responsive default until the visitor makes a choice.
+  // Clearing rendered articles deliberately keeps this session preference.
+  let visibilityPreference = null;
+  let preferenceRevision = 0;
   const noop = () => {};
   const element = (tag, className, text) => {
     const node = document.createElement(tag);
@@ -32,6 +36,7 @@
 
     let container = layout.closest(".frame-main") || scrollRoot;
     const aside = element("aside", "article-outline");
+    aside.id = `outline-${entries[0].id}`;
     const title = element("p", "article-outline-title", "本页目录");
     title.setAttribute("aria-hidden", "true");
     const details = element("details", "article-outline-details");
@@ -56,8 +61,54 @@
     let currentId = null;
     let maxHeight = null;
     let wasConnected = layout.isConnected !== false;
+    let localPreference = visibilityPreference;
+    let appliedRevision = preferenceRevision;
+    let expectedDetailsOpen = null;
+    let lastAvailable = null;
     const changedTabindex = new Map();
     const notifyLayout = () => { if (typeof onLayout === "function") onLayout(); };
+    function isAvailable() {
+      return !disposed && layout.isConnected !== false && body.getClientRects().length > 0;
+    }
+    function isOpen() { return !aside.hidden && details.open; }
+    function applyVisibility(open) {
+      const hidden = wide && !open;
+      const changed = aside.hidden !== hidden || details.open !== open;
+      const focus = document.activeElement;
+      if ((hidden && aside.contains(focus)) || (!open && nav.contains(focus))) scrollRoot.focus({ preventScroll: true });
+      expectedDetailsOpen = open;
+      details.open = open;
+      aside.hidden = hidden;
+      if (changed) { notifyLayout(); queueUpdate(); }
+      return changed;
+    }
+    function syncVisibility(force = false) {
+      const nextContainer = layout.closest(".frame-main") || scrollRoot;
+      if (nextContainer !== container) { container = nextContainer; observer?.observe(container); }
+      const available = isAvailable();
+      if (available && appliedRevision !== preferenceRevision) {
+        localPreference = visibilityPreference;
+        appliedRevision = preferenceRevision;
+        force = true;
+      }
+      const nextWide = container.clientWidth >= WIDE_WIDTH;
+      const modeChanged = nextWide !== wide;
+      if (modeChanged) {
+        wide = nextWide;
+        aside.dataset.wide = String(wide);
+        force = true;
+      }
+      if (force) {
+        const changed = applyVisibility(localPreference === null ? wide : localPreference);
+        if (modeChanged && !changed) notifyLayout();
+      }
+      if (available !== lastAvailable) { lastAvailable = available; notifyLayout(); }
+    }
+    function setPreference(open, revision) {
+      localPreference = open;
+      appliedRevision = revision;
+      syncVisibility(true);
+    }
     function setActive(id) {
       if (id === currentId) return;
       currentId = id;
@@ -71,15 +122,7 @@
       if (disposed) return;
       if (layout.isConnected === false) { if (wasConnected) dispose(); return; }
       wasConnected = true;
-      const nextContainer = layout.closest(".frame-main") || scrollRoot;
-      if (nextContainer !== container) { container = nextContainer; observer?.observe(container); }
-      const nextWide = container.clientWidth >= WIDE_WIDTH;
-      if (nextWide !== wide) {
-        wide = nextWide;
-        details.open = wide;
-        aside.dataset.wide = String(wide);
-        notifyLayout();
-      }
+      syncVisibility();
       const composer = container.querySelector(".command-area");
       const nextMaxHeight = Math.max(48, scrollRoot.clientHeight - Math.max(64, composer?.offsetHeight || 0) - 72);
       if (nextMaxHeight !== maxHeight) {
@@ -105,7 +148,9 @@
       if (!entry) return;
       event.preventDefault();
       if (typeof onNavigate === "function") onNavigate(entry.id);
-      if (!wide) details.open = false;
+      // Auto-collapse this article without replacing the visitor's explicit
+      // cross-article preference with a navigation side effect.
+      if (!wide) applyVisibility(false);
       // Read final positions after collapsing the inline directory. Keep all
       // scrolling inside the terminal rather than moving its ancestor surfaces.
       const offset = entry.target.getBoundingClientRect().top - scrollRoot.getBoundingClientRect().top;
@@ -119,11 +164,15 @@
       notifyLayout();
       queueUpdate();
     }
-    function toggle() {
+    function disclosureToggle() {
       if (disposed) return;
-      // A keyboard/accessibility toggle must not hide a wide-screen directory.
-      if (wide && !details.open) details.open = true;
-      notifyLayout();
+      if (details.open !== expectedDetailsOpen) {
+        // Native summary activation is a local choice; other simultaneously
+        // opened articles can retain their own disclosure state.
+        localPreference = details.open;
+        visibilityPreference = details.open;
+        if (!applyVisibility(details.open)) notifyLayout();
+      }
       queueUpdate();
     }
     const observer = typeof ResizeObserver === "function" ? new ResizeObserver(queueUpdate) : null;
@@ -138,18 +187,19 @@
       body.removeEventListener("loadedmetadata", queueUpdate, true);
       body.removeEventListener("error", queueUpdate, true);
       nav.removeEventListener("click", select);
-      details.removeEventListener("toggle", toggle);
+      details.removeEventListener("toggle", disclosureToggle);
       observer?.disconnect();
       changedTabindex.forEach((value, node) => {
         if (value === null) node.removeAttribute("tabindex"); else node.setAttribute("tabindex", value);
       });
       changedTabindex.clear();
       aside.remove();
-      sessions.delete(dispose);
+      sessions.delete(session);
       if (mounted.get(layout) === dispose) mounted.delete(layout);
       notifyLayout();
     }
-    sessions.add(dispose);
+    const session = { dispose, isAvailable, isOpen, setPreference };
+    sessions.add(session);
     mounted.set(layout, dispose);
     scrollRoot.addEventListener("scroll", queueUpdate, { passive: true });
     window.addEventListener("resize", queueUpdate);
@@ -157,7 +207,7 @@
     body.addEventListener("loadedmetadata", queueUpdate, true);
     body.addEventListener("error", queueUpdate, true);
     nav.addEventListener("click", select);
-    details.addEventListener("toggle", toggle);
+    details.addEventListener("toggle", disclosureToggle);
     if (observer) [...new Set([container, scrollRoot, body])].forEach(node => observer.observe(node));
     setActive(entries[0].id);
     update();
@@ -165,6 +215,20 @@
     return dispose;
   }
 
-  function clear() { [...sessions].forEach(dispose => dispose()); }
-  window.LIZPINK_OUTLINE = Object.freeze({ mount, clear });
+  function availableSessions() { return [...sessions].filter(session => session.isAvailable()); }
+  function toggle() {
+    const available = availableSessions();
+    if (!available.length) return false;
+    visibilityPreference = !available.every(session => session.isOpen());
+    preferenceRevision += 1;
+    available.forEach(session => session.setPreference(visibilityPreference, preferenceRevision));
+    return true;
+  }
+  function isAvailable() { return availableSessions().length > 0; }
+  function isOpen() {
+    const available = availableSessions();
+    return available.length > 0 && available.every(session => session.isOpen());
+  }
+  function clear() { [...sessions].forEach(session => session.dispose()); }
+  window.LIZPINK_OUTLINE = Object.freeze({ mount, clear, toggle, isAvailable, isOpen });
 })();

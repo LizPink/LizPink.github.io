@@ -121,7 +121,7 @@
     reveal.hidden = false;
     reveal.setAttribute("aria-expanded", String(opened));
     reveal.setAttribute("aria-label", opened ? "收起目录" : "展开目录");
-    reveal.title = opened ? "收起目录" : "展开目录";
+    reveal.title = `${opened ? "收起" : "展开"}内容目录（Ctrl+Alt+A）`;
     collapse.setAttribute("aria-label", media.matches ? "关闭目录" : "收起目录");
     collapse.title = media.matches ? "关闭目录" : "收起目录";
     if (opened && focusInside) collapse.focus({ preventScroll: true });
@@ -132,6 +132,13 @@
     if (!initialized) return;
     if (!media.matches) desktopOpen = false;
     setOpen(false, { restoreFocus });
+  }
+  function toggle() {
+    if (!initialized) init();
+    if (!initialized) return false;
+    if (!media.matches) desktopOpen = !opened;
+    setOpen(!opened, { focusInside: media.matches });
+    return true;
   }
   function visibleControls() {
     return [...menu.querySelectorAll("button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])")]
@@ -185,10 +192,7 @@
     if (![frame, layout, menu, reveal, collapse, backdrop, resizer, reading, list].every(Boolean)) return;
     initialized = true;
     frame.dataset.resizing = "false";
-    reveal.addEventListener("click", () => {
-      if (!media.matches) desktopOpen = !opened;
-      setOpen(!opened, { focusInside: media.matches });
-    });
+    reveal.addEventListener("click", toggle);
     collapse.addEventListener("click", () => close({ restoreFocus: true }));
     backdrop.addEventListener("click", () => close({ restoreFocus: true }));
     resizer.addEventListener("pointerdown", startDrag);
@@ -256,5 +260,5 @@
     });
   }
 
-  window.LIZPINK_SIDEBAR = Object.freeze({ init, update, close, isOpen: () => opened, isMobile: () => media.matches });
+  window.LIZPINK_SIDEBAR = Object.freeze({ init, update, close, toggle, isOpen: () => opened, isMobile: () => media.matches });
 })();

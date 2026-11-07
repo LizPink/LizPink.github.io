@@ -125,6 +125,24 @@ test("desktop initializes open with width and separator semantics; init is idemp
   h.api.init(); assert.equal(h.document.count("keydown"), 1);
 });
 
+test("public toggle shares button behavior and preserves desktop preference across mobile", () => {
+  const h = harness();
+  assert.equal(h.api.toggle(), true);
+  assert.equal(h.api.isOpen(), false);
+  h.mobile(true); h.mobile(false);
+  assert.equal(h.api.isOpen(), false);
+  assert.equal(h.api.toggle(), true);
+  assert.equal(h.api.isOpen(), true);
+  h.mobile(true);
+  assert.equal(h.api.toggle(), true);
+  assert.equal(h.api.isOpen(), true);
+  assert.equal(h.document.activeElement, h.nodes["menu-close"]);
+  h.api.toggle();
+  assert.equal(h.api.isOpen(), false);
+  assert.equal(h.document.activeElement, h.nodes["menu-reveal"]);
+  assert.equal(h.nodes["frame-main"].inert, false);
+});
+
 test("keyboard resizing observes limits and leaves unhandled keys untouched", () => {
   const h = harness(), separator = h.nodes["sidebar-resizer"];
   assert.equal(separator.emit("keydown", { key: "ArrowLeft" }).prevented, true);

@@ -104,7 +104,11 @@ test("real help uses short names, two groups and exactly seven complete command 
 test("help retains its keyboard reference and concise Escape instruction", () => {
   const help = load().renderHelp();
   const keys = help.children.find(node => node.className === "help-keys");
-  assert.deepEqual(keys.children.map(pair => text(pair.children[0])), ["Enter", "Tab", "↑ ↓", "/", "Esc", "Shift+Tab"]);
+  assert.deepEqual(keys.children.map(pair => text(pair.children[0])), ["Enter", "Tab", "↑ ↓", "/", "Esc", "Shift+Tab", "Ctrl+Alt+A", "Ctrl+Alt+B"]);
   const escape = keys.children.find(pair => text(pair.children[0]) === "Esc");
   assert.equal(text(escape.children[1]), "返回阅读");
+  const left = keys.children.find(pair => text(pair.children[0]) === "Ctrl+Alt+A");
+  const right = keys.children.find(pair => text(pair.children[0]) === "Ctrl+Alt+B");
+  assert.equal(text(left.children[1]), "切换左侧目录");
+  assert.equal(text(right.children[1]), "切换右侧目录");
 });

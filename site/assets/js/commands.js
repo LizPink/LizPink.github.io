@@ -96,7 +96,8 @@
     const keys = element("div", "help-keys");
     [
       ["Enter", "执行"], ["Tab", "补全"], ["↑ ↓", "历史"],
-      ["/", "开始输入"], ["Esc", "返回阅读"], ["Shift+Tab", "离开"]
+      ["/", "开始输入"], ["Esc", "返回阅读"], ["Shift+Tab", "离开"],
+      ["Ctrl+Alt+A", "切换左侧目录"], ["Ctrl+Alt+B", "切换右侧目录"]
     ].forEach(([key, meaning]) => {
       const pair = element("span", "help-key");
       pair.append(element("kbd", "", key), element("span", "", meaning));

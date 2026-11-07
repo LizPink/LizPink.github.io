@@ -12,6 +12,7 @@
   const contentIndex = window.LIZPINK_CONTENT_INDEX;
   const sidebar = window.LIZPINK_SIDEBAR;
   const articleOutline = window.LIZPINK_OUTLINE;
+  const outlineButton = document.querySelector("#outline-toggle");
   let followingOutput = true;
   let followFrame;
   const history = [];
@@ -40,6 +41,34 @@
   }
   function home() {
     // The homepage introduces the owner above the inline prompt.
+  }
+  function syncOutlineButton() {
+    const drawerOpen = sidebar.isMobile() && sidebar.isOpen();
+    const available = !drawerOpen && Boolean(articleOutline?.isAvailable());
+    const open = available && articleOutline.isOpen();
+    if (!available && document.activeElement === outlineButton) {
+      (drawerOpen ? document.querySelector("#menu-close") : main).focus({preventScroll:true});
+    }
+    outlineButton.hidden = !available;
+    outlineButton.setAttribute("aria-expanded", String(open));
+    outlineButton.setAttribute("aria-label", `${open ? "隐藏" : "显示"}本页目录`);
+    outlineButton.title = `${open ? "隐藏" : "显示"}本页目录（Ctrl+Alt+B）`;
+    const ids = [...document.querySelectorAll(".article-outline")]
+      .filter(node => node.id && node.parentElement.getClientRects().length).map(node => node.id);
+    if (ids.length) outlineButton.setAttribute("aria-controls", ids.join(" "));
+    else outlineButton.removeAttribute("aria-controls");
+  }
+  function toggleLeftDirectory() {
+    if (commandComposing) return false;
+    beginReading();
+    return sidebar.toggle();
+  }
+  function togglePageOutline() {
+    if (commandComposing || (sidebar.isMobile() && sidebar.isOpen()) || !articleOutline?.isAvailable()) return false;
+    beginReading();
+    const handled = articleOutline.toggle();
+    syncOutlineButton();
+    return handled;
   }
   function help() {
     view.append(commandCatalog.renderHelp());
@@ -126,7 +155,7 @@
       });
       layout.append(body); article.append(layout); view.append(article);
       articleOutline?.mount({ layout, body, headings:sample.headings || [], scrollRoot:main,
-        onNavigate:beginReading, onLayout:() => commandInput.refresh() });
+        onNavigate:beginReading, onLayout:() => { commandInput.refresh(); syncOutlineButton(); } });
     });
   }
   function project() { const path = beginPath("project"); renderPathSamples(path); }
@@ -248,6 +277,7 @@
     updateFollowState();
     document.querySelector("#frame-location").textContent = `~/${activeRoute}${activeItem ? `/${activeItem.key}` : ""}`;
     sidebar.update(activeRoute, activeItem?.key || null);
+    syncOutlineButton();
     document.title = `${activeItem?.title || titles[activeRoute]} · ${content.name}`;
     document.querySelector("#terminal-status").textContent = "就绪";
     syncCursor();
@@ -455,7 +485,9 @@
   window.LIZPINK_THEME.apply(window.LIZPINK_THEME.current());
   document.documentElement.dataset.pageHidden = String(document.hidden);
   document.addEventListener("visibilitychange", () => { document.documentElement.dataset.pageHidden = String(document.hidden); });
-  sidebar.init({onLayout:() => { beginReading(); commandInput.refresh(); }});
+  sidebar.init({onLayout:() => { beginReading(); commandInput.refresh(); syncOutlineButton(); }});
+  outlineButton.addEventListener("click", togglePageOutline);
+  window.LIZPINK_SIDEBAR_SHORTCUTS.init({toggleLeft:toggleLeftDirectory, toggleRight:togglePageOutline});
   const initialLocation = contentIndex.parseHash(location.hash);
   render(initialLocation.route, {itemKey:initialLocation.key});
   const initialDetails = records.lastElementChild?.querySelector(".output-details");

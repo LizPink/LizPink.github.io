@@ -60,7 +60,14 @@ function harness({ width = 1200, rootWidth = width, height = 400, scrollHeight =
     getAttribute(name) { return this.attributes[name] ?? null; }
     hasAttribute(name) { return this.attributes[name] !== undefined; }
     removeAttribute(name) { delete this.attributes[name]; }
-    getClientRects() { return this.isConnected && !this.hidden ? [{}] : []; }
+    getClientRects() {
+      if (!this.isConnected) return [];
+      for (let node = this; node; node = node.parentElement) {
+        if (node.hidden) return [];
+        if (node.parentElement?.tagName === "DETAILS" && !node.parentElement.open && node.tagName !== "SUMMARY") return [];
+      }
+      return [{}];
+    }
     getBoundingClientRect() {
       return { top: this.absoluteTop - (scrollRoot?.contains(this) && this !== scrollRoot ? scrollRoot.scrollTop : 0), width: this.clientWidth };
     }
@@ -111,6 +118,17 @@ function harness({ width = 1200, rootWidth = width, height = 400, scrollHeight =
   };
 }
 
+function anotherArticle(h, { open = true } = {}) {
+  const wrapper = new h.Node("details"); wrapper.open = open;
+  const layout = new h.Node("section", "article-layout"), body = new h.Node("div", "article-body");
+  layout.append(body); wrapper.append(new h.Node("summary"), layout); h.scrollRoot.append(wrapper);
+  ["other-a", "other-b"].forEach(id => body.append(new h.Node("h4", "", id)));
+  h.api.mount({ ...h.args, layout, body, headings: [
+    { id: "other-a", text: "A", level: 2 }, { id: "other-b", text: "B", level: 3 }
+  ] });
+  return { wrapper, layout, body, details: layout.querySelector(".article-outline-details"), aside: layout.querySelector(".article-outline") };
+}
+
 test("outline requires two actual unique metadata headings and accepts rendered h3/h4/h5 levels", () => {
   const h = harness();
   h.mount({ headings: [h.headings[0], h.headings[0], { id: "absent", text: "不存在", level: 2 }] });
@@ -132,7 +150,7 @@ test("wide mode uses the reading container width, even when the window/root is n
   h.details().open = true; h.details().emit("toggle"); h.flush();
   assert.equal(h.details().open, true);
   h.container.clientWidth = 1200; h.resize(); h.flush(); assert.equal(h.details().open, true);
-  h.container.clientWidth = 900; h.resize(); h.flush(); assert.equal(h.details().open, false);
+  h.container.clientWidth = 900; h.resize(); h.flush(); assert.equal(h.details().open, true);
 });
 
 test("clicks stay in the scroll root, preserve the route, focus the heading and collapse narrow details", () => {
@@ -220,4 +238,112 @@ test("clear cancels work, listeners and observers and late font callbacks cannot
 test("existing heading focus attributes survive navigation and cleanup", () => {
   const h = harness(); h.targets[1].setAttribute("tabindex", "0"); h.mount(); h.click(1); h.api.clear();
   assert.equal(h.targets[1].getAttribute("tabindex"), "0");
+});
+
+test("global toggle reports no available outline without changing the responsive default", () => {
+  const h = harness();
+  assert.equal(h.api.isAvailable(), false); assert.equal(h.api.isOpen(), false); assert.equal(h.api.toggle(), false);
+  h.mount({ headings: [h.headings[0]] }); assert.equal(h.api.toggle(), false);
+  h.mount(); assert.equal(h.api.isAvailable(), true); assert.equal(h.api.isOpen(), true);
+  assert.equal(h.aside().id, "outline-first");
+  assert.equal(h.aside().querySelector(".article-outline-title").textContent, "本页目录");
+  assert.equal(h.nav().getAttribute("aria-label"), "本页目录");
+});
+
+test("wide toggling hides/restores the aside while preserving input focus, scroll position and route", () => {
+  const h = harness(); h.mount();
+  const input = new h.Node("input"); h.container.append(input); input.focus(); h.scrollRoot.scrollTop = 230;
+  const initialNotifications = h.layouts;
+  assert.equal(h.api.toggle(), true);
+  assert.equal(h.aside().hidden, true); assert.equal(h.details().open, false);
+  assert.equal(h.api.isAvailable(), true); assert.equal(h.api.isOpen(), false);
+  assert.equal(h.document.activeElement, input); assert.equal(h.scrollRoot.scrollTop, 230);
+  assert.equal(h.window.location.hash, "#project/example");
+  assert.equal(h.layouts > initialNotifications, true);
+  h.flush(); assert.equal(h.aside().hidden, true);
+  assert.equal(h.api.toggle(), true);
+  assert.equal(h.aside().hidden, false); assert.equal(h.details().open, true); assert.equal(h.api.isOpen(), true);
+  assert.equal(h.document.activeElement, input); assert.equal(h.scrollRoot.scrollTop, 230);
+});
+
+test("hiding a focused wide outline moves focus to the scroll root without scrolling", () => {
+  const h = harness(); h.mount(); h.links()[1].focus(); h.scrollRoot.scrollTop = 210;
+  h.api.toggle();
+  assert.equal(h.document.activeElement, h.scrollRoot);
+  assert.equal(h.scrollRoot.lastFocusOptions.preventScroll, true);
+  assert.equal(h.scrollRoot.scrollTop, 210);
+});
+
+test("narrow toggling opens then closes disclosure while retaining its visible summary", () => {
+  const h = harness({ width: 800 }); h.mount(); h.scrollRoot.scrollTop = 120;
+  assert.equal(h.api.isOpen(), false);
+  h.api.toggle(); assert.equal(h.details().open, true); assert.equal(h.aside().hidden, false);
+  h.links()[0].focus(); h.api.toggle();
+  assert.equal(h.details().open, false); assert.equal(h.aside().hidden, false);
+  assert.equal(h.details().children[0].tagName, "SUMMARY");
+  assert.equal(h.document.activeElement, h.scrollRoot); assert.equal(h.scrollRoot.scrollTop, 120);
+});
+
+test("explicit visibility preference survives clear, article replacement and responsive changes", () => {
+  const h = harness(); h.mount(); h.api.toggle(); h.api.clear();
+  assert.equal(h.api.toggle(), false);
+  h.mount(); assert.equal(h.aside().hidden, true);
+  h.container.clientWidth = 800; h.resize(); h.flush();
+  assert.equal(h.aside().hidden, false); assert.equal(h.details().open, false);
+  h.api.toggle(); assert.equal(h.details().open, true);
+  h.container.clientWidth = 1200; h.resize(); h.flush(); assert.equal(h.details().open, true);
+  h.container.clientWidth = 800; h.resize(); h.flush(); assert.equal(h.details().open, true);
+  h.api.clear(); h.mount(); assert.equal(h.details().open, true);
+});
+
+test("closed ancestor disclosures are excluded and adopt the session preference when opened", () => {
+  const h = harness(); h.mount();
+  const other = anotherArticle(h, { open: false });
+  assert.equal(other.aside.hidden, false);
+  h.api.toggle();
+  assert.equal(h.aside().hidden, true); assert.equal(other.aside.hidden, false);
+  other.wrapper.open = true; const before = h.layouts; h.resize(); h.flush();
+  assert.equal(other.aside.hidden, true); assert.equal(h.layouts > before, true);
+  h.body.hidden = true; other.wrapper.open = false; h.resize(); h.flush();
+  assert.equal(h.api.isAvailable(), false); assert.equal(h.api.isOpen(), false); assert.equal(h.api.toggle(), false);
+});
+
+test("opening or closing the only article reports availability changes to the toolbar callback", () => {
+  const h = harness(); const wrapper = new h.Node("details");
+  h.layout.remove(); wrapper.append(new h.Node("summary"), h.layout); h.scrollRoot.append(wrapper); h.mount();
+  assert.equal(h.api.isAvailable(), false);
+  let notifications = h.layouts;
+  wrapper.open = true; h.resize(); h.flush();
+  assert.equal(h.api.isAvailable(), true); assert.equal(h.layouts > notifications, true);
+  notifications = h.layouts;
+  wrapper.open = false; h.resize(); h.flush();
+  assert.equal(h.api.isAvailable(), false); assert.equal(h.layouts > notifications, true);
+});
+
+test("mixed narrow disclosures are shown together, then closed together on the following toggle", () => {
+  const h = harness({ width: 800 }); h.mount(); const other = anotherArticle(h);
+  other.details.open = true; other.details.emit("toggle"); h.flush();
+  assert.equal(h.details().open, false); assert.equal(other.details.open, true); assert.equal(h.api.isOpen(), false);
+  h.api.toggle();
+  assert.equal(h.details().open, true); assert.equal(other.details.open, true); assert.equal(h.api.isOpen(), true);
+  h.api.toggle();
+  assert.equal(h.details().open, false); assert.equal(other.details.open, false); assert.equal(h.api.isOpen(), false);
+  assert.equal(h.aside().hidden, false); assert.equal(other.aside.hidden, false);
+});
+
+test("choosing a narrow heading auto-collapses only that article without overwriting the show preference", () => {
+  const h = harness({ width: 800 }); h.mount(); h.api.toggle();
+  h.click(2); h.flush(); assert.equal(h.details().open, false);
+  h.body.emit("load"); h.flush(); assert.equal(h.details().open, false);
+  h.container.clientWidth = 1200; h.resize(); h.flush(); assert.equal(h.details().open, true);
+  h.api.clear(); h.container.clientWidth = 800; h.mount(); assert.equal(h.details().open, true);
+});
+
+test("native summary choices are remembered and programmatic toggle events do not reverse them", () => {
+  const h = harness({ width: 800 }); h.mount();
+  h.details().open = true; h.details().emit("toggle");
+  h.details().open = false; h.details().emit("toggle");
+  h.container.clientWidth = 1200; h.resize(); h.flush(); assert.equal(h.aside().hidden, true);
+  h.details().emit("toggle"); h.flush(); assert.equal(h.aside().hidden, true);
+  h.api.clear(); h.mount(); assert.equal(h.aside().hidden, true);
 });

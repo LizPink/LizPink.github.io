@@ -2,6 +2,7 @@
 .article-layout, .article-body { min-width: 0; }
 
 .article-outline { min-width: 0; margin: 0 0 24px; color: var(--muted); font: 14px/1.6 var(--font-body); }
+.article-outline[hidden] { display: none; }
 .article-outline-title { display: none; margin: 0 0 10px; color: var(--muted); font: 500 14px/1.6 var(--font-body); }
 .article-outline-details > summary {
   display: flex;
@@ -51,7 +52,7 @@
 .article-outline-link:focus-visible { outline-offset: -2px; }
 
 @container reader (min-width: 1000px) {
-  .article-layout:has(> .article-outline) {
+  .article-layout:has(> .article-outline:not([hidden])) {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 180px;
     align-items: start;
