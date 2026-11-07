@@ -107,7 +107,7 @@ function harness({ mobile = false, width = 1200, entries } = {}) {
     flush() { const pending = [...frames.values()]; frames.clear(); pending.forEach(callback => callback()); },
     geometry(value) { layout.clientWidth = value; observer(); },
     mobile(value) { preference.matches = value; preference.emit("change"); },
-    dragStart(x = 304) { return resizer.emit("pointerdown", { button: 0, isPrimary: true, pointerId: 7, clientX: x }); },
+    dragStart(x = 240) { return resizer.emit("pointerdown", { button: 0, isPrimary: true, pointerId: 7, clientX: x }); },
     move(x) { window.emit("pointermove", { pointerId: 7, clientX: x }); },
     up(x) { window.emit("pointerup", { pointerId: 7, clientX: x }); }
   };
@@ -116,7 +116,7 @@ function harness({ mobile = false, width = 1200, entries } = {}) {
 test("desktop initializes open with width and separator semantics; init is idempotent", () => {
   const h = harness();
   assert.equal(h.api.isOpen(), true);
-  assert.equal(h.currentWidth(), 304);
+  assert.equal(h.currentWidth(), 240);
   assert.equal(h.nodes["route-menu"].hidden, false);
   assert.equal(h.nodes["frame-main"].inert, false);
   assert.equal(h.nodes["sidebar-resizer"].hidden, false);
@@ -127,12 +127,12 @@ test("desktop initializes open with width and separator semantics; init is idemp
 test("keyboard resizing observes limits and leaves unhandled keys untouched", () => {
   const h = harness(), separator = h.nodes["sidebar-resizer"];
   assert.equal(separator.emit("keydown", { key: "ArrowLeft" }).prevented, true);
-  assert.equal(h.currentWidth(), 288);
-  separator.emit("keydown", { key: "Home" }); assert.equal(h.currentWidth(), 224);
-  separator.emit("keydown", { key: "ArrowLeft" }); assert.equal(h.currentWidth(), 224);
+  assert.equal(h.currentWidth(), 224);
+  separator.emit("keydown", { key: "Home" }); assert.equal(h.currentWidth(), 200);
+  separator.emit("keydown", { key: "ArrowLeft" }); assert.equal(h.currentWidth(), 200);
   separator.emit("keydown", { key: "End" }); assert.equal(h.currentWidth(), 420);
   assert.equal(separator.emit("keydown", { key: "a" }).prevented, false);
-  separator.emit("dblclick"); assert.equal(h.currentWidth(), 304);
+  separator.emit("dblclick"); assert.equal(h.currentWidth(), 240);
 });
 
 test("container shrink preserves reading space and restores preferred width when it grows", () => {
@@ -147,7 +147,7 @@ test("pointer moves are batched and pointerup flushes the final position and cle
   const h = harness();
   assert.equal(h.dragStart().prevented, true);
   h.move(340); h.move(380);
-  assert.equal(h.frames.size, 1); assert.equal(h.currentWidth(), 304);
+  assert.equal(h.frames.size, 1); assert.equal(h.currentWidth(), 240);
   h.flush(); assert.equal(h.currentWidth(), 380);
   h.up(399); assert.equal(h.currentWidth(), 399);
   assert.equal(h.nodes["terminal-frame"].dataset.resizing, "false");
@@ -160,7 +160,7 @@ test("Escape rolls back an in-progress drag and cancels its queued frame", () =>
   const h = harness(); h.dragStart(); h.move(390); h.flush(); h.move(410);
   const event = h.document.emit("keydown", { key: "Escape" });
   assert.equal(event.prevented, true); assert.equal(event.stopped, true);
-  assert.equal(h.currentWidth(), 304); assert.equal(h.frames.size, 0);
+  assert.equal(h.currentWidth(), 240); assert.equal(h.frames.size, 0);
   assert.equal(h.document.body.style.userSelect, "text");
   assert.equal(h.window.count("pointermove"), 0);
 });
@@ -169,7 +169,7 @@ for (const reason of ["pointercancel", "lostpointercapture", "blur"]) {
   test(`drag cancellation cleans up and restores width on ${reason}`, () => {
     const h = harness(); h.dragStart(); h.move(400); h.flush();
     (reason === "lostpointercapture" ? h.nodes["sidebar-resizer"] : h.window).emit(reason, { pointerId: 7 });
-    assert.equal(h.currentWidth(), 304);
+    assert.equal(h.currentWidth(), 240);
     assert.equal(h.nodes["terminal-frame"].dataset.resizing, "false");
     assert.equal(h.document.body.style.userSelect, "text");
     assert.equal(h.window.count("pointerup"), 0);
@@ -204,7 +204,7 @@ test("close never leaves focus in hidden content, including a backdrop dismissal
 test("breakpoint transitions preserve desktop collapse choice and release inert/drag state", () => {
   const h = harness(); h.dragStart(); h.move(380); h.flush();
   h.mobile(true);
-  assert.equal(h.api.isOpen(), false); assert.equal(h.currentWidth(), 304);
+  assert.equal(h.api.isOpen(), false); assert.equal(h.currentWidth(), 240);
   assert.equal(h.document.body.style.userSelect, "text");
   h.mobile(false); assert.equal(h.api.isOpen(), true);
   h.api.close(); h.mobile(true); h.nodes["menu-reveal"].emit("click");
@@ -229,6 +229,18 @@ test("content uses literal text, honest date labels, and preserves nodes/focus w
   assert.equal(h.nodes["content-list"].scrollTop, 0);
   assert.match(h.nodes["content-list"].textContent, /更新 2026.10.31/);
   assert.equal(h.nodes["content-index-title"].textContent, "生活与记录");
+});
+
+test("content rows contain only a date and title, with no empty metadata for undated rows", () => {
+  const h = harness(); h.api.update("home");
+  const buttons = h.nodes["content-list"].querySelectorAll("[data-content-key]");
+  assert.deepEqual(buttons[0].children.map(node => node.className), ["content-item-meta", "content-item-title"]);
+  assert.equal(buttons[0].children[0].children.length, 1);
+  assert.equal(buttons[0].children[0].children[0].tagName, "time");
+  assert.deepEqual(buttons[1].children.map(node => node.className), ["content-item-title"]);
+  assert.equal(buttons[1].textContent, "第二条");
+  assert.doesNotMatch(h.nodes["content-list"].textContent, /简介|日常记录|文字示例|图片|视频/);
+  assert.equal(h.nodes["content-list"].descendants().some(node => node.className === "content-item-excerpt"), false);
 });
 
 test("home/help list all entries and empty sections retain a valid list structure", () => {

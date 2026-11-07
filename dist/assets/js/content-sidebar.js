@@ -2,8 +2,8 @@
 (() => {
   "use strict";
 
-  const DEFAULT_WIDTH = 304;
-  const MIN_WIDTH = 224;
+  const DEFAULT_WIDTH = 240;
+  const MIN_WIDTH = 200;
   const MAX_WIDTH = 420;
   const CONTENT_MIN_WIDTH = 320;
   const titles = { home: "全部内容", help: "全部内容", life: "生活与记录", resume: "经历与能力", project: "项目与探索" };
@@ -228,14 +228,14 @@
         button.type = "button";
         button.dataset.contentRoute = item.route;
         button.dataset.contentKey = item.key;
-        const meta = element("span", "content-item-meta");
         if (item.date) {
+          const meta = element("span", "content-item-meta");
           const time = element("time", "", `${item.date.example ? "示例日期" : item.date.label} ${item.date.text}`);
           time.dateTime = item.date.value;
           meta.append(time);
+          button.append(meta);
         }
-        meta.append(element("span", "", `${{ text: "文字", image: "图片", video: "视频" }[item.type] || "内容"}${item.example ? "示例" : ""}`));
-        button.append(meta, element("span", "content-item-title", item.title), element("span", "content-item-excerpt", item.excerpt));
+        button.append(element("span", "content-item-title", item.title));
         row.append(button); return row;
       });
       if (!rows.length) {

@@ -177,8 +177,11 @@
       if (!details.open) populate();
     });
     details.addEventListener("toggle", () => {
+      if (!details.isConnected) return;
+      const initialOpen = details.initialOpen === true;
+      details.initialOpen = false;
       commandInput.refresh();
-      if (details.open) { pauseFollowing(); populate(); label.textContent = "收起详情"; scrollWithinTerminal(result.node); }
+      if (details.open) { pauseFollowing(); populate(); label.textContent = "收起详情"; if (!initialOpen) scrollWithinTerminal(result.node); }
       else { label.textContent = result.detailLabel; body.querySelectorAll("video").forEach(video => video.pause()); }
       updateFollowState();
     });
@@ -222,20 +225,18 @@
       - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
     return entry.getBoundingClientRect().height <= available;
   }
-  function render(route, {append = false, label = route, animate = false, itemKey = null} = {}) {
+  function render(route, {label = route, animate = false, itemKey = null} = {}) {
     outputMotion?.finish();
     feedback.textContent = "";
     resetCompletion();
     const base = commandCatalog.normalize(route);
     activeRoute = routes.includes(base) ? base : "home";
     activeItem = contentIndex.get(activeRoute, itemKey);
-    // Route visibility also applies to keyboard commands that append output.
     document.querySelector("#intro").hidden = activeRoute !== "home";
     records.querySelectorAll("video").forEach(video => video.pause());
-    if (!append || activeRoute === "home") {
-      followingOutput = true;
-      records.replaceChildren();
-    }
+    // Each route is a fresh page. Command recall remains in the history array.
+    pauseFollowing();
+    records.replaceChildren();
     view.removeAttribute("id");
     view = $("div", "terminal-result");
     view.id = "view";
@@ -245,13 +246,13 @@
       const echo = $("p", "command-echo");
       const symbol = $("span", "prompt-symbol", ">"); symbol.setAttribute("aria-hidden", "true");
       echo.append(symbol, $("code", "", label)); entry.append(echo, view); records.append(entry);
-      while (records.children.length > 5) records.firstElementChild.remove();
     }
     if (activeItem) renderSelectedItem(activeRoute, activeItem.key);
     else if (activeRoute !== "home") addOutputSummary(activeRoute);
+    main.scrollTop = 0;
     commandInput.refresh();
     if (animate && !activeItem && entry && outputFitsViewport(entry)) outputMotion?.play(view);
-    queueFollow();
+    updateFollowState();
     document.querySelector("#frame-location").textContent = `~/${activeRoute}${activeItem ? `/${activeItem.key}` : ""}`;
     sidebar.update(activeRoute, activeItem?.key || null);
     document.title = `${activeItem?.title || titles[activeRoute]} · LizPink`;
@@ -349,10 +350,9 @@
       }
       return;
     }
-    resumeFollowing();
     if (command === "clear") { history.length = 0; historyPosition = 0; input.value = ""; navigate("home"); focusCommand(); syncCursor(); return; }
     const route = command;
-    if (routes.includes(route)) { resumeFollowing(true); input.value = ""; navigate(route, false, {append:true, label:raw.trim()}); input.focus({preventScroll:true}); syncCursor(); }
+    if (routes.includes(route)) { input.value = ""; navigate(route, false, {label:raw.trim()}); input.focus({preventScroll:true}); syncCursor(); }
     else {
       const suggestions = commandCatalog.suggest(command);
       feedback.textContent = `未识别“${raw.trim()}”。${suggestions.length ? `试试 ${suggestions.join(" 或 ")}。` : "输入 help 查看命令。"}`;
@@ -424,7 +424,7 @@
   main.addEventListener("touchmove", beginReading, {passive:true});
   main.addEventListener("pointerdown", event => { if (event.clientX >= main.getBoundingClientRect().right - 20) beginReading(); });
   main.addEventListener("scroll", () => {
-    if (!followingOutput && main.scrollHeight - main.scrollTop - main.clientHeight <= 32) followingOutput = true;
+    if (!followingOutput && main.scrollTop > 0 && main.scrollHeight - main.scrollTop - main.clientHeight <= 32) followingOutput = true;
     updateFollowState();
   }, {passive:true});
   main.addEventListener("focusin", event => { if (event.target.closest("#terminal-records")) beginReading(); });
@@ -468,7 +468,7 @@
   render(initialLocation.route, {itemKey:initialLocation.key});
   const initialDetails = records.lastElementChild?.querySelector(".output-details");
   if (initialDetails) {
-    pauseFollowing(); initialDetails.populate(); initialDetails.open = true;
+    pauseFollowing(); initialDetails.populate(); initialDetails.initialOpen = true; initialDetails.open = true;
     commandInput.refresh(); main.scrollTop = 0;
   }
   if (activeItem) { pauseFollowing(); main.scrollTop = 0; }
