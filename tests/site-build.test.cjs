@@ -5,9 +5,10 @@ const fs = require("node:fs/promises");
 const os = require("node:os");
 const path = require("node:path");
 const vm = require("node:vm");
+const { parse, stringify } = require("yaml");
 const project = path.resolve(__dirname, "..");
 
-async function fixture(t) {
+async function fixture(t, { article = true } = {}) {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), "lizpink-site-"));
   t.after(async () => {
     assert.equal(path.dirname(root), os.tmpdir());
@@ -15,19 +16,51 @@ async function fixture(t) {
     await fs.rm(root, { recursive: true, force: true });
   });
   await fs.cp(path.join(project, "site"), path.join(root, "site"), { recursive: true });
-  await fs.cp(path.join(project, "content"), path.join(root, "content"), { recursive: true });
+  const entries = path.join(root, "content/entries");
+  await fs.mkdir(entries, { recursive: true });
+  await fs.writeFile(path.join(root, "content/site.yml"), stringify({
+    name: "Test author", greeting: "Hello, Test author", role: "Student", interests: ["Graphics"],
+    about: { paragraphs: ["A temporary test site."] }, resume: { sections: [], pdfUrl: "" },
+    paths: ["life", "resume", "project"].map(id => ({ id, title: id, description: `${id} description` }))
+  }));
+  await fs.writeFile(path.join(entries, ".gitkeep"), "");
+  if (article) {
+    await fs.mkdir(path.join(entries, "article"));
+    await fs.writeFile(path.join(entries, "article/index.md"),
+      '---\ntitle: Test article\nsections: [project]\npublishedAt: "2026-10-22"\n---\nA temporary test article.\n');
+  }
   return root;
 }
+
+test("an empty content directory builds all three empty sections and removes previous published media", async t => {
+  const { build } = await import("../scripts/build.mjs");
+  const root = await fixture(t, { article: false });
+  const oldMedia = path.join(root, "dist/assets/content/previous");
+  await fs.mkdir(oldMedia, { recursive: true });
+  await fs.writeFile(path.join(oldMedia, "old.svg"), "<svg/>");
+  const content = await build(root);
+  assert.deepEqual(Object.keys(content.samples), []);
+  assert.deepEqual(content.paths.map(item => item.id).sort(), ["life", "project", "resume"]);
+  content.paths.forEach(item => assert.deepEqual(item.items, []));
+  assert.deepEqual(await fs.readdir(path.join(root, "content/entries")), [".gitkeep"]);
+  assert.deepEqual(await fs.readdir(path.join(root, "dist/assets/content")), []);
+  const window = {};
+  vm.runInNewContext(await fs.readFile(path.join(root, "dist/assets/js/content.js"), "utf8"), { window });
+  assert.deepEqual(Object.keys(window.LIZPINK_CONTENT.samples), []);
+  assert.doesNotMatch(await fs.readFile(path.join(root, "dist/index.html"), "utf8"), /\{\{SITE_|undefined/);
+  assert.deepEqual(await fs.readdir(path.join(root, ".build")), []);
+});
 
 test("full build without a site description escapes author settings, copies PDF and replaces stale generated assets", async t => {
   const { build } = await import("../scripts/build.mjs");
   const root = await fixture(t);
   const config = path.join(root, "content/site.yml");
-  let yaml = await fs.readFile(config, "utf8");
-  yaml = yaml.replace(/^name:.*$/m, 'name: "Author & <name>"').replace(/^greeting:.*$/m, 'greeting: "Hello, Author & <name> <script>bad()</script>"')
-    .replace('pdfUrl: ""', 'pdfUrl: "./files/resume.pdf"');
-  assert.doesNotMatch(yaml, /^description:/m);
-  await fs.writeFile(config, yaml);
+  const settings = parse(await fs.readFile(config, "utf8"));
+  settings.name = "Author & <name>";
+  settings.greeting = "Hello, Author & <name> <script>bad()</script>";
+  settings.resume.pdfUrl = "./files/resume.pdf";
+  assert.equal(Object.hasOwn(settings, "description"), false);
+  await fs.writeFile(config, stringify(settings));
   await fs.mkdir(path.join(root, "content/files"), { recursive: true });
   await fs.writeFile(path.join(root, "content/files/resume.pdf"), "%PDF-1.4\nfixture");
   const content = await build(root);
@@ -44,7 +77,7 @@ test("full build without a site description escapes author settings, copies PDF 
   vm.runInNewContext(await fs.readFile(path.join(root, "dist/assets/js/content.js"), "utf8"), { window });
   assert.equal(window.LIZPINK_CONTENT.name, content.name);
   assert.equal(Object.hasOwn(window.LIZPINK_CONTENT, "description"), false);
-  assert.equal(Object.keys(window.LIZPINK_CONTENT.samples).length, 6);
+  assert.deepEqual(Object.keys(window.LIZPINK_CONTENT.samples), ["article"]);
   await fs.writeFile(path.join(root, "dist/stale.txt"), "old generated content");
   await build(root);
   await assert.rejects(fs.stat(path.join(root, "dist/stale.txt")), { code: "ENOENT" });
@@ -56,7 +89,7 @@ test("invalid content preserves the complete previous website and releases its b
   const root = await fixture(t);
   await build(root);
   const previous = await fs.readFile(path.join(root, "dist/assets/js/content.js"), "utf8");
-  const markdown = path.join(root, "content/entries/geometry/index.md");
+  const markdown = path.join(root, "content/entries/article/index.md");
   const original = await fs.readFile(markdown, "utf8");
   await fs.writeFile(markdown, original.replace("2026-10-22", "2026-02-31"));
   await assert.rejects(build(root), /publishedAt/);

@@ -10,19 +10,8 @@
 lizpink-terminal/
 ├── content/                   # 日常写作与素材
 │   ├── site.yml               # 网站介绍、简历与栏目配置
-│   └── entries/
-│       ├── journal/           # 日常文字
-│       ├── notebook/          # 兴趣图文
-│       ├── profile/           # 经历文字
-│       ├── question/          # 项目文字
-│       ├── geometry/          # 图片内容
-│       │   ├── index.md       # 标题、日期、所属栏目、摘要和正文
-│       │   └── demo-geometry.svg
-│       └── animation/         # 视频内容
-│           ├── index.md
-│           ├── demo-orbit.mp4
-│           ├── demo-orbit.poster.svg  # 同名视频封面
-│           └── demo-orbit.zh.vtt      # 同名中文字幕
+│   └── entries/               # 当前为空，新增文章放在此处
+│       └── .gitkeep           # 保留空目录，不生成文章
 ├── site/                      # 网站界面源码
 │   ├── index.html             # 页面骨架与站点字段占位符
 │   ├── .nojekyll              # GitHub Pages 静态发布标记

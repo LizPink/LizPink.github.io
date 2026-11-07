@@ -54,7 +54,6 @@ test("real site configuration supplies each persistent title/description and the
   }
   const { node } = create("home");
   assert.equal(node.className, "home-profile");
-  assert.equal(config.role, "学生");
   assert.equal(find(node, "home-role")?.textContent, `职业：${config.role}`);
   assert.equal(find(node, "home-interests")?.textContent, `关注：${config.interests.join(" · ")}`);
   assert.deepEqual(find(node, "home-about").children.map(child => child.textContent), config.about.paragraphs);
@@ -77,17 +76,44 @@ test("ten newest entries use the index's update-first order instead of path/sour
   assert.doesNotMatch(node.textContent, /张图片|段视频|条文字|简介/);
 });
 
-test("generated content and shared entries retain real index dates and route membership", () => {
+test("an explicitly empty site keeps section introductions, resume status and the configured home profile", () => {
+  const config = parse(fs.readFileSync(path.join(__dirname, "../content/site.yml"), "utf8"));
+  const content = { ...config, paths: config.paths.map(section => ({ ...section, items: [] })), samples: {}, resume: { sections: [], pdfUrl: "" } };
+  const { create, index } = load(content);
+  assert.deepEqual(Object.keys(content.samples), []);
+  for (const route of ["life", "resume", "project"]) {
+    const { node, detailLabel } = create(route);
+    assert.equal(index.items(route).length, 0);
+    assert.equal(all(find(node, "summary-overview"), "button").length, 0);
+    assert.equal(all(node, "time").length, 0);
+    assert.equal(find(node, "summary-empty").textContent, "这个分区还没有内容。");
+    assert.equal(find(node, "summary-description").textContent, content.paths.find(section => section.id === route).description);
+    assert.equal(detailLabel, null);
+  }
+  const resume = create("resume").node;
+  assert.equal(all(find(resume, "summary-facts"), "dt")[0].textContent, "简历");
+  assert.equal(all(find(resume, "summary-facts"), "dd")[0].textContent, "PDF 待添加");
+  const home = create("home").node;
+  assert.equal(find(home, "home-role").textContent, `职业：${content.role}`);
+  assert.equal(find(home, "home-interests").textContent, `关注：${Array.from(content.interests).join(" · ")}`);
+  assert.deepEqual(find(home, "home-about").children.map(paragraph => paragraph.textContent), Array.from(content.about.paragraphs));
+});
+
+test("actual generated summaries adopt current articles without requiring a permanently empty site", () => {
   const window = {};
   vm.runInNewContext(fs.readFileSync(path.join(__dirname, "../dist/assets/js/content.js"), "utf8"), { window });
-  const { create, index } = load(window.LIZPINK_CONTENT);
+  const content = window.LIZPINK_CONTENT, { create, index } = load(content);
   for (const route of ["life", "resume", "project"]) {
-    const { node } = create(route);
-    const entries = index.items(route).slice(0, 10), buttons = all(find(node, "summary-overview"), "button");
-    assert.deepEqual(buttons.map(button => button.dataset.contentKey), Array.from(entries, item => item.key));
-    assert.equal(buttons.every(button => button.dataset.contentRoute === route), true);
-    assert.deepEqual(all(node, "time").map(time => [time.dateTime, time.textContent]), Array.from(entries.filter(item => item.date), item => [item.date.value, item.date.text]));
+    const { node } = create(route), expected = Array.from(index.items(route)).slice(0, 10);
+    const overview = find(node, "summary-overview");
+    assert.deepEqual(all(overview, "button").map(button => button.dataset.contentKey), expected.map(item => item.key));
+    assert.deepEqual(all(overview, "time").map(time => [time.dateTime, time.textContent]), expected.filter(item => item.date).map(item => [item.date.value, item.date.text]));
+    assert.equal(find(node, "summary-description").textContent, content.paths.find(section => section.id === route).description);
+    if (!expected.length) assert.equal(find(node, "summary-empty").textContent, "这个分区还没有内容。");
   }
+  assert.equal(all(find(create("resume").node, "summary-facts"), "dt")[0].textContent, "简历");
+  const home = create("home").node;
+  assert.equal(find(home, "home-role").textContent, `职业：${content.role}`);
 });
 
 test("undated entries contain only a title and invalid dates do not create empty date slots", () => {

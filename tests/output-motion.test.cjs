@@ -11,6 +11,15 @@ const scripts = ["content-index.js", "commands.js", "summaries.js", "output-moti
   .map(name => fs.readFileSync(path.join(__dirname, "../site/assets/js", name), "utf8"));
 const flush = () => new Promise(resolve => setImmediate(resolve));
 
+function populatedContent() {
+  const keys = ["entry-a", "entry-b", "entry-c"];
+  return {
+    paths: ["life", "resume", "project"].map(id => ({ id, title: id, description: `${id}分区介绍`, items: [...keys] })),
+    samples: Object.fromEntries(keys.map((key, index) => [key, { title: `测试条目${index}`, publishedAt: `2024-01-0${index + 1}` }])),
+    resume: { sections: [], pdfUrl: "" }
+  };
+}
+
 class Signals {
   listeners = new Map();
   addEventListener(type, listener) {
@@ -79,8 +88,8 @@ function harness(options = {}) {
   const preference = Object.assign(new Signals(), { matches: Boolean(options.reduce) });
   const window = { matchMedia: () => preference, getSelection: () => selection };
   const context = vm.createContext({ window, document, URL });
-  vm.runInContext(contentSource, context);
-  if (options.content) window.LIZPINK_CONTENT = options.content;
+  if (options.generated) vm.runInContext(contentSource, context);
+  else window.LIZPINK_CONTENT = options.content || populatedContent();
   scripts.forEach(source => vm.runInContext(source, context));
   function output(route) {
     const container = new Node("div", "terminal-result");
@@ -112,7 +121,7 @@ function assertClean(env, container) {
   assert.equal(env.preference.listenerCount(), 0);
 }
 
-test("real summaries retain every node/content and reveal only summary units within 280ms", () => {
+test("populated synthetic summaries retain every node/content and reveal semantic units within 280ms", () => {
   for (const route of ["life", "project", "resume"]) {
     const env = harness();
     const output = env.output(route);
@@ -147,6 +156,39 @@ test("real summaries retain every node/content and reveal only summary units wit
     });
     env.api.finish();
     assertClean(env, output);
+  }
+});
+
+test("explicitly empty sections reveal an intact empty state without details or missing-row errors", () => {
+  for (const route of ["life", "resume", "project"]) {
+    const content = populatedContent();
+    content.paths.forEach(section => { section.items = []; }); content.samples = {};
+    const env = harness({ content });
+    const output = env.output(route), originalText = output.textContent;
+    assert.equal(output.querySelectorAll(".summary-preview > li").length, 0);
+    assert.equal(output.querySelector(".output-details"), null);
+    assert.equal(output.querySelector(".summary-empty").textContent, "这个分区还没有内容。");
+    env.api.play(output);
+    assert.equal(output.textContent, originalText);
+    const title = env.calls.find(call => call.node === output.querySelector(".summary-section-title"));
+    const empty = env.calls.find(call => call.node === output.querySelector(".summary-empty"));
+    assert.equal(title.timing.delay, empty.timing.delay);
+    assert.ok(Math.max(...env.calls.map(call => call.timing.delay + call.timing.duration)) <= 280);
+    env.api.finish(); assertClean(env, output);
+  }
+});
+
+test("actual generated section output keeps its content and semantic batches whether empty or populated", () => {
+  for (const route of ["life", "resume", "project"]) {
+    const env = harness({ generated: true });
+    const output = env.output(route), originalText = output.textContent;
+    env.api.play(output); assert.equal(output.textContent, originalText);
+    const rows = output.querySelectorAll(".summary-preview > li");
+    const title = env.calls.find(call => call.node === output.querySelector(".summary-section-title"));
+    const following = rows.length ? rows[0] : output.querySelector(".summary-empty");
+    assert.equal(title.timing.delay, env.calls.find(call => call.node === following).timing.delay);
+    assert.ok(Math.max(...env.calls.map(call => call.timing.delay + call.timing.duration)) <= 280.001);
+    env.api.finish(); assertClean(env, output);
   }
 });
 

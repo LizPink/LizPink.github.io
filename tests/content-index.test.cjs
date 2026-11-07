@@ -9,19 +9,69 @@ const vm = require("node:vm");
 const read = name => fs.readFileSync(path.join(__dirname, "../dist/assets/js", name), "utf8");
 const source = fs.readFileSync(path.join(__dirname, "../site/assets/js/content-index.js"), "utf8");
 const plain = value => JSON.parse(JSON.stringify(value));
+function representativeContent() {
+  // Metadata-only fixtures exercise the index without retaining site articles or assets.
+  return {
+    paths: [
+      { id: "life", title: "生活", items: ["life-early", "life-late"] },
+      { id: "resume", title: "经历", items: ["resume-entry", "shared-entry"] },
+      { id: "project", title: "项目", items: ["project-early", "shared-entry", "project-late"] }
+    ],
+    samples: {
+      "life-early": { title: "早期记录", type: "text", publishedAt: "2024-01-01" },
+      "life-late": { title: "近期记录", type: "text", publishedAt: "2024-02-01" },
+      "resume-entry": { title: "经历记录", type: "text", publishedAt: "2023-01-01" },
+      "shared-entry": { title: "共享条目", type: "image", publishedAt: "2023-12-01", updatedAt: "2025-01-01" },
+      "project-early": { title: "早期项目", type: "text", publishedAt: "2024-01-15" },
+      "project-late": { title: "近期项目", type: "video", publishedAt: "2024-03-01" }
+    }
+  };
+}
 function load(...values) {
-  const window = {};
+  const window = { LIZPINK_CONTENT: values.length ? values[0] : representativeContent() };
   const context = vm.createContext({ window });
-  if (values.length) window.LIZPINK_CONTENT = values[0];
-  else vm.runInContext(read("content.js"), context);
   vm.runInContext(source, context);
   return { api: window.LIZPINK_CONTENT_INDEX, content: window.LIZPINK_CONTENT };
 }
 
-test("generated articles sort by displayed date and keep shared membership", () => {
+test("an explicitly empty site has no entries and removed article deep links resolve to their section", () => {
+  const { api } = load({ paths: ["life", "resume", "project"].map(id => ({ id, items: [] })), samples: {} });
+  for (const route of ["home", "help", "life", "resume", "project", "unknown", undefined]) {
+    assert.deepEqual(plain(api.items(route)), []);
+  }
+  for (const [route, keys] of Object.entries({ life: ["journal", "notebook"], resume: ["profile", "geometry"], project: ["question", "geometry", "animation"] })) {
+    for (const key of keys) {
+      assert.equal(api.get(route, key), null);
+      assert.deepEqual(plain(api.parseHash(`#${route}/${key}`)), { route, key: null });
+      assert.equal(api.hash(route, key), `#${route}`);
+    }
+  }
+});
+
+test("the actual generated index follows current configured membership, including empty sections", () => {
+  const window = {};
+  vm.runInNewContext(read("content.js"), { window });
+  const { api, content } = load(window.LIZPINK_CONTENT);
+  const allKeys = new Set();
+  for (const route of ["life", "resume", "project"]) {
+    const section = content.paths.find(item => item.id === route);
+    const expected = [...new Set(Array.from(section?.items || []).filter(key => Object.hasOwn(content.samples, key)))];
+    const entries = api.items(route);
+    assert.deepEqual(Array.from(entries, item => item.key).sort(), expected.sort());
+    entries.forEach(item => {
+      assert.equal(item.route, route);
+      assert.equal(item.title, content.samples[item.key].title);
+      assert.deepEqual(plain(api.parseHash(api.hash(route, item.key))), { route, key: item.key });
+      allKeys.add(item.key);
+    });
+  }
+  for (const route of ["home", "help"]) assert.deepEqual(Array.from(api.items(route), item => item.key).sort(), [...allKeys].sort());
+});
+
+test("synthetic article metadata sorts by displayed date and keeps shared membership", () => {
   const { api, content } = load();
   assert.equal(Object.isFrozen(api), true);
-  const expected = { life: ["notebook", "journal"], resume: ["geometry", "profile"], project: ["geometry", "animation", "question"] };
+  const expected = { life: ["life-late", "life-early"], resume: ["shared-entry", "resume-entry"], project: ["shared-entry", "project-late", "project-early"] };
   for (const route of ["life", "resume", "project"]) {
     const routeTitle = content.paths.find(item => item.id === route).title;
     assert.deepEqual(plain(api.items(route).map(item => item.key)), expected[route]);
@@ -34,20 +84,20 @@ test("generated articles sort by displayed date and keep shared membership", () 
       assert.equal(item.date.label, content.samples[item.key].updatedAt ? "更新" : "日期");
     });
   }
-  assert.equal(api.get("resume", "geometry").route, "resume");
-  assert.equal(api.get("project", "geometry").route, "project");
-  assert.equal(api.get("life", "geometry"), null);
+  assert.equal(api.get("resume", "shared-entry").route, "resume");
+  assert.equal(api.get("project", "shared-entry").route, "project");
+  assert.equal(api.get("life", "shared-entry"), null);
 });
 
 test("combined indexes use first path reference as canonical route", () => {
   const { api } = load();
-  const expected = ["geometry", "animation", "notebook", "question", "journal", "profile"];
+  const expected = ["shared-entry", "project-late", "life-late", "project-early", "life-early", "resume-entry"];
   for (const route of ["home", "help", "unknown", undefined]) {
     assert.deepEqual(plain(api.items(route).map(item => item.key)), expected);
-    assert.equal(api.items(route).find(item => item.key === "geometry").route, "resume");
-    assert.equal(api.items(route).find(item => item.key === "geometry").routeTitle, "经历");
+    assert.equal(api.items(route).find(item => item.key === "shared-entry").route, "resume");
+    assert.equal(api.items(route).find(item => item.key === "shared-entry").routeTitle, "经历");
   }
-  for (const route of ["home", "help", "unknown", "research"]) assert.equal(api.get(route, "geometry"), null);
+  for (const route of ["home", "help", "unknown", "research"]) assert.equal(api.get(route, "shared-entry"), null);
 });
 
 test("missing, duplicate, inherited and malformed entries are omitted, including unreferenced samples", () => {
@@ -76,8 +126,8 @@ test("canonical route follows data order rather than a fixed route priority", ()
   const { content } = load();
   content.paths = [content.paths[2], content.paths[0], content.paths[1]];
   const { api } = load(content);
-  assert.equal(api.items("home").find(item => item.key === "geometry").route, "project");
-  assert.equal(api.get("resume", "geometry").route, "resume");
+  assert.equal(api.items("home").find(item => item.key === "shared-entry").route, "project");
+  assert.equal(api.get("resume", "shared-entry").route, "resume");
 });
 
 test("excerpt only collapses whitespace and never truncates or replaces the original text", () => {
@@ -217,15 +267,15 @@ test("hash parsing validates route membership and preserves valid routes for bad
     assert.deepEqual(plain(api.parseHash(`#${route}`)), { route, key: null });
   }
   for (const route of ["resume", "project"]) {
-    assert.deepEqual(plain(api.parseHash(`#${route}/geometry`)), { route, key: "geometry" });
+    assert.deepEqual(plain(api.parseHash(`#${route}/shared-entry`)), { route, key: "shared-entry" });
   }
-  for (const value of ["#life/geometry", "#life/missing", "#life/", "#life/journal/extra"]) {
+  for (const value of ["#life/shared-entry", "#life/missing", "#life/", "#life/life-early/extra"]) {
     assert.deepEqual(plain(api.parseHash(value)), { route: "life", key: null });
   }
-  for (const value of ["#research/geometry", "#3/geometry", "#关于", "#PROJECT/geometry", "", "#", null, 3]) {
+  for (const value of ["#research/shared-entry", "#3/shared-entry", "#关于", "#PROJECT/shared-entry", "", "#", null, 3]) {
     assert.deepEqual(plain(api.parseHash(value)), { route: "home", key: null });
   }
-  assert.deepEqual(plain(api.parseHash("#help/geometry")), { route: "help", key: null });
+  assert.deepEqual(plain(api.parseHash("#help/shared-entry")), { route: "help", key: null });
 });
 
 test("hash round trips Unicode, reserved characters, slash and literal percent exactly once", () => {
@@ -244,21 +294,21 @@ test("hash round trips Unicode, reserved characters, slash and literal percent e
 
 test("malformed URI input safely falls back to home", () => {
   const { api } = load();
-  for (const value of ["#project/%", "#project/%E0%A4%A", "#%ZZ/geometry", "#project/geometry/%ZZ", "#project/\ud800"]) {
+  for (const value of ["#project/%", "#project/%E0%A4%A", "#%ZZ/shared-entry", "#project/shared-entry/%ZZ", "#project/\ud800"]) {
     assert.deepEqual(plain(api.parseHash(value)), { route: "home", key: null });
   }
 });
 
 test("hash generation drops invalid or cross-route keys and never accepts legacy routes", () => {
   const { api } = load();
-  assert.equal(api.hash("project", "geometry"), "#project/geometry");
-  assert.equal(api.hash("resume", "geometry"), "#resume/geometry");
-  assert.equal(api.hash("life", "geometry"), "#life");
+  assert.equal(api.hash("project", "shared-entry"), "#project/shared-entry");
+  assert.equal(api.hash("resume", "shared-entry"), "#resume/shared-entry");
+  assert.equal(api.hash("life", "shared-entry"), "#life");
   assert.equal(api.hash("project", "missing"), "#project");
   assert.equal(api.hash("project", null), "#project");
-  assert.equal(api.hash("help", "geometry"), "#help");
-  assert.equal(api.hash("research", "geometry"), "#home");
-  assert.equal(api.hash(undefined, "geometry"), "#home");
+  assert.equal(api.hash("help", "shared-entry"), "#help");
+  assert.equal(api.hash("research", "shared-entry"), "#home");
+  assert.equal(api.hash(undefined, "shared-entry"), "#home");
   const key = "\ud800";
   const { api: invalidUnicode } = load({ paths: [{ id: "project", items: [key] }], samples: { [key]: {} } });
   assert.equal(invalidUnicode.hash("project", key), "#project");
@@ -268,8 +318,8 @@ test("missing or malformed source is safe", () => {
   for (const content of [undefined, null, {}, { paths: false, samples: null }, { paths: [null, 2], samples: {} }]) {
     const { api } = load(content);
     assert.deepEqual(plain(api.items("home")), []);
-    assert.equal(api.get("project", "geometry"), null);
-    assert.deepEqual(plain(api.parseHash("#project/geometry")), { route: "project", key: null });
+    assert.equal(api.get("project", "shared-entry"), null);
+    assert.deepEqual(plain(api.parseHash("#project/shared-entry")), { route: "project", key: null });
   }
 });
 

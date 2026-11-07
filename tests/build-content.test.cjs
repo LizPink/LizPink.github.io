@@ -281,6 +281,25 @@ test("rebuilding replaces only managed media and retains unrelated runtime files
   assert.equal(await fs.readFile(path.join(f.outputDir, "assets/js/app.js"), "utf8"), "runtime sentinel");
 });
 
+test("removing the final entry produces zero samples, retains three empty sections and clears all managed media", async t => {
+  const f = await fixture(t, { entries: [{ key: "article", body: "![Image](./pic.svg)", files: { "pic.svg": "<svg/>" } }] });
+  await f.build();
+  assert.ok((await fs.stat(path.join(f.outputDir, "assets/content/article/pic.svg"))).isFile());
+  const entryDir = path.resolve(f.contentDir, "entries/article");
+  assert.equal(path.dirname(entryDir), path.resolve(f.contentDir, "entries"));
+  await fs.rm(entryDir, { recursive: true });
+  await write(path.join(f.contentDir, "entries/.gitkeep"), "");
+  const content = await f.build();
+  assert.deepEqual(Object.keys(content.samples), []);
+  assert.deepEqual(content.paths.map(item => item.id).sort(), ["life", "project", "resume"]);
+  content.paths.forEach(item => assert.deepEqual(item.items, []));
+  assert.deepEqual(await fs.readdir(path.join(f.outputDir, "assets/content")), []);
+  assert.deepEqual(await fs.readdir(path.join(f.contentDir, "entries")), [".gitkeep"]);
+  const window = {};
+  require("node:vm").runInNewContext(await f.output(), { window });
+  assert.deepEqual(Object.keys(window.LIZPINK_CONTENT.samples), []);
+});
+
 test("validation failure leaves previous content.js and media untouched", async t => {
   const f = await fixture(t, { entries: [{ key: "article", body: "![Missing](./missing.png)" }] });
   await write(path.join(f.outputDir, "assets/js/content.js"), "previous content");
