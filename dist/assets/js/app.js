@@ -20,7 +20,7 @@
   let activeItem = null;
   const commandCatalog = window.LIZPINK_COMMANDS;
   const routes = commandCatalog.routes;
-  const titles = { home:"起始页", resume:"经历与能力", project:"项目与探索", life:"生活与记录", help:"命令帮助" };
+  const titles = { home:"首页", resume:"经历", project:"项目", life:"生活", help:"帮助" };
   const $ = (tag, className, text) => {
     const element = document.createElement(tag);
     if (className) element.className = className;
@@ -181,7 +181,7 @@
       const initialOpen = details.initialOpen === true;
       details.initialOpen = false;
       commandInput.refresh();
-      if (details.open) { pauseFollowing(); populate(); label.textContent = "收起详情"; if (!initialOpen) scrollWithinTerminal(result.node); }
+      if (details.open) { pauseFollowing(); populate(); label.textContent = "收起"; if (!initialOpen) scrollWithinTerminal(result.node); }
       else { label.textContent = result.detailLabel; body.querySelectorAll("video").forEach(video => video.pause()); }
       updateFollowState();
     });
@@ -323,7 +323,7 @@
     suggestions.hidden = false;
     input.setAttribute("aria-expanded", "true");
     input.setAttribute("aria-activedescendant", `completion-${completion.index}`);
-    feedback.textContent = completion.matches.length > 1 ? "Tab 切换候选，回车执行；Shift+Tab 离开输入。" : "已补全，回车执行。";
+    feedback.textContent = "";
     syncCursor();
     resumeFollowing();
   }
@@ -350,9 +350,8 @@
       }
       return;
     }
-    if (command === "clear") { history.length = 0; historyPosition = 0; input.value = ""; navigate("home"); focusCommand(); syncCursor(); return; }
     const route = command;
-    if (routes.includes(route)) { input.value = ""; navigate(route, false, {label:raw.trim()}); input.focus({preventScroll:true}); syncCursor(); }
+    if (routes.includes(route)) { input.value = ""; navigate(route, false, {label:route}); input.focus({preventScroll:true}); syncCursor(); }
     else {
       const suggestions = commandCatalog.suggest(command);
       feedback.textContent = `未识别“${raw.trim()}”。${suggestions.length ? `试试 ${suggestions.join(" 或 ")}。` : "输入 help 查看命令。"}`;

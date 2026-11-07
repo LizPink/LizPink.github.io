@@ -17,7 +17,7 @@
         "dist/assets/js/content-sidebar.js",
         "dist/assets/css/content-sidebar.css"
       ],
-      "scope": "满视口统一screen背景，零外框/内框/套窗内缩。桌面内容目录默认展开、宽240px，可在200–420px内拖动或键盘调整并保留主区至少320px；工具栏目录按钮与侧栏收起按钮控制开合，不再使用左缘peek或图钉。手机使用默认关闭的抽屉。首页、生活与记录、经历与能力、项目与探索逐行单列显示；内容列表只显示可选日期和标题，人工日期明确标为示例日期。点击条目在右侧读取单条，支持#project/geometry等链接。有效栏目命令、数字0–3和help每次替换旧输出并从顶部阅读；↑↓保留命令输入历史，未知命令不清空当前正文。可打断渐显、按需媒体和阅读保护延续。",
+      "scope": "满视口统一screen背景，零外框/内框/套窗内缩。桌面内容目录默认展开、宽200px，可在180–420px内拖动或键盘调整并保留主区至少320px；工具栏目录按钮与侧栏收起按钮控制开合，不再使用左缘peek或图钉。手机使用默认关闭的抽屉。首页、生活、经历、项目逐行单列显示；内容列表只显示可选日期和标题，人工日期明确标为示例日期。点击条目在右侧读取单条，支持#project/geometry等链接。有效栏目命令、数字0–3和help每次替换旧输出并从顶部阅读；↑↓保留命令输入历史，未知命令不清空当前正文。可打断渐显、按需媒体和阅读保护延续。 公开命令为home、life、resume、project、open、close、help共7个；帮助标题为帮助，详情按钮统一展开/收起。数字或中文别名的回显使用规范英文，输入历史保留原文；成功Tab补全仅清空反馈文字，保留候选与选区。",
       "primitiveSource": "docs/DESIGN.md frontmatter；基础运行样式为dist/assets/css/styles.css，内容目录与阅读媒体覆盖样式为dist/assets/css/content-sidebar.css。"
     },
     "colorMeta": {
@@ -149,7 +149,7 @@
       },
       "menu": {
         "displayName": "内容目录与栏目入口",
-        "purpose": "栏目入口逐行单列显示完整名称，保留15px/1.5字体；内容标题17px/1.55，窄容器16px；日期12px。内容列表不显示正文摘要或类型标签，其余字体与配色不变。"
+        "purpose": "栏目入口逐行单列显示首页/生活/经历/项目短名，保留15px/1.5字体；内容标题17px/1.55，窄容器16px；日期12px。内容列表不显示正文摘要或类型标签，其余字体与配色不变。"
       },
       "command": {
         "displayName": "原生输入",
@@ -247,8 +247,8 @@
       "toolbarMinHeight": "52px",
       "toolbarPadding": "3px 16px",
       "desktopMenuDefault": "open",
-      "expandedColumns": "minmax(0, var(--sidebar-width, 240px)) minmax(0, 1fr)",
-      "compactExpandedColumns": "minmax(0, var(--sidebar-width, 240px)) minmax(0, 1fr)",
+      "expandedColumns": "minmax(0, var(--sidebar-width, 200px)) minmax(0, 1fr)",
+      "compactExpandedColumns": "minmax(0, var(--sidebar-width, 200px)) minmax(0, 1fr)",
       "frameMainPadding": "0",
       "screenPadding": "24px 32px",
       "screenOverflow": "auto",
@@ -330,10 +330,10 @@
       "helpRowPadding": "2px 0",
       "helpGroupMarginTop": "16px",
       "helpDescriptionLineHeight": 1.5,
-      "sidebarWidthDefault": "240px",
-      "sidebarWidthRange": "200px–420px；最大宽度同时受主区至少320px限制",
-      "sidebarResizeHandle": "10px命中区，1px视觉分隔线；左右方向键每次16px，Home/End到当前最窄/最宽，双击恢复240px",
-      "sidebarContentLayout": "顶部44px收起按钮与逐行单列的完整栏目入口；下方内容列表仅显示可选日期和标题并独立滚动，不显示摘要或类型标签",
+      "sidebarWidthDefault": "200px",
+      "sidebarWidthRange": "180px–420px；最大宽度同时受主区至少320px限制",
+      "sidebarResizeHandle": "10px命中区，1px视觉分隔线；左右方向键每次16px，Home/End到当前最窄/最宽，双击恢复200px",
+      "sidebarContentLayout": "顶部44px收起按钮与逐行单列的首页/生活/经历/项目四个短名入口；下方内容列表仅显示可选日期和标题并独立滚动，不显示摘要或类型标签",
       "mediaWidth": "min(100%, 960px, 媒体原始宽度)",
       "mediaAlignment": "figure在阅读区水平居中，图注与媒体同宽并左对齐",
       "detailsMaxWidth": "none；段落仍限制72ch"
@@ -348,17 +348,17 @@
       "profile": "Student与四兴趣集中在resume摘要；完整about.paragraphs并入resume展开详情的个人介绍。",
       "legacyInfo": "不保留历史命令或旧路由兼容；仅保留现行命令的数字与中文简写。",
       "home": "仅问候与命令区，首次进入自动聚焦；帮助提示集中在光标旁。",
-      "session": "home/life/resume/project/help及数字0–3每次替换当前输出，正文从main.scrollTop=0开始；同一路线重复执行也替换。↑↓保留命令输入历史；未知命令只提示错误，不清屏或移除当前正文。open/close继续作用于当前输出的详情。",
+      "session": "home/life/resume/project/help及数字0–3每次替换当前输出，正文从main.scrollTop=0开始；同一路线重复执行也替换。↑↓保留命令输入历史；未知命令只提示错误，不清屏或移除当前正文。open/close继续作用于当前输出的详情。 命令回显使用规范英文（例如2或经历显示> resume），↑↓历史仍回调用户实际原输入。",
       "input": "原生单input保留编辑/选区/中文输入，Enter执行，enterkeyhint=send。首页首次自动聚焦并保留自然位置；有输出后编辑模式停靠底部。未激活为空心静态，激活且页面有焦点时为实心闪烁；空输入在光标旁提示“输入 help 查询命令”，键入后隐藏。未激活空输入保留可点击激活与帮助提示；右侧仅编辑时显示“Esc 返回阅读”。",
-      "tab": "非Shift Tab保持input，唯一匹配补全、多匹配循环、空输入可用、无匹配不跳焦；ShiftTab离开。",
+      "tab": "非Shift Tab保持input，唯一匹配补全、多匹配循环、空输入可用；成功补全仅清空底部command-feedback，保留候选列表、aria关联与input选区。无匹配仍显示错误说明且不跳焦；Shift+Tab离开。",
       "accessibility": "combobox关联listbox/option；内容条目以aria-current=location标记当前选择；可调分隔柄使用vertical separator及动态宽度数值。手机抽屉使frame-main inert并循环实际可见控件，关闭后聚焦工具栏目录按钮。",
       "shortcuts": "/激活输入；↑↓回调历史；Escape先关闭补全，再返回阅读并保留草稿。焦点位于目录或分隔柄时可收起目录，拖动中按Escape取消本次拖动。",
       "blankClick": "点击输入或闲置提示进入编辑；正文空白点击不聚焦输入。",
       "status": "真实input同步就绪/输入中，无假延迟。",
       "toolbar": "目录按钮与logo/姓名组成.toolbar-start；后接路径/状态和主题。侧栏顶部在所有设备提供收起/关闭按钮，不再显示图钉。",
-      "menu": "桌面每次载入默认展开、240px宽；可拖动或用键盘在200–420px内调整，始终为主区预留至少320px。栏目入口使用完整名称逐行单列显示，内容列表仅含可选日期和标题。工具栏目录按钮与侧栏顶部按钮开合；宽度和桌面开合选择仅在本页面会话保留，刷新恢复默认。手机默认关闭，以遮罩抽屉展开，选择条目后聚焦正文。",
+      "menu": "桌面每次载入默认展开、200px宽；可拖动或用键盘在180–420px内调整，始终为主区预留至少320px。栏目入口统一使用首页、生活、经历、项目短名逐行单列显示，内容列表仅含可选日期和标题。工具栏目录按钮与侧栏顶部按钮开合；宽度和桌面开合选择仅在本页面会话保留，刷新恢复默认。手机默认关闭，以遮罩抽屉展开，选择条目后聚焦正文。",
       "visibility": "只有input聚焦、document有焦点且页面可见时光标闪烁；失焦为空心静态。OS减少动态效果保持静态光标。",
-      "help": "commands.js直接渲染浏览路线、操作两组平面列表及快捷键，共8个公开命令，无details；CSS Grid命令列固定8ch，或N独立对齐，不用制表符。",
+      "help": "commands.js渲染标题为“帮助”的浏览路线、操作两组列表及快捷键，共7个公开命令，无details；栏目显示首页/生活/经历/项目，open描述“展开”、close描述“收起”、help描述“帮助”。CSS Grid命令列固定8ch，或N独立对齐。",
       "shortcutDetails": "open展开最近记录详情并阅读；close收起并回输入；/、编辑、Tab、↑↓恢复跟随。",
       "commands": {
         "module": "dist/assets/js/commands.js",
@@ -369,7 +369,6 @@
           "project",
           "open",
           "close",
-          "clear",
           "help"
         ],
         "publicNumbers": {
@@ -391,7 +390,19 @@
           "resume",
           "project",
           "help"
-        ]
+        ],
+        "descriptions": {
+          "home": "首页",
+          "life": "生活",
+          "resume": "经历",
+          "project": "项目",
+          "open": "展开",
+          "close": "收起",
+          "help": "帮助"
+        },
+        "helpTitle": "帮助",
+        "echo": "数字与中文别名执行后回显规范英文，例如2或经历显示> resume；原始输入单独保留用于↑↓历史回调。",
+        "completion": "成功Tab补全保留候选列表和input选区，仅清空底部feedback；未匹配和未知命令仍保留错误说明。"
       },
       "pathOrder": [
         {
@@ -557,7 +568,7 @@
       },
       "open": {
         "default": "大于760px时初始化展开",
-        "layout": "240px默认网格列，200–420px可调整，主区至少320px",
+        "layout": "200px默认网格列，180–420px可调整，主区至少320px",
         "close": "工具栏目录按钮、侧栏收起按钮，或目录/分隔柄内按Escape",
         "persistence": "宽度与桌面开合状态在本页面会话保留；刷新恢复默认，无peek或图钉状态"
       },
@@ -568,7 +579,7 @@
       },
       "resize": {
         "pointer": "10px命中区，1px可见线，拖动按动画帧合并布局更新",
-        "keyboard": "左右方向键16px；Home/End到动态宽度上下限；双击恢复240px",
+        "keyboard": "左右方向键16px；Home/End到动态宽度上下限；双击恢复200px",
         "cancel": "Escape、pointercancel、失去捕获、窗口失焦或布局切换取消拖动并清理会话"
       },
       "breakpointReset": "跨760px进入手机关闭抽屉；回到桌面沿用本次页面的桌面开合选择与期望宽度，并重新按可用空间限制宽度。"
@@ -585,9 +596,13 @@
         "life": "内容类型/数量与示例状态；介绍仅在详情出现。",
         "resume": "Student、兴趣、履历项/PDF待补状态、示例媒体类型与数量；完整个人介绍在展开详情中。",
         "project": "内容类型/数量与示例状态；介绍仅在详情出现。",
-        "help": "从commands.js渲染浏览路线、操作两组平面列表与快捷键，共8个公开命令，无需展开。"
+        "help": "从commands.js渲染标题“帮助”、浏览路线与操作两组列表及快捷键，共7个公开命令，无需展开；open/close/help描述分别为展开/收起/帮助。"
       },
-      "maintenance": "这里只维护摘要措辞/标签；真实内容由content.js维护。"
+      "maintenance": "这里只维护摘要措辞/标签；真实内容由content.js维护。",
+      "controls": {
+        "collapsed": "展开",
+        "expanded": "收起"
+      }
     },
     "lazyDetails": {
       "firstBuild": "第一次summary激活/toggle open或open命令，调用原富文renderer；withView隔离目标。",
@@ -656,9 +671,9 @@
       "name": "可调宽内容目录",
       "kind": "nav",
       "refersTo": "menu-item",
-      "description": "桌面默认240px展开，可在200–420px内调整并收起；首页、生活与记录、经历与能力、项目与探索逐行单列显示。内容列表只显示可选日期与标题，示例日期明确标记；点击单条在主区阅读，手机为默认关闭的抽屉。",
-      "html": "<nav class=\"ds-menu\" aria-label=\"网站目录\"><div class=\"ds-sidebar-header\"><p>内容目录</p><button type=\"button\" aria-label=\"收起目录\">收起</button></div><div class=\"ds-sidebar-routes\"><button class=\"ds-menu-item\" type=\"button\">首页<span>0</span></button><button class=\"ds-menu-item\" type=\"button\">生活与记录<span>01</span></button><button class=\"ds-menu-item\" type=\"button\">经历与能力<span>02</span></button><button class=\"ds-menu-item\" type=\"button\" aria-current=\"page\">项目与探索<span>03</span></button></div><ul class=\"ds-content-list\"><li><button class=\"ds-content-item\" type=\"button\" aria-current=\"location\"><span class=\"ds-content-meta\"><time datetime=\"2026-10-22\">示例日期 2026.10.22</time></span><span class=\"ds-content-title\">一张项目截图的位置</span></button></li></ul></nav>",
-      "css": ".ds-menu{display:flex;flex-direction:column;width:240px;max-width:100%;padding:12px;background:var(--screen)}.ds-sidebar-header{display:flex;align-items:center;justify-content:space-between;min-height:44px;gap:8px}.ds-sidebar-header p{margin:0;font:500 16px/1.5 var(--font-body)}.ds-sidebar-routes{display:grid;grid-template-columns:minmax(0,1fr);gap:4px}.ds-menu-item{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;padding:8px 10px;border:0;background:transparent;color:var(--muted);font:15px/1.5 var(--font-body);text-align:left}.ds-menu-item span{font:12px/1.6 var(--font-mono)}.ds-menu-item[aria-current=\"page\"]{color:var(--accent)}.ds-content-list{list-style:none;margin:20px 0 0;padding:0}.ds-content-item{display:flex;flex-direction:column;gap:6px;width:100%;min-height:44px;padding:12px;border:0;border-left:1px solid transparent;background:transparent;color:var(--text);text-align:left}.ds-content-item[aria-current=\"location\"]{border-left-color:var(--accent)}.ds-content-item[aria-current=\"location\"] .ds-content-title{color:var(--accent)}.ds-content-meta{color:var(--muted);font:12px/1.5 var(--font-body)}.ds-content-title{font:500 17px/1.55 var(--font-body)}.ds-content-item:hover,.ds-menu-item:hover{background:var(--accent-soft)}.ds-content-item:focus-visible,.ds-menu-item:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}"
+      "description": "桌面默认200px展开，可在180–420px内调整并收起；首页、生活、经历、项目逐行单列显示。内容列表只显示可选日期与标题，示例日期明确标记；点击单条在主区阅读，手机为默认关闭的抽屉。",
+      "html": "<nav class=\"ds-menu\" aria-label=\"网站目录\"><div class=\"ds-sidebar-header\"><p>内容目录</p><button type=\"button\" aria-label=\"收起目录\">收起</button></div><div class=\"ds-sidebar-routes\"><button class=\"ds-menu-item\" type=\"button\">首页<span>0</span></button><button class=\"ds-menu-item\" type=\"button\">生活<span>01</span></button><button class=\"ds-menu-item\" type=\"button\">经历<span>02</span></button><button class=\"ds-menu-item\" type=\"button\" aria-current=\"page\">项目<span>03</span></button></div><ul class=\"ds-content-list\"><li><button class=\"ds-content-item\" type=\"button\" aria-current=\"location\"><span class=\"ds-content-meta\"><time datetime=\"2026-10-22\">示例日期 2026.10.22</time></span><span class=\"ds-content-title\">一张项目截图的位置</span></button></li></ul></nav>",
+      "css": ".ds-menu{display:flex;flex-direction:column;width:200px;max-width:100%;padding:12px;background:var(--screen)}.ds-sidebar-header{display:flex;align-items:center;justify-content:space-between;min-height:44px;gap:8px}.ds-sidebar-header p{margin:0;font:500 16px/1.5 var(--font-body)}.ds-sidebar-routes{display:grid;grid-template-columns:minmax(0,1fr);gap:4px}.ds-menu-item{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;padding:8px 10px;border:0;background:transparent;color:var(--muted);font:15px/1.5 var(--font-body);text-align:left}.ds-menu-item span{font:12px/1.6 var(--font-mono)}.ds-menu-item[aria-current=\"page\"]{color:var(--accent)}.ds-content-list{list-style:none;margin:20px 0 0;padding:0}.ds-content-item{display:flex;flex-direction:column;gap:6px;width:100%;min-height:44px;padding:12px;border:0;border-left:1px solid transparent;background:transparent;color:var(--text);text-align:left}.ds-content-item[aria-current=\"location\"]{border-left-color:var(--accent)}.ds-content-item[aria-current=\"location\"] .ds-content-title{color:var(--accent)}.ds-content-meta{color:var(--muted);font:12px/1.5 var(--font-body)}.ds-content-title{font:500 17px/1.55 var(--font-body)}.ds-content-item:hover,.ds-menu-item:hover{background:var(--accent-soft)}.ds-content-item:focus-visible,.ds-menu-item:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}"
     },
     {
       "name": "原生终端输入",
@@ -672,16 +687,16 @@
       "name": "目录宽度分隔柄",
       "kind": "custom",
       "refersTo": "sidebar-resizer",
-      "description": "桌面默认240px，允许200–420px且受主区最小宽度约束；10px命中区与1px可见线，支持拖动、左右方向键16px、Home/End与双击恢复默认；动态aria数值反映当前可用宽度范围，手机隐藏。",
-      "html": "<div class=\"ds-sidebar-resizer\" role=\"separator\" tabindex=\"0\" aria-label=\"调整内容目录宽度\" aria-orientation=\"vertical\" aria-valuemin=\"200\" aria-valuemax=\"420\" aria-valuenow=\"240\"></div>",
+      "description": "桌面默认200px，允许180–420px且受主区最小宽度约束；10px命中区与1px可见线，支持拖动、左右方向键16px、Home/End与双击恢复默认；动态aria数值反映当前可用宽度范围，手机隐藏。",
+      "html": "<div class=\"ds-sidebar-resizer\" role=\"separator\" tabindex=\"0\" aria-label=\"调整内容目录宽度\" aria-orientation=\"vertical\" aria-valuemin=\"180\" aria-valuemax=\"420\" aria-valuenow=\"200\"></div>",
       "css": ".ds-sidebar-resizer{position:relative;width:10px;height:200px;cursor:col-resize;touch-action:none}.ds-sidebar-resizer::before{content:\"\";position:absolute;inset:0 auto 0 4px;width:1px;background:var(--line-soft)}.ds-sidebar-resizer:hover::before,.ds-sidebar-resizer:focus-visible::before{background:var(--accent)}.ds-sidebar-resizer:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}"
     },
     {
       "name": "短摘要与原生详情",
       "kind": "custom",
       "refersTo": "details-summary",
-      "description": "栏目保留衬线摘要与按需原生details；摘要条目标题可以直接选择单条reader，完整图文不预先创建。",
-      "html": "<section class=\"ds-output-summary\"><p class=\"ds-summary-title\">经历与能力</p><p class=\"ds-summary-description\">学生 / Student</p><dl class=\"ds-summary-facts\"><div><dt>简历</dt><dd>经历待补充 · PDF 待添加</dd></div></dl></section><details class=\"ds-output-details\"><summary><span>展开经历与图文</span></summary><div class=\"ds-details-body\"></div></details>",
+      "description": "栏目保留衬线摘要与按需原生details；摘要条目标题可以直接选择单条reader，完整图文不预先创建。 所有原生details按钮文字统一为“展开”/“收起”。",
+      "html": "<section class=\"ds-output-summary\"><p class=\"ds-summary-title\">经历</p><p class=\"ds-summary-description\">学生 / Student</p><dl class=\"ds-summary-facts\"><div><dt>简历</dt><dd>经历待补充 · PDF 待添加</dd></div></dl></section><details class=\"ds-output-details\"><summary><span>展开</span></summary><div class=\"ds-details-body\"></div></details>",
       "css": ".ds-output-summary{max-width:72ch;color:var(--text);font:400 16px/1.7 var(--font-body)}.ds-summary-title{margin:0;color:var(--text);font:500 18px/1.5 var(--font-body)}.ds-summary-description{margin:8px 0 12px;max-width:72ch;color:var(--muted);font-size:16px;line-height:1.7}.ds-summary-facts{margin:12px 0}.ds-summary-facts>div{display:grid;grid-template-columns:60px minmax(0,1fr);gap:8px 12px;margin:6px 0}.ds-summary-facts dt,.ds-summary-facts dd{margin:0}.ds-summary-facts dt{color:var(--muted)}.ds-output-details{margin-top:8px}.ds-output-details>summary{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:8px 0;color:var(--accent);font:400 16px/1.7 var(--font-body);list-style:none;cursor:pointer;text-decoration:underline;text-underline-offset:4px}.ds-output-details>summary::-webkit-details-marker{display:none}.ds-output-details>summary::before{content:\"\";flex-shrink:0;width:6px;height:6px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(-45deg)}.ds-output-details[open]>summary::before{transform:rotate(45deg)}.ds-details-body{margin-top:12px;color:var(--text);font:17px/1.9 var(--font-body)}"
     },
     {
@@ -695,7 +710,7 @@
   ],
   "narrative": {
     "northStar": "融入背景的个人终端",
-    "overview": "用户图示与最新明确修订是最高优先约束。网页铺满视口，页面、工具栏、侧栏、框架和主区共用屏幕底色；不使用居中限宽、外框、主区内框或套窗内缩。仅内部工具栏与目录边界保留细分隔线。\n\n工具栏目录按钮与lp_、LizPink同组，右侧保留主题开关。桌面内容目录默认240px展开，支持200–420px调宽与收起；手机默认关闭，以抽屉展开。目录顶部逐行单列显示首页、生活与记录、经历与能力、项目与探索，内容列表只显示可选日期和标题；人工日期明确标为示例日期。选择条目在右侧显示单条正文并支持#project/geometry等链接。\n\n文字左对齐并保持72ch阅读行宽，媒体按原比例、原始宽度和960px上限适度居中，图注与媒体同宽。自介仍集中在经历与能力；首页保持问候和自动聚焦的命令区。有效栏目命令、数字0–3和help每次替换旧输出并从顶部阅读；↑↓保留命令输入历史，未知命令不清屏。原生输入、可打断渐显及阅读保护延续。发布状态以对应部署任务结果为准。",
+    "overview": "用户图示与最新明确修订是最高优先约束。网页铺满视口，页面、工具栏、侧栏、框架和主区共用屏幕底色；不使用居中限宽、外框、主区内框或套窗内缩。仅内部工具栏与目录边界保留细分隔线。\n\n工具栏目录按钮与lp_、LizPink同组，右侧保留主题开关。桌面内容目录默认200px展开，支持180–420px调宽与收起；手机默认关闭，以抽屉展开。目录顶部逐行单列显示首页、生活、经历、项目，内容列表只显示可选日期和标题；人工日期明确标为示例日期。选择条目在右侧显示单条正文并支持#project/geometry等链接。\n\n文字左对齐并保持72ch阅读行宽，媒体按原比例、原始宽度和960px上限适度居中，图注与媒体同宽。自介仍集中在经历；首页保持问候和自动聚焦的命令区。有效栏目命令、数字0–3和help每次替换旧输出并从顶部阅读；↑↓保留命令输入历史，未知命令不清屏。原生输入、可打断渐显及阅读保护延续。发布状态以对应部署任务结果为准。\n\n栏目统一显示首页、生活、经历、项目，英文route保持不变。公开命令共7个；帮助标题与help描述均为帮助，open/close描述与详情按钮统一展开/收起。数字和中文别名回显规范英文，历史回调保留原输入。成功Tab补全仅清空底部反馈文字，候选列表与选区保留，错误说明仍可用。",
     "keyCharacteristics": [
       "满视口、统一背景、零套窗内缩。",
       "桌面默认展开、可调宽与折叠的内容目录；手机抽屉。",

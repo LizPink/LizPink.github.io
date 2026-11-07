@@ -2,11 +2,11 @@
 (() => {
   "use strict";
 
-  const DEFAULT_WIDTH = 240;
-  const MIN_WIDTH = 200;
+  const DEFAULT_WIDTH = 200;
+  const MIN_WIDTH = 180;
   const MAX_WIDTH = 420;
   const CONTENT_MIN_WIDTH = 320;
-  const titles = { home: "全部内容", help: "全部内容", life: "生活与记录", resume: "经历与能力", project: "项目与探索" };
+  const titles = { home: "全部内容", help: "全部内容", life: "生活", resume: "经历", project: "项目" };
   const media = window.matchMedia("(max-width: 760px)");
   let initialized = false;
   let opened = false;

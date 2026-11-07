@@ -107,7 +107,7 @@ function harness({ mobile = false, width = 1200, entries } = {}) {
     flush() { const pending = [...frames.values()]; frames.clear(); pending.forEach(callback => callback()); },
     geometry(value) { layout.clientWidth = value; observer(); },
     mobile(value) { preference.matches = value; preference.emit("change"); },
-    dragStart(x = 240) { return resizer.emit("pointerdown", { button: 0, isPrimary: true, pointerId: 7, clientX: x }); },
+    dragStart(x = 200) { return resizer.emit("pointerdown", { button: 0, isPrimary: true, pointerId: 7, clientX: x }); },
     move(x) { window.emit("pointermove", { pointerId: 7, clientX: x }); },
     up(x) { window.emit("pointerup", { pointerId: 7, clientX: x }); }
   };
@@ -116,10 +116,11 @@ function harness({ mobile = false, width = 1200, entries } = {}) {
 test("desktop initializes open with width and separator semantics; init is idempotent", () => {
   const h = harness();
   assert.equal(h.api.isOpen(), true);
-  assert.equal(h.currentWidth(), 240);
+  assert.equal(h.currentWidth(), 200);
   assert.equal(h.nodes["route-menu"].hidden, false);
   assert.equal(h.nodes["frame-main"].inert, false);
   assert.equal(h.nodes["sidebar-resizer"].hidden, false);
+  assert.equal(h.nodes["sidebar-resizer"].getAttribute("aria-valuemin"), "180");
   assert.equal(h.nodes["sidebar-resizer"].getAttribute("aria-valuemax"), "420");
   h.api.init(); assert.equal(h.document.count("keydown"), 1);
 });
@@ -127,12 +128,12 @@ test("desktop initializes open with width and separator semantics; init is idemp
 test("keyboard resizing observes limits and leaves unhandled keys untouched", () => {
   const h = harness(), separator = h.nodes["sidebar-resizer"];
   assert.equal(separator.emit("keydown", { key: "ArrowLeft" }).prevented, true);
-  assert.equal(h.currentWidth(), 224);
-  separator.emit("keydown", { key: "Home" }); assert.equal(h.currentWidth(), 200);
-  separator.emit("keydown", { key: "ArrowLeft" }); assert.equal(h.currentWidth(), 200);
+  assert.equal(h.currentWidth(), 184);
+  separator.emit("keydown", { key: "Home" }); assert.equal(h.currentWidth(), 180);
+  separator.emit("keydown", { key: "ArrowLeft" }); assert.equal(h.currentWidth(), 180);
   separator.emit("keydown", { key: "End" }); assert.equal(h.currentWidth(), 420);
   assert.equal(separator.emit("keydown", { key: "a" }).prevented, false);
-  separator.emit("dblclick"); assert.equal(h.currentWidth(), 240);
+  separator.emit("dblclick"); assert.equal(h.currentWidth(), 200);
 });
 
 test("container shrink preserves reading space and restores preferred width when it grows", () => {
@@ -147,7 +148,7 @@ test("pointer moves are batched and pointerup flushes the final position and cle
   const h = harness();
   assert.equal(h.dragStart().prevented, true);
   h.move(340); h.move(380);
-  assert.equal(h.frames.size, 1); assert.equal(h.currentWidth(), 240);
+  assert.equal(h.frames.size, 1); assert.equal(h.currentWidth(), 200);
   h.flush(); assert.equal(h.currentWidth(), 380);
   h.up(399); assert.equal(h.currentWidth(), 399);
   assert.equal(h.nodes["terminal-frame"].dataset.resizing, "false");
@@ -160,7 +161,7 @@ test("Escape rolls back an in-progress drag and cancels its queued frame", () =>
   const h = harness(); h.dragStart(); h.move(390); h.flush(); h.move(410);
   const event = h.document.emit("keydown", { key: "Escape" });
   assert.equal(event.prevented, true); assert.equal(event.stopped, true);
-  assert.equal(h.currentWidth(), 240); assert.equal(h.frames.size, 0);
+  assert.equal(h.currentWidth(), 200); assert.equal(h.frames.size, 0);
   assert.equal(h.document.body.style.userSelect, "text");
   assert.equal(h.window.count("pointermove"), 0);
 });
@@ -169,7 +170,7 @@ for (const reason of ["pointercancel", "lostpointercapture", "blur"]) {
   test(`drag cancellation cleans up and restores width on ${reason}`, () => {
     const h = harness(); h.dragStart(); h.move(400); h.flush();
     (reason === "lostpointercapture" ? h.nodes["sidebar-resizer"] : h.window).emit(reason, { pointerId: 7 });
-    assert.equal(h.currentWidth(), 240);
+    assert.equal(h.currentWidth(), 200);
     assert.equal(h.nodes["terminal-frame"].dataset.resizing, "false");
     assert.equal(h.document.body.style.userSelect, "text");
     assert.equal(h.window.count("pointerup"), 0);
@@ -204,7 +205,7 @@ test("close never leaves focus in hidden content, including a backdrop dismissal
 test("breakpoint transitions preserve desktop collapse choice and release inert/drag state", () => {
   const h = harness(); h.dragStart(); h.move(380); h.flush();
   h.mobile(true);
-  assert.equal(h.api.isOpen(), false); assert.equal(h.currentWidth(), 240);
+  assert.equal(h.api.isOpen(), false); assert.equal(h.currentWidth(), 200);
   assert.equal(h.document.body.style.userSelect, "text");
   h.mobile(false); assert.equal(h.api.isOpen(), true);
   h.api.close(); h.mobile(true); h.nodes["menu-reveal"].emit("click");
@@ -228,7 +229,7 @@ test("content uses literal text, honest date labels, and preserves nodes/focus w
   h.api.update("life", "three");
   assert.equal(h.nodes["content-list"].scrollTop, 0);
   assert.match(h.nodes["content-list"].textContent, /更新 2026.10.31/);
-  assert.equal(h.nodes["content-index-title"].textContent, "生活与记录");
+  assert.equal(h.nodes["content-index-title"].textContent, "生活");
 });
 
 test("content rows contain only a date and title, with no empty metadata for undated rows", () => {
@@ -247,7 +248,10 @@ test("home/help list all entries and empty sections retain a valid list structur
   const h = harness(); h.api.update("help");
   assert.equal(h.nodes["content-index-title"].textContent, "全部内容");
   assert.equal(h.nodes["content-index-count"].textContent, "3 项");
+  h.api.update("project");
+  assert.equal(h.nodes["content-index-title"].textContent, "项目");
   h.api.update("resume");
+  assert.equal(h.nodes["content-index-title"].textContent, "经历");
   assert.equal(h.nodes["content-list"].children[0].tagName, "li");
   assert.equal(h.nodes["content-list"].children[0].children[0].className, "content-index-empty");
   assert.equal(h.nodes["content-index-count"].textContent, "0 项");

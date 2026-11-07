@@ -3,14 +3,13 @@
   "use strict";
 
   const items = Object.freeze([
-    { name: "home", description: "返回首页", kind: "view", group: "浏览路线", number: "0" },
-    { name: "life", description: "生活与记录", kind: "view", group: "浏览路线", number: "1" },
-    { name: "resume", description: "经历与能力", kind: "view", group: "浏览路线", number: "2" },
-    { name: "project", description: "项目与探索", kind: "view", group: "浏览路线", number: "3" },
-    { name: "open", description: "展开最新输出的详情", kind: "action", group: "操作" },
-    { name: "close", description: "收起最新输出的详情", kind: "action", group: "操作" },
-    { name: "clear", description: "清屏，回到首页", kind: "action", group: "操作" },
-    { name: "help", description: "命令与快捷键", kind: "view", group: "操作" }
+    { name: "home", description: "首页", kind: "view", group: "浏览路线", number: "0" },
+    { name: "life", description: "生活", kind: "view", group: "浏览路线", number: "1" },
+    { name: "resume", description: "经历", kind: "view", group: "浏览路线", number: "2" },
+    { name: "project", description: "项目", kind: "view", group: "浏览路线", number: "3" },
+    { name: "open", description: "展开", kind: "action", group: "操作" },
+    { name: "close", description: "收起", kind: "action", group: "操作" },
+    { name: "help", description: "帮助", kind: "view", group: "操作" }
   ].map(item => Object.freeze(item)));
 
   const completions = Object.freeze(items.map(item => item.name));
@@ -20,7 +19,7 @@
   const aliases = Object.freeze({
     ...Object.fromEntries(items.filter(item => item.number !== undefined).map(item => [item.number, item.name])),
     "首页": "home", "简历": "resume", "经历": "resume",
-    "项目": "project", "生活": "life", "帮助": "help"
+    "项目": "project", "生活": "life", "帮助": "help", "展开": "open", "收起": "close"
   });
 
   function normalize(text) {
@@ -71,7 +70,7 @@
 
   function renderHelp() {
     const node = element("section", "help-reference");
-    node.append(element("h2", "summary-title", "命令帮助"));
+    node.append(element("h2", "summary-title", "帮助"));
 
     ["浏览路线", "操作"].forEach(group => {
       const section = element("section", "help-group");

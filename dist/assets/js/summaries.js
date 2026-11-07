@@ -65,19 +65,19 @@
       const path = content.paths?.find(item => item.id === "resume");
       const sections = content.resume?.sections || [];
       const entries = sections.reduce((count, section) => count + (section.items?.length || 0), 0);
-      title(path?.title || "经历与能力");
+      title(path?.title || "经历");
       description(content.role || "身份待补充");
       addFacts(overview, [
         ["兴趣", (content.interests || []).join(" · ") || "待补充"],
         ["简历", `${entries ? `${entries} 项经历` : "经历待补充"} · ${content.resume?.pdfUrl ? "已添加 PDF 入口" : "PDF 待添加"}`]
       ]);
       addSamplePreview(overview, path, content, false);
-      detailLabel = "展开经历与图文";
+      detailLabel = "展开";
     } else if (route === "project" || route === "life") {
       const path = content.paths?.find(item => item.id === route);
-      title(path?.title || (route === "project" ? "项目与探索" : "生活与记录"));
+      title(path?.title || (route === "project" ? "项目" : "生活"));
       addSamplePreview(overview, path, content);
-      detailLabel = route === "project" ? "展开项目图文" : "展开生活图文";
+      detailLabel = "展开";
     } else if (route === "help") {
       return { node: window.LIZPINK_COMMANDS.renderHelp(), detailLabel: null };
     } else {

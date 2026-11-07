@@ -142,7 +142,7 @@ test("real help keeps each command/number/description together and batches headi
   const output = env.output("help");
   env.api.play(output);
   const rows = output.querySelectorAll(".help-commands > div");
-  assert.equal(rows.length, 8);
+  assert.equal(rows.length, 7);
   rows.forEach(row => {
     assert.equal(env.calls.filter(call => call.node === row).length, 1);
     assert.equal(env.calls.some(call => row.contains(call.node) && call.node !== row), false);

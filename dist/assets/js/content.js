@@ -22,9 +22,9 @@ window.LIZPINK_CONTENT = {
   },
   // 三条路线只引用下面 samples 的条目。同一条内容可在多个路线出现，只需维护一次。
   paths: [
-    { id: "life", number: "01", title: "生活与记录", command: "life", description: "一些兴趣、随笔和生活片段。", introduction: "给学习之外的兴趣与生活留一点位置，也保留过去的记录。", items: ["journal", "notebook"] },
-    { id: "resume", number: "02", title: "经历与能力", command: "resume", description: "了解我的经历、技能与项目，查看简历。", introduction: "从一段自我介绍开始，逐步整理学习经历、实践项目和简历。", items: ["profile", "geometry"] },
-    { id: "project", number: "03", title: "项目与探索", command: "project", description: "看看项目实践、学习记录与相关探索。", introduction: "记录项目实践、学习的过程，以及把想法变成作品的尝试。", items: ["question", "geometry", "animation"] }
+    { id: "life", number: "01", title: "生活", command: "life", description: "一些兴趣、随笔和生活片段。", introduction: "给学习之外的兴趣与生活留一点位置，也保留过去的记录。", items: ["journal", "notebook"] },
+    { id: "resume", number: "02", title: "经历", command: "resume", description: "了解我的经历、技能与项目，查看简历。", introduction: "从一段自我介绍开始，逐步整理学习经历、实践项目和简历。", items: ["profile", "geometry"] },
+    { id: "project", number: "03", title: "项目", command: "project", description: "看看项目实践、学习记录与相关探索。", introduction: "记录项目实践、学习的过程，以及把想法变成作品的尝试。", items: ["question", "geometry", "animation"] }
   ],
   // 以下均为示例。替换标题、文字和媒体路径后，将 example 改为 false 即可去掉示例标识。
   // type 可用 text、image、video；删除路径中不需要的 items 条目即可隐藏对应内容。

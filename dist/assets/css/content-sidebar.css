@@ -1,5 +1,5 @@
 /* Content navigation shares the terminal surface and its single reading area. */
-.terminal-frame { --sidebar-width: 240px; }
+.terminal-frame { --sidebar-width: 200px; }
 
 .toolbar-start {
   display: flex;
