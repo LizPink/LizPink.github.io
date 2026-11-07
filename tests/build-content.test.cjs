@@ -113,10 +113,10 @@ test("Chinese/spaced image, uppercase MP4, optional poster/subtitles and PDF pro
   assert.match(sample.body, /class="media-zoom"/);
   assert.match(sample.body, /loading="lazy" decoding="async" width="960" height="540"/);
   assert.match(sample.body, /controls preload="none" playsinline width="640" height="360"/);
-  assert.match(sample.body, /\.poster\.png"/);
-  assert.match(sample.body, /kind="captions"[^>]+\.zh\.vtt"[^>]+default/);
+  assert.match(sample.body, /\.poster\.png\?v=[0-9a-f]{16}"/);
+  assert.match(sample.body, /kind="captions"[^>]+\.zh\.vtt\?v=[0-9a-f]{16}"[^>]+default/);
   assert.match(sample.body, /%20/);
-  assert.match(sample.body, /\.pdf#page=2/);
+  assert.match(sample.body, /\.pdf\?v=[0-9a-f]{16}#page=2/);
   assert.match(sample.body, /data-article-anchor="mixed-方法"/);
   assert.match(sample.body, /href="#project\/mixed"/);
   assert.deepEqual(sample.headings.map(item => item.level), [2, 3, 2, 2]);
@@ -124,7 +124,63 @@ test("Chinese/spaced image, uppercase MP4, optional poster/subtitles and PDF pro
   assert.ok(sample.headings.every(item => item.id.startsWith("mixed-")));
   for (const name of ["图片 示例.svg", "演示 空格.MP4", "演示 空格.poster.png", "演示 空格.zh.vtt", "资料 手册.pdf"]) {
     assert.ok((await fs.stat(path.join(f.outputDir, "assets/content/mixed", name))).isFile());
+    const encoded = encodeURIComponent(name).replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    assert.match(sample.body, new RegExp(`${encoded}\\?v=[0-9a-f]{16}`));
   }
+});
+
+test("changing only asset bytes updates its URL and generated script without changing routes or author query parameters", async t => {
+  const files = { "pic.svg": "<svg/>\n", "clip.mp4": "video bytes", "clip.poster.png": "poster bytes",
+    "clip.zh.vtt": "WEBVTT\n", "guide.pdf": "%PDF-test" };
+  const f = await fixture(t, { entries: [{ key: "article", files,
+    body: "![Image](./pic.svg?size=one%20two&flag&v=old#image)\n\n![Video](./clip.mp4)\n\n[PDF](./guide.pdf?download=yes#page=2)\n\n[Section](#section)\n\n## Section"
+  }] });
+  const sourceFile = path.join(f.contentDir, "entries/article/index.md");
+  const source = await fs.readFile(sourceFile, "utf8");
+  function urls(body) {
+    const result = new Map();
+    for (const [, attribute] of body.matchAll(/\b(?:href|src|poster)="([^"]+)"/g)) {
+      const url = new URL(attribute.replace(/&amp;/g, "&"), "https://example.test/");
+      if (!url.pathname.startsWith("/assets/content/")) continue;
+      assert.match(url.searchParams.get("v") || "", /^[0-9a-f]{16}$/);
+      assert.equal(url.searchParams.getAll("v").length, 1);
+      result.set(path.posix.basename(url.pathname), url);
+    }
+    return result;
+  }
+  let previous = urls((await f.build()).samples.article.body);
+  assert.equal(previous.size, 5);
+  assert.match(previous.get("pic.svg").href, /\?size=one%20two&flag&v=[0-9a-f]{16}#image$/);
+  assert.equal(previous.get("guide.pdf").hash, "#page=2");
+  let previousScript = await f.output();
+  for (const [name, bytes] of Object.entries(files)) {
+    await write(path.join(f.contentDir, "entries/article", name), `${bytes}changed`);
+    const sample = (await f.build()).samples.article;
+    const current = urls(sample.body);
+    for (const [other, url] of previous) {
+      if (other === name) assert.notEqual(current.get(other).searchParams.get("v"), url.searchParams.get("v"), name);
+      else assert.equal(current.get(other).href, url.href, `${name} must not invalidate ${other}`);
+    }
+    assert.notEqual(await f.output(), previousScript);
+    assert.match(sample.body, /<a(?=[^>]*href="#project\/article")(?=[^>]*data-article-anchor="article-section")[^>]*>/);
+    assert.equal(await fs.readFile(sourceFile, "utf8"), source);
+    previous = current; previousScript = await f.output();
+  }
+});
+
+test("CRLF-only text media changes keep generated URLs stable across separate builds", async t => {
+  const f = await fixture(t, { entries: [{ key: "article", body: "![Image](./pic.svg)\n\n![Video](./clip.mp4)",
+    files: { "pic.svg": "<svg>\n</svg>\n", "clip.mp4": "video bytes", "clip.zh.vtt": "WEBVTT\n\n00:00.000 --> 00:01.000\nCaption\n" }
+  }] });
+  await f.build();
+  const first = await f.output();
+  for (const name of ["pic.svg", "clip.zh.vtt"]) {
+    const file = path.join(f.contentDir, "entries/article", name);
+    await write(file, (await fs.readFile(file, "utf8")).replace(/\n/g, "\r\n"));
+  }
+  await f.build();
+  assert.equal(await f.output(), first);
+  assert.match(await fs.readFile(path.join(f.outputDir, "assets/content/article/clip.zh.vtt"), "utf8"), /\r\n/);
 });
 
 test("summary stays plain, body preserves rich Markdown and raw HTML is escaped", async t => {
@@ -230,17 +286,20 @@ test("valid article hashes survive while absent destinations fail", async t => {
   await assert.rejects(f.build(), /找不到/);
 });
 
-test("resume PDF is validated in content/files but full-build retains copy ownership", async t => {
-  const site = defaultSite(); site.resume.pdfUrl = "./files/简历 文档.pdf";
+test("resume PDF is validated and versioned but full-build retains copy ownership", async t => {
+  const site = defaultSite(); site.resume.pdfUrl = "./files/简历 文档.pdf?download=yes&v=old#page=2";
   const f = await fixture(t, { site, files: { "files/简历 文档.pdf": "%PDF-test" } });
-  assert.equal((await f.build()).resume.pdfUrl, site.resume.pdfUrl);
+  const first = (await f.build()).resume.pdfUrl;
+  assert.match(first, /^\.\/files\/简历 文档\.pdf\?download=yes&v=[0-9a-f]{16}#page=2$/);
+  await write(path.join(f.contentDir, "files/简历 文档.pdf"), "%PDF-changed");
+  assert.notEqual((await f.build()).resume.pdfUrl, first);
   await assert.rejects(fs.stat(path.join(f.outputDir, "files/简历 文档.pdf")), { code: "ENOENT" });
   for (const value of ["./files/missing.pdf", "./files/../entries/article/index.md", "../outside.pdf", "http://example.org/resume.pdf"]) {
     const badSite = defaultSite(); badSite.resume.pdfUrl = value;
     const bad = await fixture(t, { site: badSite });
     await assert.rejects(bad.build());
   }
-  const remoteSite = defaultSite(); remoteSite.resume.pdfUrl = "https://example.org/resume.pdf";
+  const remoteSite = defaultSite(); remoteSite.resume.pdfUrl = "https://example.org/resume.pdf?download=yes&v=external#page=2";
   const remote = await fixture(t, { site: remoteSite });
   assert.equal((await remote.build()).resume.pdfUrl, remoteSite.resume.pdfUrl);
 });
@@ -280,6 +339,7 @@ test("importing a builder copy does not execute its CLI or generate output", asy
   const root = await temporary(t, __dirname);
   const copy = path.join(root, "scripts/build-content.mjs");
   await write(copy, await fs.readFile(script));
+  await write(path.join(root, "scripts/asset-version.mjs"), await fs.readFile(path.join(project, "scripts/asset-version.mjs")));
   const result = spawnSync(process.execPath, ["--input-type=module", "-e", `await import(${JSON.stringify(pathToFileURL(copy).href)});`], { cwd: root, encoding: "utf8" });
   assert.equal(result.status, 0, result.stderr || result.error?.message);
   assert.equal(result.stdout, "");

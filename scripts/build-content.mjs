@@ -4,6 +4,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import MarkdownIt from "markdown-it";
 import { parseDocument } from "yaml";
+import { assetVersion, withAssetVersion } from "./asset-version.mjs";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const routeNames = { life: "生活", resume: "经历", project: "项目" };
@@ -90,7 +91,7 @@ function configureSite(site, file) {
   return content;
 }
 
-async function validateResume(content, contentDir, siteFile) {
+async function validateResume(content, contentDir, siteFile, versionOf) {
   const value = content.resume.pdfUrl;
   if (typeof value !== "string") throw error(siteFile, "resume.pdfUrl必须是文字。");
   if (!value) return;
@@ -107,6 +108,7 @@ async function validateResume(content, contentDir, siteFile) {
       !inside(root, target) || path.extname(target).toLowerCase() !== ".pdf") throw error(siteFile, "本地PDF必须位于content/files目录内。");
   const actual = await fs.realpath(target);
   if (!inside(root, actual) || !(await fs.stat(actual)).isFile()) throw error(siteFile, "PDF文件不存在或越过files目录。");
+  content.resume.pdfUrl = withAssetVersion(value, await versionOf(actual));
 }
 
 async function readEntry(directory, key) {
@@ -161,7 +163,7 @@ async function optionalFile(file) {
   catch (failure) { if (failure.code === "ENOENT") return false; throw failure; }
 }
 
-async function renderEntry(entry, content, entries, assets) {
+async function renderEntry(entry, content, entries, assets, versionOf) {
   const markdown = new MarkdownIt({ html: false, linkify: false, typographer: false });
   const originalValidation = markdown.validateLink;
   markdown.validateLink = value => { checkProtocol(value, entry.file); return originalValidation(value); };
@@ -208,7 +210,7 @@ async function renderEntry(entry, content, entries, assets) {
     const destination = `${entry.key}/${name}`;
     assets.set(destination, actual);
     const url = `./assets/content/${destination.split("/").map(encodeURIComponent).join("/")}${match[2] || ""}`;
-    return { url, target, name };
+    return { url: withAssetVersion(url, await versionOf(actual)), target, name };
   }
 
   const mediaCounts = { images: 0, videos: 0 };
@@ -345,7 +347,12 @@ export async function buildContent({ contentDir = path.join(projectRoot, "conten
   if (inside(contentDir, outputDir) || inside(outputDir, contentDir)) throw new Error("内容源目录与输出目录不能互相包含。");
   const siteFile = path.join(contentDir, "site.yml");
   const content = configureSite(yamlObject(await fs.readFile(siteFile, "utf8"), siteFile), siteFile);
-  await validateResume(content, contentDir, siteFile);
+  const versions = new Map();
+  const versionOf = file => {
+    if (!versions.has(file)) versions.set(file, assetVersion(file));
+    return versions.get(file);
+  };
+  await validateResume(content, contentDir, siteFile, versionOf);
   const root = path.join(contentDir, "entries");
   if (!inside(contentDir, await fs.realpath(root))) throw error(root, "条目根目录不能越过内容目录。");
   const directories = (await fs.readdir(root, { withFileTypes: true })).sort((a, b) => compareText(a.name, b.name));
@@ -361,7 +368,7 @@ export async function buildContent({ contentDir = path.join(projectRoot, "conten
   for (const route of content.paths) route.items = [...entries.values()]
     .filter(entry => entry.metadata.sections.includes(route.id)).sort(entryOrder).map(entry => entry.key);
   const assets = new Map();
-  for (const entry of entries.values()) content.samples[entry.key] = await renderEntry(entry, content, entries, assets);
+  for (const entry of entries.values()) content.samples[entry.key] = await renderEntry(entry, content, entries, assets, versionOf);
   await publish(content, assets, outputDir);
   return content;
 }
