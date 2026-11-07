@@ -135,6 +135,7 @@ h1 > span { color: var(--accent); }
 .prompt-symbol { flex-shrink: 0; color: var(--accent); }
 .terminal-result:empty { display: none; }
 .terminal-result { animation: output-reveal 180ms ease-out; }
+.terminal-result[data-streamed="true"] { animation: none; }
 .output-summary { max-width: 72ch; font: 400 16px/1.7 var(--font-body); }
 .summary-title { margin: 0 0 14px; color: var(--text); font: 500 26px/1.4 var(--font-body); text-wrap: balance; }
 .summary-description { margin: 8px 0 12px; max-width: 72ch; color: var(--muted); font-size: 16px; line-height: 1.7; }

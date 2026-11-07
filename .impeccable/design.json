@@ -11,7 +11,8 @@
         "dist/assets/js/app.js",
         "dist/assets/js/theme.js",
         "dist/assets/js/commands.js",
-        "dist/assets/js/summaries.js"
+        "dist/assets/js/summaries.js",
+        "dist/assets/js/output-motion.js"
       ],
       "scope": "最新图示优先：满视口统一screen背景，零外框/内框/套窗内缩，四入口侧栏依次home/0、life/1、resume/2、project/3。目录每次载入收起，左缘临时展开，目录旁图钉固定；本次会话固定选择跨导航保留，刷新清除。自介并入resume展开详情；8个公开命令由commands.js统一派生解析路由、Tab候选和浏览路线与操作两组平面帮助。先短摘要、按需详情；普通流prompt自动跟随，阅读历史暂停。",
       "primitiveSource": "docs/DESIGN.md frontmatter；运行来源为 dist/assets/css/styles.css。"
@@ -170,6 +171,11 @@
     },
     "shadows": [],
     "motion": [
+      {
+        "name": "output-stream",
+        "value": "WAAPI opacity; summary <=280ms; help <=550ms",
+        "purpose": "新摘要按条目、帮助按完整行渐显；可随时结束，不移动布局或锁定输入。初始/历史导航、短视口、减少动态效果与隐藏页面直接显示。"
+      },
       {
         "name": "screen-on",
         "value": "screen-on 340ms ease-out both",

@@ -8,6 +8,7 @@
   const main = document.querySelector("#main");
   const commandArea = document.querySelector(".command-area");
   const commandInput = window.LIZPINK_INPUT;
+  const outputMotion = window.LIZPINK_OUTPUT_MOTION;
   let followingOutput = true;
   let followFrame;
   let mediaSequence = 0;
@@ -223,7 +224,20 @@
     followingOutput = true;
     queueFollow();
   }
-  function render(route, {append = false, label = route} = {}) {
+  function beginReading() {
+    outputMotion?.finish();
+    pauseFollowing();
+  }
+  function outputFitsViewport(entry) {
+    // Full-height content is laid out once. Skip motion if following it would
+    // put the first rows above the viewport, especially with a phone keyboard.
+    const style = getComputedStyle(main);
+    const available = main.clientHeight - commandArea.offsetHeight
+      - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
+    return entry.getBoundingClientRect().height <= available;
+  }
+  function render(route, {append = false, label = route, animate = false} = {}) {
+    outputMotion?.finish();
     feedback.textContent = "";
     resetCompletion();
     const base = commandCatalog.normalize(route);
@@ -248,6 +262,7 @@
     }
     if (activeRoute !== "home") addOutputSummary(activeRoute);
     commandInput.refresh();
+    if (animate && entry && outputFitsViewport(entry)) outputMotion?.play(view);
     queueFollow();
     document.querySelector("#frame-location").textContent = `~/${activeRoute}`;
     document.querySelectorAll("#route-menu [data-route]").forEach(button => {
@@ -262,8 +277,9 @@
   function navigate(route, moveFocus = false, options = {}) {
     input.value = "";
     feedback.textContent = "";
-    if (readHash() === route) render(route, options);
-    else { historyApi(route); render(route, options); }
+    const renderOptions = {animate:true, ...options};
+    if (readHash() === route) render(route, renderOptions);
+    else { historyApi(route); render(route, renderOptions); }
     if (compactViewport.matches || menuMode === "peek") setMenu(false);
     if (moveFocus) {
       pauseFollowing();
@@ -281,7 +297,7 @@
   function returnToReading() {
     resetCompletion();
     feedback.textContent = "";
-    pauseFollowing();
+    beginReading();
     commandInput.leaveCommandMode();
     main.focus({preventScroll:true});
     syncCursor();
@@ -329,6 +345,7 @@
     return window.LIZPINK_THEME.apply(theme, { remember:true });
   }
   function execute(raw) {
+    outputMotion?.finish();
     const command = commandCatalog.normalize(raw);
     resetCompletion();
     if (!command) { feedback.textContent = "输入 help 查看命令。"; return; }
@@ -421,6 +438,7 @@
   });
   document.querySelector(".skip-link").addEventListener("click", event => {
     event.preventDefault();
+    beginReading();
     main.focus({preventScroll:true});
   });
   input.addEventListener("keydown", event => {
@@ -439,17 +457,17 @@
   ["keyup", "click", "select", "scroll", "focus"].forEach(event => input.addEventListener(event, syncCursor));
   input.addEventListener("beforeinput", resumeFollowing);
   input.addEventListener("blur", resetCompletion);
-  main.addEventListener("wheel", event => { if (event.deltaY < 0) pauseFollowing(); }, {passive:true});
-  main.addEventListener("touchmove", pauseFollowing, {passive:true});
-  main.addEventListener("pointerdown", event => { if (event.clientX >= main.getBoundingClientRect().right - 20) pauseFollowing(); });
+  main.addEventListener("wheel", event => { if (event.deltaY < 0) beginReading(); }, {passive:true});
+  main.addEventListener("touchmove", beginReading, {passive:true});
+  main.addEventListener("pointerdown", event => { if (event.clientX >= main.getBoundingClientRect().right - 20) beginReading(); });
   main.addEventListener("scroll", () => {
     if (!followingOutput && main.scrollHeight - main.scrollTop - main.clientHeight <= 32) followingOutput = true;
     updateFollowState();
   }, {passive:true});
-  main.addEventListener("focusin", event => { if (event.target.closest("#terminal-records")) pauseFollowing(); });
+  main.addEventListener("focusin", event => { if (event.target.closest("#terminal-records")) beginReading(); });
   main.addEventListener("keydown", event => {
     const editing = ["INPUT", "TEXTAREA"].includes(event.target.tagName);
-    if (["PageUp", "PageDown"].includes(event.key) || (!editing && ["Home", "End", "ArrowUp", "ArrowDown", " "].includes(event.key))) pauseFollowing();
+    if (["PageUp", "PageDown"].includes(event.key) || (!editing && ["Home", "End", "ArrowUp", "ArrowDown", " "].includes(event.key))) beginReading();
   });
   if (typeof ResizeObserver !== "undefined") {
     const outputObserver = new ResizeObserver(() => { if (followingOutput) queueFollow(); else updateFollowState(); });
