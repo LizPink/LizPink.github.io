@@ -8,12 +8,12 @@
 
 **用户图示与最新明确修订是最高优先的产品约束。** 网站铺满视口并融入统一背景，不设置外框、机壳套窗或居中限宽容器。保留原 `lp_` 标志与 LizPink 并排，桌面内容目录可展开、折叠及调宽，手机使用抽屉。
 
-内容目录与单条阅读已并入 `main`，作为当前正式界面统一维护；线上发布结果以对应 GitHub Actions 任务为准。
+Markdown内容源码分离与本页目录已并入 `main`，作为当前正式维护流程。作者内容位于 `content/`，UI源码位于 `site/`，`dist/` 由构建生成。线上版本以对应 GitHub Actions 部署结果为准。
 
 ## 当前结构与交互
 
-- 内容目录顶部按首页、生活01、经历02、项目03逐行排列，下方每条显示分区、日期和标题；home/help显示全部路径引用内容的去重并集。所有目录按有效显示日期降序，同日保持原引用顺序，无有效日期的条目排在最后。自介仍在resume展开详情，旧命令不兼容。
-- 7个公开命令依次为 `home / 0`、`life / 1`、`resume / 2`、`project / 3`、`open`、`close`、`help`。`dist/assets/js/commands.js` 是单一命令表，派生解析路由、Tab候选和帮助。视图只保留home、life、resume、project、help；仅保留现行命令、0–3及当前中文简写。clear已移除，不执行也不出现在补全、帮助或建议中；无效hash显示首页，未识别命令提示帮助。
+- 内容目录顶部按首页、生活01、经历02、项目03逐行排列，下方每条显示分区、日期和标题；home/help显示全部内容的去重并集。栏目归属来自独立Markdown的sections，构建器生成各栏目引用列表；目录按有效显示日期降序，无日期条目置后，同日保持生成结果的稳定顺序。自介仍在resume展开详情，旧命令不兼容。
+- 7个公开命令依次为 `home / 0`、`life / 1`、`resume / 2`、`project / 3`、`open`、`close`、`help`。`site/assets/js/commands.js` 是单一命令表，派生解析路由、Tab候选和帮助。视图只保留home、life、resume、project、help；仅保留现行命令、0–3及当前中文简写。clear已移除，不执行也不出现在补全、帮助或建议中；无效hash显示首页，未识别命令提示帮助。
 - 首页仅显示问候标题和命令区；删除独立的“左侧目录”说明。问候仅在home显示，进入其他栏目立即隐藏并释放占位。首次打开首页自动聚焦输入，空输入时在光标旁提示“输入 help 查询命令”，开始输入后隐藏提示。
 - 页面、工具栏、框架和主区采用同一屏幕底色，外框、主区内框与套窗内缩均为零，仅保留工具栏和侧栏内部细分隔线。独立页头、页脚与版权条均不占页面空间。
 - 桌面目录默认展开、宽200px，占独立列；工具栏入口始终可见，目录内部可收起。拖动separator可调180–420px，同时给主区至少320px；左右键每次16px、Home/End最小/最大、双击恢复200px、Escape取消拖动。取消图钉、悬停peek与移出延迟收起。
@@ -24,9 +24,10 @@
 - 新页面先取消待执行的跟随帧，替换旧输出并将main.scrollTop归零。编辑、Tab补全、↑↓历史回调与 `/` 聚焦保持正文位置；较长帮助页同样从顶部显示，未知命令保留当前页面。
 - 命令模式中 `Esc` 有补全时先关闭候选，再按一次返回正文并保留草稿；“返回阅读”按钮直接退出，手机也可使用。退出后恢复自动吸附，保留Shift+Tab离开路径。输入元素只在初始化时移动一次，滚动和切换位置不移动、不复制输入，不再使用独立“返回输入”按钮。
 - 最近记录若有详情，`open` 展开并定位正文，命令模式中仍保留输入焦点；`close` 收起并回输入。`help` 直接显示“浏览路线、操作”两组平面命令按钮与快捷键；栏目描述为首页、生活、经历、项目，操作描述为展开、收起、帮助；详情按钮同步使用展开/收起。命令按钮最小44px高，数字选项独立对齐，使用CSS Grid的8ch命令列，不用制表符。
-- 点击侧栏或帮助中的浏览命令会清空会话并选择路线，从正文顶部开始阅读，焦点留在正文；键盘提交栏目命令同样替换页面并置顶，继续保留输入焦点；同栏目重输也刷新。数字或中文简写统一回显英文命令，例如2显示为resume；↑↓保留实际输入历史。`home` 回到首页。摘要从内容数据生成最多三条标题预览，逐项标记示例；项目与生活的类型数量作为次要信息，介绍留在详情中。经历摘要保留身份、兴趣、履历/PDF状态，详情只渲染一次完整个人介绍，不重复栏目标题或身份、兴趣标签块。
+- 点击侧栏或帮助中的浏览命令会清空会话并选择路线，从正文顶部开始阅读，焦点留在正文；键盘提交栏目命令同样替换页面并置顶，继续保留输入焦点；同栏目重输也刷新。数字或中文简写统一回显英文命令，例如2显示为resume；↑↓保留实际输入历史。`home` 回到首页。摘要从生成数据提供最多三条标题预览；项目与生活按实际引用累计图片images、视频videos及不含媒体的纯文字条目数量，作为次要信息，介绍留在详情中。经历摘要保留身份、兴趣、履历/PDF状态，详情只渲染一次完整个人介绍，不重复栏目标题或身份、兴趣标签块。
 - 点击目录条目或摘要标题进入如 `#project/geometry` 的单条正文，支持深链与浏览器前后导航。单条直接显示所选全文，仅创建该条媒体，不含折叠详情，open/close提示没有可展开详情。7个命令与栏目summary/details仍保留。
-- 单条标题用h2，栏目详情条目仍用h3、经历条目用h4。文字最大72ch且左对齐；媒体自身最大960px，在剩余主区居中，按自然比例显示，小媒体不放大。图片可在新标签页打开原图；手机主区左右内边距20px，480px及以下事实标签和值上下排列。
+- 单条标题用h2，栏目详情条目仍用h3、经历条目用h4；Markdown正文的h2/h3在渲染时调整到文章内部层级。文字最大72ch且左对齐；媒体自身最大960px，在剩余主区居中，按自然比例显示，小媒体不放大。图片可在新标签页打开原图；手机主区左右内边距20px，480px及以下事实标签和值上下排列。
+- 本页目录从当前Markdown正文的h2/h3自动生成，至少两个有效标题时显示。`.frame-main`可用宽度达到1000px时使用右侧180px目录列；更窄时置于正文顶部的默认折叠details。点击章节暂停跟随，只滚动main并聚焦标题，不改写当前内容hash；目录高度为吸附输入区留出空间。
 - Tab 在输入中补全，非 Shift 的 Tab 始终保持输入焦点：唯一匹配补全、多匹配循环列表候选、空输入也可使用、无匹配不跳焦。成功补全只更新候选与输入选区，不显示底部状态文案；无匹配及未知命令继续显示错误说明。Shift+Tab 可离开，↑↓ 回调历史。未激活且空输入时显示静态空心光标和“按下 / 输入命令 · 输入 help 查询命令”按钮；窄屏分两行。有草稿时保留草稿与静态空心光标。仅input聚焦、页面有焦点且可见时显示实心闪烁光标；激活空输入时旁边显示“输入 help 查询命令”，开始输入即隐藏。右侧在命令模式显示“Esc 返回阅读”。组合输入、其他编辑区、文字选择、媒体与目录上下文不触发快捷唤起。错字建议比较完整拼写，例如 `proejct` 提示 `project`。
 - 宽屏工具栏“就绪 / 输入中”同步真实输入，1000px以下隐藏。工具栏目录入口、内部收起按钮和separator提供无障碍名称与状态。命令回显100ms、输出180ms、详情160ms淡入，输入态颜色及详情箭头短过渡；定位按帧合并，只写变化样式。减少动态效果及隐藏页面暂停规则保持。
 - 默认琥珀，另有荧绿；工具栏右侧为一个两档开关，checked 表示荧绿。760px 以下隐藏路径和当前主题文字以保持单排，开关语义仍完整。URL与偏好优先级保留，只有手动切换开关保存；配色仅通过右上角开关切换，不提供theme命令。
@@ -34,34 +35,49 @@
 
 ## 唯一输入体验
 
-自动吸附与命令模式已选定为唯一默认体验，由 `dist/assets/js/command-input.js` 与 `dist/assets/css/command-input.css` 提供。版本切换栏、对比页和其他输入分支已移除。旧链接中的 `input` 参数清除后进入同一最终版本，保留主题参数与栏目位置。
+自动吸附与命令模式已选定为唯一默认体验，由 `site/assets/js/command-input.js` 与 `site/assets/css/command-input.css` 提供。版本切换栏、对比页和其他输入分支已移除。旧链接中的 `input` 参数清除后进入同一最终版本，保留主题参数与栏目位置。
 
 首次打开首页在完成初始化后调用focus({preventScroll:true})自动聚焦输入，不移动到页底；直接打开内容栏目时仍展开详情并保持阅读状态，侧栏导航仍先显示短摘要。自动聚焦只在首页初始化时执行，不在窗口恢复焦点后反复抢焦点。只保存用户手动选择的主题，不持久保存命令模式或草稿。
 
 ## 内容边界与维护
 
-简历先保留短介绍，`resume.sections` 和 `pdfUrl` 可日后补充。三路线引用同一份 `samples`；文字、图像和视频示例均就近标识，不视为个人经历或成果，可替换或隐藏。此前移除的独立页面内容不迁入生活路线。
+内容与页面逻辑分开维护。`content/site.yml` 保存真实使用的品牌、问候、站点描述、身份/兴趣、简介、简历和栏目描述；`content/entries/{key}/index.md` 每篇独立，图片、MP4、封面与字幕随篇保存。栏目归属由文章元信息 `sections` 决定，同一篇可跨分区共享；作者不维护 `paths.items`，该列表由构建器生成。简历公共文件放在 `content/files/`。
 
-索引过滤缺失引用及重复key，共享条目在全索引中使用首次引用的栏目，分区名称与链接归属一致。首行采用“分区 YYYY.MM.DD”，下方为标题，不显示简介或类型标签。日期优先有效publishedAt，否则有效updatedAt，无有效日期则只显示分区。目录按该日期降序，同日及无日期条目保持原引用顺序；排序不修改paths.items，正文和摘要仍按其引用顺序展示。6条获准添加的人工排版日期均有dateExample:true，目录日期旁标“示例”，正文保留“示例日期”，不代表真实发表或更新时间。
+元信息使用标题、栏目和可选日期，不设置 `example` 或 `dateExample` 字段。原有六篇内容仍是排版演示，每篇正文第一段明确说明“本文为排版示例，日期为演示日期”；说明、alt与图注保留，不作为真实个人经历或成果。正文日期行统一使用“日期”，不再依赖特殊徽标表达示例身份。真实记录填写真实日期；缺少日期时省略，不补造。
 
-网站公开地址为 [lizpink.github.io](https://lizpink.github.io/)。历史版本与目录调整可通过 Git 提交历史查看。
+Markdown中的本地媒体引用决定展示位置；只复制素材而未引用不会展示。MP4按扩展名转成播放器，同名 `.poster.*` 与 `.zh.vtt` 自动关联。原始HTML按文本显示。本页目录来自正文h2/h3，不另维护目录元信息。日常操作见[内容维护指南](CONTENT.md)。
 
-维护与发布约定：正式版本保存在 `LizPink/LizPink.github.io` 的 `main` 分支，本地 `main` 跟踪 `origin/main`。新交互先在 `codex/` 功能分支体验，确认后合并；功能分支推送不更新线上网站。推送 `main` 后，由 `.github/workflows/deploy-pages.yml` 自动将 `dist/` 发布到 GitHub Pages；网页文件保留在项目的 `dist/` 中。发布后检查任务结果。Sites 与 GitHub Pages 独立部署；更新 Sites 不会自动同步 GitHub。
+网站公开地址为 [lizpink.github.io](https://lizpink.github.io/)。发布状态以对应 GitHub Actions 任务结果为准，历史版本通过Git提交查看。
+
+## 源码、构建与发布
+
+`site/` 是HTML、CSS、JavaScript及本地字体等UI源码；`content/` 是作者内容源。`dist/` 是 `npm run build` 生成的完整站点，已加入gitignore，不手改、不提交为内容源。
+
+`scripts/build-content.mjs` 读取站点YAML与各篇Markdown，生成内容数据、标题索引、媒体计数和所引用资源；`scripts/build.mjs` 将UI源码复制到暂存区、生成内容、替换站点字段，全部成功后原子替换 `dist/`，避免发布未完成的构建。
+
+`npm run dev` 默认在 [127.0.0.1:4182](http://127.0.0.1:4182/) 预览，监听 `content/` 与 `site/`，成功重建后自动刷新浏览器。`npm test` 先构建再运行全部 `tests/`；`npm run build` 可单独生成发布站点。
+
+正式版本保存在 `LizPink/LizPink.github.io` 的 `main` 分支，Markdown内容与本页目录按当前流程统一维护。功能分支用于开发与预览，推送功能分支不更新线上网站。`.github/workflows/deploy-pages.yml` 仅在main运行：`npm ci` 安装锁定依赖，`npm test` 构建并检查，通过后部署 `dist/`。推送main后自动触发发布，结果以对应 GitHub Actions 任务为准。Sites与GitHub Pages独立部署。
 
 | 内容 | 维护位置 |
 | --- | --- |
-| 身份、兴趣、路线、示例与简历 | `dist/assets/js/content.js` |
-| 首页问候、提示与侧栏 | `dist/index.html` |
-| 原生输入、补全、有限会话与页面逻辑 | `dist/assets/js/app.js` |
-| 自动吸附、命令模式与输入区布局 | `dist/assets/js/command-input.js`、`dist/assets/css/command-input.css` |
-| 公开命令、当前简写、帮助与补全候选 | `dist/assets/js/commands.js` |
-| 短摘要与展开标签 | `dist/assets/js/summaries.js`；数据取自 `content.js` |
-| 内容索引、深链与日期校验 | `dist/assets/js/content-index.js` |
-| 目录、手机抽屉与调宽 | `dist/assets/js/content-sidebar.js`、`dist/assets/css/content-sidebar.css` |
-| 可打断的流式展示 | `dist/assets/js/output-motion.js`；检查位于 `tests/output-motion.test.cjs` |
-| 主题初始值与保存规则 | `dist/assets/js/theme.js` |
-| 颜色、字体、布局与动画 | `dist/assets/css/styles.css` |
-| 媒体 / 本地字体许可 | `dist/assets/media/`、`dist/assets/fonts/` |
-| 实际设计数据与维护说明 | `docs/DESIGN.md`、`.impeccable/design.json`、`README.md` |
+| 品牌、问候、简介、简历与栏目文字 | `content/site.yml` |
+| 每篇标题、分区、日期、正文 | `content/entries/{key}/index.md` |
+| 每篇图片、视频、封面与字幕 | 对应的 `content/entries/{key}/` |
+| PDF等公共文件 | `content/files/` |
+| 页面模板与侧栏框架 | `site/index.html` |
+| 命令执行、当前页面与阅读逻辑 | `site/assets/js/app.js` |
+| 自动吸附、命令模式与输入区布局 | `site/assets/js/command-input.js`、`site/assets/css/command-input.css` |
+| 公开命令、简写、帮助与补全 | `site/assets/js/commands.js` |
+| 短摘要、展开标签与媒体计数 | `site/assets/js/summaries.js` |
+| 内容索引、深链与日期处理 | `site/assets/js/content-index.js` |
+| 左侧内容目录、手机抽屉与调宽 | `site/assets/js/content-sidebar.js`、`site/assets/css/content-sidebar.css` |
+| 正文自动本页目录 | `site/assets/js/article-outline.js`、`site/assets/css/article-outline.css` |
+| 可打断的渐显 | `site/assets/js/output-motion.js` |
+| 主题、颜色、字体、布局与动画 | `site/assets/js/theme.js`、`site/assets/css/styles.css` |
+| 本地字体及许可 | `site/assets/fonts/` |
+| 内容生成与整站构建 | `scripts/build-content.mjs`、`scripts/build.mjs` |
+| 本地预览与文件监听 | `scripts/dev.mjs`、`scripts/serve.mjs` |
+| 实际设计数据与维护说明 | `docs/DESIGN.md`、`.impeccable/design.json`、`docs/CONTENT.md` |
 
 交互与布局修改后，按[设计说明中的检查清单](DESIGN.md#检查清单)核对。

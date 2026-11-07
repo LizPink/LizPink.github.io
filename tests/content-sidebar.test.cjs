@@ -89,9 +89,9 @@ function harness({ mobile = false, width = 1200, entries } = {}) {
     cancelAnimationFrame(id) { frames.delete(id); }
   });
   const data = entries || [
-    { key: "one", route: "project", routeTitle: "项目", title: "<one>", excerpt: "第一条的简介", type: "text", example: true, date: { value: "2026-11-01", text: "2026.11.01", label: "发布", example: true } },
-    { key: "two", route: "project", routeTitle: "项目", title: "第二条", excerpt: "第二条的简介", type: "image", example: false, date: null },
-    { key: "three", route: "life", routeTitle: "生活", title: "日常", excerpt: "日常记录", type: "video", example: true, date: { value: "2026-10-31", text: "2026.10.31", label: "更新" } }
+    { key: "one", route: "project", routeTitle: "项目", title: "<one>", excerpt: "第一条的简介", type: "text", date: { value: "2026-11-01", text: "2026.11.01", label: "日期" } },
+    { key: "two", route: "project", routeTitle: "项目", title: "第二条", excerpt: "第二条的简介", type: "image", date: null },
+    { key: "three", route: "life", routeTitle: "生活", title: "日常", excerpt: "日常记录", type: "video", date: { value: "2026-10-31", text: "2026.10.31", label: "更新" } }
   ];
   window.LIZPINK_CONTENT_INDEX = { items: route => ["project", "life", "resume"].includes(route) ? data.filter(item => item.route === route) : data };
   const context = vm.createContext({ window, document, ResizeObserver: class { constructor(callback) { observer = callback; } observe() {} } });
@@ -218,7 +218,7 @@ test("content names its section and date honestly and preserves nodes/focus on s
   const h = harness(); h.api.update("project", "one");
   const first = h.nodes["content-list"].querySelectorAll("[data-content-key]")[0];
   assert.match(first.textContent, /<one>/);
-  assert.equal(first.getAttribute("aria-label"), "项目 示例日期 2026.11.01 <one>");
+  assert.equal(first.getAttribute("aria-label"), "项目 日期 2026.11.01 <one>");
   assert.equal(first.getAttribute("aria-current"), "location");
   first.focus(); h.nodes["content-list"].scrollTop = 120; h.api.update("project", "two");
   assert.equal(h.nodes["content-list"].querySelectorAll("[data-content-key]")[0], first);
@@ -233,12 +233,12 @@ test("content names its section and date honestly and preserves nodes/focus on s
   assert.equal(h.nodes["content-index-title"].textContent, "生活");
 });
 
-test("metadata shows section, date and a compact example marker; undated rows keep their section", () => {
+test("metadata shows section and date; undated rows keep their section", () => {
   const h = harness(); h.api.update("home");
   const buttons = h.nodes["content-list"].querySelectorAll("[data-content-key]");
   assert.deepEqual(buttons[0].children.map(node => node.className), ["content-item-meta", "content-item-title"]);
   const meta = buttons[0].children[0];
-  assert.deepEqual(meta.children.map(node => node.textContent), ["项目", "2026.11.01", "示例"]);
+  assert.deepEqual(meta.children.map(node => node.textContent), ["项目", "2026.11.01"]);
   assert.equal(meta.children[1].tagName, "time");
   assert.equal(meta.children[1].dateTime, "2026-11-01");
   assert.deepEqual(buttons[1].children.map(node => node.className), ["content-item-meta", "content-item-title"]);

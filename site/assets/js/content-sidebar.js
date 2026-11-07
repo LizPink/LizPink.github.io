@@ -234,14 +234,9 @@
           const time = element("time", "", item.date.text);
           time.dateTime = item.date.value;
           meta.append(time);
-          if (item.date.example) {
-            const example = element("span", "content-item-example", "示例");
-            example.title = "用于排版预览的示例日期";
-            meta.append(example);
-          }
         }
         button.setAttribute("aria-label", [item.routeTitle,
-          item.date && `${item.date.example ? "示例日期" : item.date.label} ${item.date.text}`,
+          item.date && `${item.date.label} ${item.date.text}`,
           item.title].filter(Boolean).join(" "));
         button.append(meta);
         button.append(element("span", "content-item-title", item.title));

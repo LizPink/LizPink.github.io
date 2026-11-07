@@ -1,0 +1,71 @@
+.frame-main { container: reader / inline-size; }
+.article-layout, .article-body { min-width: 0; }
+
+.article-outline { min-width: 0; margin: 0 0 24px; color: var(--muted); font: 14px/1.6 var(--font-body); }
+.article-outline-title { display: none; margin: 0 0 10px; color: var(--muted); font: 500 14px/1.6 var(--font-body); }
+.article-outline-details > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 44px;
+  padding: 8px 0;
+  color: var(--accent);
+  list-style: none;
+  cursor: pointer;
+}
+.article-outline-details > summary::-webkit-details-marker { display: none; }
+.article-outline-details > summary::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  margin-right: 4px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(45deg);
+}
+.article-outline-details[open] > summary::after { transform: rotate(225deg); }
+.article-outline-details > summary:focus-visible { outline-offset: 2px; }
+.article-outline-nav {
+  max-height: var(--outline-max-height, 50dvh);
+  padding: 2px 4px 4px 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+}
+.article-outline-list { margin: 0; padding: 0; list-style: none; }
+.article-outline-list > li { margin: 0; padding: 0; }
+.article-outline-list > li[data-level="3"] { padding-left: 12px; }
+.article-outline-link {
+  display: block;
+  min-height: 32px;
+  padding: 6px 8px 6px 12px;
+  border-left: 1px solid transparent;
+  color: var(--muted);
+  font: inherit;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.article-outline-link:hover { color: var(--text); }
+.article-outline-link[aria-current="location"] { border-left-color: var(--accent); color: var(--accent); }
+.article-outline-link:focus-visible { outline-offset: -2px; }
+
+@container reader (min-width: 1000px) {
+  .article-layout:has(> .article-outline) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 180px;
+    align-items: start;
+    column-gap: 32px;
+  }
+  .article-layout > .article-body { grid-column: 1; grid-row: 1; }
+  .article-layout > .article-outline {
+    position: sticky;
+    top: 0;
+    grid-column: 2;
+    grid-row: 1;
+    align-self: start;
+    margin: 0;
+  }
+  .article-outline-title { display: block; }
+  .article-outline-details > summary { display: none; }
+}

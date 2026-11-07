@@ -18,7 +18,7 @@ function load(...values) {
   return { api: window.LIZPINK_CONTENT_INDEX, content: window.LIZPINK_CONTENT };
 }
 
-test("bundled examples sort by displayed publication date and keep shared items and artificial date flags", () => {
+test("generated articles sort by displayed date and keep shared membership", () => {
   const { api, content } = load();
   assert.equal(Object.isFrozen(api), true);
   const expected = { life: ["notebook", "journal"], resume: ["geometry", "profile"], project: ["animation", "geometry", "question"] };
@@ -30,10 +30,8 @@ test("bundled examples sort by displayed publication date and keep shared items 
       assert.equal(item.routeTitle, routeTitle);
       assert.equal(item.title, content.samples[item.key].title);
       assert.equal(item.type, content.samples[item.key].type);
-      assert.equal(item.example, true);
       assert.equal(item.date.value, content.samples[item.key].publishedAt);
-      assert.equal(item.date.label, "发布");
-      assert.equal(item.date.example, true);
+      assert.equal(item.date.label, "日期");
     });
   }
   assert.equal(api.get("resume", "geometry").route, "resume");
@@ -86,12 +84,11 @@ test("excerpt only collapses whitespace and never truncates or replaces the orig
   const text = " \n 中文\t记录 \r\n <em>原文</em>\u00a0保留标点。 " + "很长的段落。".repeat(200);
   const { api, content } = load({
     paths: [{ id: "project", items: ["long"] }],
-    samples: { long: { title: "  原标题  ", text, type: "text", example: false } }
+    samples: { long: { title: "  原标题  ", text, type: "text" } }
   });
   const item = api.get("project", "long");
   assert.equal(item.excerpt, "中文 记录 <em>原文</em> 保留标点。 " + "很长的段落。".repeat(200));
   assert.equal(item.title, "  原标题  ");
-  assert.equal(item.example, false);
   assert.equal(content.samples.long.text, text);
 });
 
@@ -118,8 +115,8 @@ test("valid publication date takes precedence, otherwise valid update date is us
       invalid: { publishedAt: "2026-04-31", updatedAt: "yesterday" }
     }
   });
-  assert.deepEqual(plain(api.get("life", "published").date), { value: "2024-02-29", text: "2024.02.29", label: "发布", example: false });
-  assert.deepEqual(plain(api.get("life", "updated").date), { value: "2026-11-07", text: "2026.11.07", label: "更新", example: false });
+  assert.deepEqual(plain(api.get("life", "published").date), { value: "2024-02-29", text: "2024.02.29", label: "日期" });
+  assert.deepEqual(plain(api.get("life", "updated").date), { value: "2026-11-07", text: "2026.11.07", label: "更新" });
   assert.equal(api.get("life", "onlyUpdate").date.label, "更新");
   assert.equal(api.get("life", "invalid").date, null);
 });
@@ -273,7 +270,7 @@ test("missing or malformed source is safe", () => {
 test("all APIs leave frozen source data intact and returned objects are independent", () => {
   const content = {
     paths: [{ id: "project", items: ["sample"] }],
-    samples: { sample: { title: "Original", text: " a\n b ", example: true, publishedAt: "2026-11-07" } }
+    samples: { sample: { title: "Original", text: " a\n b ", publishedAt: "2026-11-07" } }
   };
   const before = JSON.stringify(content);
   const freeze = value => {

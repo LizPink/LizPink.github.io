@@ -208,9 +208,23 @@ kbd { color: var(--text); font: 12px var(--font-mono); }
 .sample-entry h3 { max-width: var(--reading-width); margin: 0; font-family: var(--font-body); font-size: 23px; font-weight: 500; line-height: 1.5; overflow-wrap: anywhere; text-wrap: balance; }
 .external-link { display: inline-flex; align-items: center; min-height: 44px; margin-top: 16px; color: var(--accent); font-size: 14px; text-decoration: none; }
 .external-link:hover { text-decoration: underline; }
-.example-badge { flex-shrink: 0; color: var(--accent); font-size: 12px; white-space: nowrap; }
 .sample-entry { padding: 28px 0 24px; border-top: 1px solid var(--line-soft); }
 .sample-text { margin: 0 0 20px; color: var(--text); line-height: 1.9; }
+.article-body { min-width: 0; line-height: 1.9; }
+.article-body :is(p, ul, ol, blockquote, h2, h3, h4, h5, h6) { max-width: var(--reading-width); }
+.article-body p { margin: 0 0 20px; }
+.article-body :is(h2, h3, h4, h5, h6) { margin: 32px 0 12px; font-family: var(--font-body); font-weight: 500; line-height: 1.5; text-wrap: balance; }
+.article-body :is(h2, h3) { font-size: 23px; }
+.article-body :is(h4, h5, h6) { font-size: 19px; }
+.article-body a { color: var(--accent); text-underline-offset: 4px; }
+.article-body :is(ul, ol) { padding-left: 24px; margin: 0 0 20px; }
+.article-body li + li { margin-top: 6px; }
+.article-body blockquote { margin: 20px 0; padding-left: 16px; border-left: 1px solid var(--line); color: var(--muted); }
+.article-body code { font: .88em/1.65 var(--font-mono); }
+.article-body pre { max-width: 100%; overflow: auto; padding: 16px; border-block: 1px solid var(--line-soft); tab-size: 2; }
+.article-body table { display: block; max-width: 100%; overflow: auto; border-collapse: collapse; margin: 20px 0; }
+.article-body :is(th, td) { padding: 8px 14px; border-bottom: 1px solid var(--line-soft); text-align: left; }
+.article-body hr { margin: 28px 0; border: 0; border-top: 1px solid var(--line-soft); }
 .sample-media { min-width: 0; margin: 0 0 20px; }
 .sample-media img, .sample-media video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; background: var(--screen); }
 .media-zoom { display: block; cursor: zoom-in; }
