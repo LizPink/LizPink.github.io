@@ -401,7 +401,14 @@
     event.preventDefault();
     if (!commandComposing) execute(input.value);
   });
-  document.addEventListener("pointerdown", () => { menuKeyboardMode = false; }, true);
+  document.addEventListener("pointerdown", event => {
+    menuKeyboardMode = false;
+    // Keep native keyboard focus while mouse clicks only activate the button.
+    // Touch, text editing, links, details and media retain their default behavior.
+    if (event.pointerType === "mouse" && event.button === 0 && event.target.closest("button")) {
+      event.preventDefault();
+    }
+  }, true);
   document.addEventListener("keydown", event => {
     if (["Tab", "Enter", " "].includes(event.key)) menuKeyboardMode = true;
   }, true);
