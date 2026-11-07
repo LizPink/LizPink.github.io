@@ -38,7 +38,7 @@
 
 简历先保留短介绍，`resume.sections` 和 `pdfUrl` 可日后补充。三路线引用同一份 `samples`；文字、图像和视频示例均就近标识，不视为个人经历或成果，可替换或隐藏。删除的项目、档案与联系内容不迁入生活路线。
 
-网站公开地址为 [lizpink.github.io](https://lizpink.github.io/)。私有旧源仓库 `LizPink/hugo-LizPinksite-main` 保留，旧 `site0-deploy.yaml` 发布流程已移除；两个仓库均有 `codex/backup-test-site-20261025` 备份分支。2026-10-25 首次部署提交、发布任务与验证范围见 [部署回执](deployment/2026-10-25-initial.json)；整理前的完整说明保存在 [旧版 README](archive/README-2026-10-25.md)。
+网站公开地址为 [lizpink.github.io](https://lizpink.github.io/)。历史版本与目录调整可通过 Git 提交历史查看。
 
 维护与发布约定：完整项目统一保存在 `LizPink/LizPink.github.io` 的 `main` 分支，本地 `main` 跟踪 `origin/main`。提交并推送后，由 `.github/workflows/deploy-pages.yml` 自动将 `dist/` 发布到 GitHub Pages；网页文件保留在项目的 `dist/` 中。每次更新后检查发布任务结果。Sites 与 GitHub Pages 独立部署；更新 Sites 不会自动同步 GitHub。
 
@@ -55,4 +55,4 @@
 | 媒体 / 本地字体许可 | `dist/assets/media/`、`dist/assets/fonts/` |
 | 实际设计数据与维护说明 | `docs/DESIGN.md`、`.impeccable/design.json`、`README.md` |
 
-当前使用与维护入口见[项目 README](../README.md)。历史交互验证保存在 [interaction-history.json](verification/interaction-history.json)，其中截图文件名对应 `docs/previews/`；记录内容保留原检查时的版本与路径。
+交互与布局修改后，按[设计说明中的检查清单](DESIGN.md#检查清单)核对。

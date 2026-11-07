@@ -2,7 +2,7 @@
 
 [在线访问](https://lizpink.github.io/) · [项目源码](https://github.com/LizPink/LizPink.github.io)
 
-使用 HTML、CSS 和 JavaScript 编写的个人网站，包含生活、经历和研究三个栏目，支持目录导航、终端命令及琥珀／荧绿主题。直接维护静态文件，无需安装依赖或构建。
+一个使用 HTML、CSS 和 JavaScript 编写的个人网站，网站基于 GPT-6.1 VibeCoding。
 
 ## 项目结构
 
@@ -17,58 +17,11 @@ lizpink-terminal/
 │       ├── css/               # 布局、主题与输入区样式
 │       ├── fonts/             # 本地字体及许可
 │       └── media/             # 图片、视频与字幕
-├── docs/                      # 产品、设计和历史记录
+├── docs/                      # 产品与设计说明
 │   ├── PRODUCT.md
-│   ├── DESIGN.md
-│   ├── previews/              # 历史预览图
-│   ├── verification/          # 验证记录
-│   ├── deployment/            # 发布记录
-│   └── archive/               # 旧版文档
+│   └── DESIGN.md
 ├── .github/workflows/
 │   └── deploy-pages.yml        # 推送 main 后自动发布 dist/
 ├── .openai/hosting.json        # Sites 托管配置
 └── .impeccable/design.json     # 设计数据
 ```
-
-## 本地预览
-
-在项目根目录运行（需要 Python）：
-
-```sh
-python -m http.server 4173 --bind 127.0.0.1 --directory dist
-```
-
-打开 [本地预览](http://127.0.0.1:4173/)，按 `Ctrl+C` 停止服务。
-
-## 修改网站
-
-| 修改内容 | 位置 |
-| --- | --- |
-| 自我介绍、栏目、图文与简历 | `dist/assets/js/content.js` |
-| 首页文字与页面结构 | `dist/index.html` |
-| 颜色、字体与布局 | `dist/assets/css/styles.css` |
-| 命令、帮助与补全候选 | `dist/assets/js/commands.js` |
-| 栏目摘要 | `dist/assets/js/summaries.js` |
-| 导航、渲染与会话 | `dist/assets/js/app.js` |
-| 输入模式与自动吸附 | `dist/assets/js/command-input.js`、`dist/assets/css/command-input.css` |
-| 初始主题与偏好保存 | `dist/assets/js/theme.js` |
-
-图片和视频放入 `dist/assets/media/`，内容路径使用 `./assets/media/文件名`。替换示例后，将对应条目的 `example` 改为 `false`。PDF 可放入 `dist/files/resume.pdf`，并设置 `resume.pdfUrl`。
-
-脚本按 `theme → content → commands → summaries → command-input → app` 加载；其中 `theme.js` 在样式之前运行，其余脚本使用 `defer`。
-
-## 同步与发布
-
-本地 `main` 跟踪远程 `origin/main`，完整项目统一保存在主分支。修改后提交并推送：
-
-```sh
-git add .
-git commit -m "Update website"
-git push
-```
-
-每次推送到 `main`，GitHub Actions 会自动将 `dist/` 发布到原网址。可以在仓库的 [Actions](https://github.com/LizPink/LizPink.github.io/actions/workflows/deploy-pages.yml) 查看发布进度。GitHub Pages 的发布来源为 **GitHub Actions**。
-
-Sites 使用同一份 `dist/`，独立发布；更新 Sites 不会自动同步 GitHub Pages。
-
-详细约定见 [产品说明](docs/PRODUCT.md)和[设计说明](docs/DESIGN.md)。字体许可随字体保存在 `dist/assets/fonts/`。
