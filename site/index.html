@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="./assets/css/command-input.css">
   <link rel="stylesheet" href="./assets/css/content-sidebar.css">
   <link rel="stylesheet" href="./assets/css/article-outline.css">
+  <link rel="stylesheet" href="./assets/css/image-viewer.css">
   <script src="./assets/js/content.js" defer></script>
   <script src="./assets/js/content-index.js" defer></script>
   <script src="./assets/js/commands.js" defer></script>
@@ -23,6 +24,7 @@
   <script src="./assets/js/content-sidebar.js" defer></script>
   <script src="./assets/js/article-outline.js" defer></script>
   <script src="./assets/js/sidebar-shortcuts.js" defer></script>
+  <script src="./assets/js/image-viewer.js" defer></script>
   <script src="./assets/js/app.js" defer></script>
 </head>
 <body>
@@ -82,6 +84,20 @@
       </div>
     </div>
   </div>
+  <dialog id="image-viewer" class="image-viewer" aria-label="图片预览" aria-describedby="image-viewer-caption">
+    <div id="image-viewer-toolbar" class="image-viewer-toolbar">
+      <span class="image-viewer-label">图片预览</span>
+      <span class="image-viewer-escape" aria-hidden="true">Esc 关闭</span>
+      <button id="image-viewer-close" type="button" aria-label="关闭图片预览" title="关闭图片预览（Esc）" autofocus><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+    </div>
+    <figure class="image-viewer-figure">
+      <div id="image-viewer-stage" class="image-viewer-stage">
+        <img id="image-viewer-image" alt="" decoding="async">
+        <p id="image-viewer-status" role="status"></p>
+      </div>
+      <figcaption id="image-viewer-caption"></figcaption>
+    </figure>
+  </dialog>
   <div id="route-announcement" class="sr-only" role="status" aria-live="polite"></div>
   <noscript><p class="noscript">请启用 JavaScript 后浏览目录或使用命令。</p></noscript>
 </body>

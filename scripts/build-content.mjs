@@ -242,7 +242,7 @@ async function renderEntry(entry, content, entries, assets, versionOf) {
     }
     if (!imageExtensions.has(extension)) throw error(entry.file, `图片仅支持图像文件或MP4视频：${value}`);
     mediaCounts.images += 1;
-    return `<figure class="sample-media"><a class="media-zoom" href="${escape(resource.url)}" target="_blank" rel="noopener noreferrer" aria-label="查看大图：${label}（新标签页）"><img src="${escape(resource.url)}" alt="${label}" loading="lazy" decoding="async" width="960" height="540"></a><figcaption id="${escape(captionId)}">${label}<span class="media-hint">点击图片查看大图 ↗</span></figcaption></figure>\n`;
+    return `<figure class="sample-media"><a class="media-zoom" href="${escape(resource.url)}" target="_blank" rel="noopener noreferrer" aria-label="查看大图：${label}"><img src="${escape(resource.url)}" alt="${label}" loading="lazy" decoding="async" width="960" height="540"></a><figcaption id="${escape(captionId)}">${label}<span class="media-hint">点击图片查看大图</span></figcaption></figure>\n`;
   }
 
   for (const block of tokens) {

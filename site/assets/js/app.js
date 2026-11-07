@@ -12,6 +12,7 @@
   const contentIndex = window.LIZPINK_CONTENT_INDEX;
   const sidebar = window.LIZPINK_SIDEBAR;
   const articleOutline = window.LIZPINK_OUTLINE;
+  const imageViewer = window.LIZPINK_IMAGE_VIEWER;
   const outlineButton = document.querySelector("#outline-toggle");
   let followingOutput = true;
   let followFrame;
@@ -59,12 +60,12 @@
     else outlineButton.removeAttribute("aria-controls");
   }
   function toggleLeftDirectory() {
-    if (commandComposing) return false;
+    if (commandComposing || imageViewer?.isOpen()) return false;
     beginReading();
     return sidebar.toggle();
   }
   function togglePageOutline() {
-    if (commandComposing || (sidebar.isMobile() && sidebar.isOpen()) || !articleOutline?.isAvailable()) return false;
+    if (commandComposing || imageViewer?.isOpen() || (sidebar.isMobile() && sidebar.isOpen()) || !articleOutline?.isAvailable()) return false;
     beginReading();
     const handled = articleOutline.toggle();
     syncOutlineButton();
@@ -247,6 +248,8 @@
     return entry.getBoundingClientRect().height <= available;
   }
   function render(route, {label = route, animate = false, itemKey = null} = {}) {
+    const wasViewingImage = imageViewer?.isOpen();
+    if (wasViewingImage) imageViewer.close({restoreFocus:false, restoreScroll:false});
     outputMotion?.finish();
     articleOutline?.clear();
     feedback.textContent = "";
@@ -272,6 +275,7 @@
     if (activeItem) renderSelectedItem(activeRoute, activeItem.key);
     else if (activeRoute !== "home") addOutputSummary(activeRoute);
     main.scrollTop = 0;
+    if (wasViewingImage) main.focus({preventScroll:true});
     commandInput.refresh();
     if (animate && !activeItem && entry && outputFitsViewport(entry)) outputMotion?.play(view);
     updateFollowState();
@@ -459,7 +463,7 @@
     [records, commandArea, main].forEach(element => outputObserver.observe(element));
   } else window.addEventListener("resize", () => { if (followingOutput) queueFollow(); else updateFollowState(); });
   document.addEventListener("keydown", event => {
-    if (event.defaultPrevented || event.isComposing || commandComposing || event.keyCode === 229) return;
+    if (imageViewer?.isOpen() || event.defaultPrevented || event.isComposing || commandComposing || event.keyCode === 229) return;
     if (event.key === "Escape" && commandInput.commandMode()) {
       event.preventDefault(); returnToReading(); return;
     }
@@ -488,6 +492,7 @@
   sidebar.init({onLayout:() => { beginReading(); commandInput.refresh(); syncOutlineButton(); }});
   outlineButton.addEventListener("click", togglePageOutline);
   window.LIZPINK_SIDEBAR_SHORTCUTS.init({toggleLeft:toggleLeftDirectory, toggleRight:togglePageOutline});
+  imageViewer?.init({root:records, scrollRoot:main, onOpen:beginReading});
   const initialLocation = contentIndex.parseHash(location.hash);
   render(initialLocation.route, {itemKey:initialLocation.key});
   const initialDetails = records.lastElementChild?.querySelector(".output-details");

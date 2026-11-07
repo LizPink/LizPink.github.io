@@ -32,7 +32,8 @@ lizpink-terminal/
 │       │   ├── styles.css            # 主题、排版与通用组件
 │       │   ├── command-input.css     # 命令输入区
 │       │   ├── content-sidebar.css   # 左侧内容目录
-│       │   └── article-outline.css   # 本页目录与阅读布局
+│       │   ├── article-outline.css   # 本页目录与阅读布局
+│       │   └── image-viewer.css      # 同页图片预览与暗背景
 │       ├── js/
 │       │   ├── app.js                # 页面初始化、路由与终端交互
 │       │   ├── commands.js           # 命令定义、补全候选与帮助正文
@@ -41,6 +42,7 @@ lizpink-terminal/
 │       │   ├── summaries.js          # 栏目摘要与文章展示
 │       │   ├── content-sidebar.js    # 左侧目录、折叠与调宽
 │       │   ├── article-outline.js    # 本页目录与章节定位
+│       │   ├── image-viewer.js       # 图片预览、关闭与原位置恢复
 │       │   ├── sidebar-shortcuts.js  # 左右目录快捷键
 │       │   ├── output-motion.js      # 分段输出动效
 │       │   └── theme.js              # 主题切换与偏好
@@ -68,6 +70,8 @@ lizpink-terminal/
 ```
 
 每篇内容文件夹都包含 `index.md`，图片、视频、封面和字幕与正文放在一起。可选的 PDF 简历放入 `content/files/`，并在 `content/site.yml` 中配置链接。构建会生成 `dist/assets/js/content.js` 和 `dist/assets/content/`，日常更新修改对应的源文件即可。
+
+点击正文图片可在同页暗背景中居中预览，按 `Esc`、右上角×或图片外空白关闭，回到原来的阅读位置。图片仍使用原有 Markdown 写法。
 
 ## 本地维护
 
