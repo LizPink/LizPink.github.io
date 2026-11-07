@@ -21,7 +21,8 @@
   }
 
   function addSamplePreview(node, path, content, showCounts = true) {
-    const items = (path?.items || []).map(key => content.samples?.[key]).filter(Boolean);
+    const items = (path?.items || []).filter(key => content.samples?.[key])
+      .map(key => ({...content.samples[key], key}));
     if (!items.length) {
       node.append(element("p", "summary-meta", "图文尚未添加，之后补充。"));
       return;
@@ -30,7 +31,11 @@
     list.setAttribute("aria-label", "内容预览");
     items.slice(0, 3).forEach(item => {
       const row = element("li", "summary-preview-item");
-      row.append(element("span", "", item.title || "未命名内容"));
+      const link = element("button", "summary-preview-link", item.title || "未命名内容");
+      link.type = "button";
+      link.dataset.contentKey = item.key;
+      link.dataset.contentRoute = path.id;
+      row.append(link);
       if (item.example) row.append(element("span", "summary-preview-label", "示例"));
       list.append(row);
     });

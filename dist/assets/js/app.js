@@ -9,19 +9,15 @@
   const commandArea = document.querySelector(".command-area");
   const commandInput = window.LIZPINK_INPUT;
   const outputMotion = window.LIZPINK_OUTPUT_MOTION;
+  const contentIndex = window.LIZPINK_CONTENT_INDEX;
+  const sidebar = window.LIZPINK_SIDEBAR;
   let followingOutput = true;
   let followFrame;
   let mediaSequence = 0;
   const history = [];
   let historyPosition = 0;
   let activeRoute = "home";
-  const compactViewport = matchMedia("(max-width: 760px)");
-  const hoverPointer = matchMedia("(hover: hover) and (pointer: fine)");
-  let menuMode = "closed";
-  let sidebarPinned = false;
-  let menuKeyboardMode = false;
-  let menuCloseTimer;
-  let menuReturnTarget;
+  let activeItem = null;
   const commandCatalog = window.LIZPINK_COMMANDS;
   const routes = commandCatalog.routes;
   const titles = { home:"起始页", resume:"经历与能力", project:"项目与探索", life:"生活与记录", help:"命令帮助" };
@@ -81,7 +77,7 @@
     if (!value) return null;
     try { const url = new URL(value, location.href); return ["http:", "https:", "file:"].includes(url.protocol) ? url.href : null; } catch { return null; }
   }
-  function renderPathSamples(path) {
+  function renderPathSamples(path, {reader = false} = {}) {
     if (!path.items.some(key => content.samples[key])) {
       view.append($("p", "route-empty", "这个角落还在整理，之后会陆续放入内容。"));
       return;
@@ -92,9 +88,17 @@
       const article = $("article", "sample-entry");
       article.dataset.example = String(Boolean(sample.example));
       const label = $("div", "sample-heading");
-      label.append($("h3", "", sample.title));
+      label.append($(reader ? "h2" : "h3", reader ? "summary-title" : "", sample.title));
       if (sample.example) label.append($("span", "example-badge", `${{text:"文字",image:"图片",video:"视频"}[sample.type] || "内容"}示例`));
-      article.append(label, $("p", "sample-text", sample.text));
+      article.append(label);
+      const itemDate = contentIndex.get(path.id, key)?.date;
+      if (itemDate) {
+        const metadata = $("p", "reader-date");
+        const time = $("time", "", itemDate.text); time.dateTime = itemDate.value;
+        metadata.append(document.createTextNode(`${itemDate.example ? "示例日期" : itemDate.label} `), time);
+        article.append(metadata);
+      }
+      article.append($("p", "sample-text", sample.text));
       const src = mediaUrl(sample.src);
       if (["image", "video"].includes(sample.type)) {
         const mediaDescriptionId = `media-description-${key}-${++mediaSequence}`;
@@ -103,6 +107,9 @@
         if (!src) unavailable();
         else if (sample.type === "image") {
           const image = $("img"); image.src = src; image.alt = sample.alt || sample.title; image.width = 960; image.height = 540; image.loading = "lazy"; image.decoding = "async";
+          image.addEventListener("load", () => {
+            if (image.naturalWidth) figure.style.setProperty("--asset-width", `${image.naturalWidth}px`);
+          }, {once:true});
           const zoom = $("a", "media-zoom");
           zoom.href = src; zoom.target = "_blank"; zoom.rel = "noopener noreferrer";
           zoom.setAttribute("aria-label", `查看大图：${sample.title}（新标签页）`);
@@ -110,6 +117,10 @@
           image.addEventListener("error", unavailable, {once:true}); figure.append(zoom);
         } else {
           const video = $("video"); video.src = src; video.controls = true; video.preload = "none"; video.playsInline = true; video.width = 640; video.height = 360;
+          figure.style.setProperty("--asset-width", `${video.width}px`);
+          video.addEventListener("loadedmetadata", () => {
+            if (video.videoWidth) figure.style.setProperty("--asset-width", `${video.videoWidth}px`);
+          }, {once:true});
           const poster = mediaUrl(sample.poster); if (poster) video.poster = poster;
           video.setAttribute("aria-label", sample.title);
           video.setAttribute("aria-describedby", mediaDescriptionId);
@@ -128,38 +139,13 @@
   }
   function project() { const path = beginPath("project"); renderPathSamples(path); }
   function life() { const path = beginPath("life"); renderPathSamples(path); }
-  function setMenu(open, focus = false) {
-    clearTimeout(menuCloseTimer);
-    menuMode = open ? (compactViewport.matches ? "mobile-open" : sidebarPinned ? "pinned" : "peek") : "closed";
-    document.querySelector("#route-menu").hidden = !open;
-    document.querySelector("#terminal-frame").dataset.menuOpen = String(open);
-    document.querySelector("#terminal-frame").dataset.menuPeek = String(menuMode === "peek");
-    document.querySelector("#terminal-frame").dataset.menuPinned = String(sidebarPinned);
-    const pin = document.querySelector("#menu-pin");
-    const label = sidebarPinned ? "取消固定目录" : "固定目录";
-    pin.setAttribute("aria-pressed", String(sidebarPinned));
-    pin.setAttribute("aria-label", label);
-    pin.title = label;
-    const reveal = document.querySelector("#menu-reveal");
-    reveal.hidden = open && menuMode !== "peek";
-    reveal.setAttribute("aria-expanded", String(open));
-    reveal.title = "展开目录";
-    document.querySelector("#menu-backdrop").hidden = !open || !compactViewport.matches;
-    document.querySelector(".frame-main").inert = open && compactViewport.matches;
-    if (focus) {
-      const returnTarget = menuReturnTarget && !menuReturnTarget.closest("[hidden]") ? menuReturnTarget : reveal;
-      (open ? (compactViewport.matches ? document.querySelector("#menu-close") : pin) : returnTarget).focus({preventScroll:true});
-    }
+  function closeMobileDirectory() {
+    if (sidebar.isMobile() && sidebar.isOpen()) sidebar.close();
   }
-  function scheduleMenuClose() {
-    clearTimeout(menuCloseTimer);
-    if (menuMode !== "peek") return;
-    menuCloseTimer = setTimeout(() => {
-      const menu = document.querySelector("#route-menu");
-      const reveal = document.querySelector("#menu-reveal");
-      const holdsKeyboardFocus = menuKeyboardMode && menu.contains(document.activeElement);
-      if (menuMode === "peek" && !holdsKeyboardFocus && !menu.matches(":hover") && !reveal.matches(":hover")) setMenu(false, menu.contains(document.activeElement));
-    }, 180);
+  function renderSelectedItem(route, key) {
+    const reader = $("section", "content-reader");
+    view.append(reader);
+    withView(reader, () => renderPathSamples({id:route, items:[key]}, {reader:true}));
   }
   function withView(target, build) {
     const previous = view;
@@ -236,12 +222,13 @@
       - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
     return entry.getBoundingClientRect().height <= available;
   }
-  function render(route, {append = false, label = route, animate = false} = {}) {
+  function render(route, {append = false, label = route, animate = false, itemKey = null} = {}) {
     outputMotion?.finish();
     feedback.textContent = "";
     resetCompletion();
     const base = commandCatalog.normalize(route);
     activeRoute = routes.includes(base) ? base : "home";
+    activeItem = contentIndex.get(activeRoute, itemKey);
     // Route visibility also applies to keyboard commands that append output.
     document.querySelector("#intro").hidden = activeRoute !== "home";
     records.querySelectorAll("video").forEach(video => video.pause());
@@ -260,27 +247,26 @@
       echo.append(symbol, $("code", "", label)); entry.append(echo, view); records.append(entry);
       while (records.children.length > 5) records.firstElementChild.remove();
     }
-    if (activeRoute !== "home") addOutputSummary(activeRoute);
+    if (activeItem) renderSelectedItem(activeRoute, activeItem.key);
+    else if (activeRoute !== "home") addOutputSummary(activeRoute);
     commandInput.refresh();
-    if (animate && entry && outputFitsViewport(entry)) outputMotion?.play(view);
+    if (animate && !activeItem && entry && outputFitsViewport(entry)) outputMotion?.play(view);
     queueFollow();
-    document.querySelector("#frame-location").textContent = `~/${activeRoute}`;
-    document.querySelectorAll("#route-menu [data-route]").forEach(button => {
-      if (button.dataset.route === activeRoute) button.setAttribute("aria-current", "page");
-      else button.removeAttribute("aria-current");
-    });
-    document.title = `${titles[activeRoute]} · LizPink`;
+    document.querySelector("#frame-location").textContent = `~/${activeRoute}${activeItem ? `/${activeItem.key}` : ""}`;
+    sidebar.update(activeRoute, activeItem?.key || null);
+    document.title = `${activeItem?.title || titles[activeRoute]} · LizPink`;
     document.querySelector("#terminal-status").textContent = "就绪";
     syncCursor();
-    document.querySelector("#route-announcement").textContent = `已打开：${titles[activeRoute]}`;
+    document.querySelector("#route-announcement").textContent = `已打开：${activeItem?.title || titles[activeRoute]}`;
   }
   function navigate(route, moveFocus = false, options = {}) {
     input.value = "";
     feedback.textContent = "";
     const renderOptions = {animate:true, ...options};
-    if (readHash() === route) render(route, renderOptions);
-    else { historyApi(route); render(route, renderOptions); }
-    if (compactViewport.matches || menuMode === "peek") setMenu(false);
+    const fragment = contentIndex.hash(route, options.itemKey);
+    if (location.hash !== fragment) window.history.pushState({}, "", fragment);
+    closeMobileDirectory();
+    render(route, renderOptions);
     if (moveFocus) {
       pauseFollowing();
       main.scrollTop = 0;
@@ -288,9 +274,8 @@
       updateFollowState();
     }
   }
-  function historyApi(route) { window.history.pushState({}, "", `#${encodeURI(route)}`); }
   function focusCommand() {
-    if (compactViewport.matches || menuMode === "peek") setMenu(false);
+    closeMobileDirectory();
     input.focus({preventScroll:true});
     resumeFollowing();
   }
@@ -385,6 +370,12 @@
       setTheme(next);
       return;
     }
+    const contentButton = event.target.closest("[data-content-key][data-content-route]");
+    if (contentButton) {
+      const item = contentIndex.get(contentButton.dataset.contentRoute, contentButton.dataset.contentKey);
+      if (item) { event.preventDefault(); navigate(item.route, true, {itemKey:item.key, animate:false}); }
+      return;
+    }
     const button = event.target.closest("[data-route]");
     if (button) { event.preventDefault(); navigate(button.dataset.route, true); return; }
     const command = event.target.closest("[data-command]");
@@ -401,44 +392,10 @@
     event.preventDefault();
     if (!commandComposing) execute(input.value);
   });
-  document.addEventListener("pointerdown", () => { menuKeyboardMode = false; }, true);
-  document.addEventListener("keydown", event => {
-    if (["Tab", "Enter", " "].includes(event.key)) menuKeyboardMode = true;
-  }, true);
-  document.querySelector("#menu-pin").addEventListener("click", () => {
-    sidebarPinned = !sidebarPinned;
-    setMenu(true);
-    if (!sidebarPinned) scheduleMenuClose();
-  });
-  document.querySelector("#menu-close").addEventListener("click", () => setMenu(false, true));
-  document.querySelector("#menu-reveal").addEventListener("click", event => {
-    menuReturnTarget = event.currentTarget;
-    setMenu(true);
-    if (event.detail === 0 || compactViewport.matches) {
-      menuKeyboardMode = event.detail === 0;
-      (document.querySelector("#route-menu [aria-current='page']") || document.querySelector("#route-menu [data-route]")).focus({preventScroll:true});
-    }
-  });
-  document.querySelector("#menu-reveal").addEventListener("pointerenter", () => {
-    clearTimeout(menuCloseTimer);
-    if (!compactViewport.matches && hoverPointer.matches && menuMode === "closed") { menuReturnTarget = document.querySelector("#menu-reveal"); setMenu(true); }
-  });
-  document.querySelector("#menu-reveal").addEventListener("pointerleave", scheduleMenuClose);
-  document.querySelector("#route-menu").addEventListener("pointerenter", () => clearTimeout(menuCloseTimer));
-  document.querySelector("#route-menu").addEventListener("pointerleave", scheduleMenuClose);
-  document.querySelector("#route-menu").addEventListener("focusin", () => clearTimeout(menuCloseTimer));
-  document.querySelector("#route-menu").addEventListener("focusout", scheduleMenuClose);
-  hoverPointer.addEventListener("change", () => {
-    if (!hoverPointer.matches && menuMode === "peek") setMenu(false, document.querySelector("#route-menu").contains(document.activeElement));
-  });
-  document.querySelector("#menu-backdrop").addEventListener("click", () => setMenu(false, true));
-  compactViewport.addEventListener("change", () => {
-    const menuHadFocus = document.querySelector("#route-menu").contains(document.activeElement);
-    setMenu(sidebarPinned && !compactViewport.matches, menuHadFocus);
-  });
   document.querySelector(".skip-link").addEventListener("click", event => {
     event.preventDefault();
     beginReading();
+    closeMobileDirectory();
     main.focus({preventScroll:true});
   });
   input.addEventListener("keydown", event => {
@@ -475,52 +432,40 @@
   } else window.addEventListener("resize", () => { if (followingOutput) queueFollow(); else updateFollowState(); });
   document.addEventListener("keydown", event => {
     if (event.defaultPrevented || event.isComposing || commandComposing || event.keyCode === 229) return;
-    if (event.key === "Tab" && compactViewport.matches && !document.querySelector("#route-menu").hidden) {
-      const controls = [...document.querySelectorAll("#menu-close, #route-menu [data-route]")];
-      const position = controls.indexOf(document.activeElement);
-      event.preventDefault();
-      const next = position < 0 ? (event.shiftKey ? controls.length - 1 : 0) : (position + (event.shiftKey ? -1 : 1) + controls.length) % controls.length;
-      controls[next].focus();
-    }
-    if (event.key === "Escape" && !["closed", "pinned"].includes(menuMode)) {
-      setMenu(false, true);
-      return;
-    }
     if (event.key === "Escape" && commandInput.commandMode()) {
       event.preventDefault(); returnToReading(); return;
     }
     const target = document.activeElement;
     const editing = ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName) || target.isContentEditable;
     const protectedContext = (
-      menuMode === "mobile-open" || target.closest("#route-menu, video, audio, [role='dialog']") ||
+      (sidebar.isMobile() && sidebar.isOpen()) || target.closest("#route-menu, video, audio, [role='dialog']") ||
       !window.getSelection()?.isCollapsed
     );
     if (event.key === "/" && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && !editing && !protectedContext) { event.preventDefault(); focusCommand(); }
   });
   function restoreLocation() {
     const menuHadFocus = document.querySelector("#route-menu").contains(document.activeElement);
-    const transientMenu = menuMode === "peek" || menuMode === "mobile-open";
-    if (transientMenu) setMenu(false);
-    render(readHash());
-    if (transientMenu && menuHadFocus) main.focus({preventScroll:true});
+    closeMobileDirectory();
+    const state = contentIndex.parseHash(location.hash);
+    if (state.route === activeRoute && state.key === (activeItem?.key || null)) return;
+    render(state.route, {itemKey:state.key});
+    if (menuHadFocus) main.focus({preventScroll:true});
+    if (state.key) { pauseFollowing(); main.scrollTop = 0; }
   }
   window.addEventListener("hashchange", restoreLocation);
   window.addEventListener("popstate", restoreLocation);
-  function readHash() {
-    try {
-      return commandCatalog.normalize(decodeURIComponent(location.hash.slice(1)) || "home");
-    } catch { return "home"; }
-  }
   window.LIZPINK_THEME.apply(window.LIZPINK_THEME.current());
   document.documentElement.dataset.pageHidden = String(document.hidden);
   document.addEventListener("visibilitychange", () => { document.documentElement.dataset.pageHidden = String(document.hidden); });
-  setMenu(false);
-  render(readHash());
+  sidebar.init({onLayout:() => { beginReading(); commandInput.refresh(); }});
+  const initialLocation = contentIndex.parseHash(location.hash);
+  render(initialLocation.route, {itemKey:initialLocation.key});
   const initialDetails = records.lastElementChild?.querySelector(".output-details");
   if (initialDetails) {
     pauseFollowing(); initialDetails.populate(); initialDetails.open = true;
     commandInput.refresh(); main.scrollTop = 0;
   }
+  if (activeItem) { pauseFollowing(); main.scrollTop = 0; }
   if (activeRoute === "home") commandInput.focusInitial();
   syncCursor();
 })();

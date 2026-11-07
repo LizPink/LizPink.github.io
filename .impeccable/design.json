@@ -12,10 +12,13 @@
         "dist/assets/js/theme.js",
         "dist/assets/js/commands.js",
         "dist/assets/js/summaries.js",
-        "dist/assets/js/output-motion.js"
+        "dist/assets/js/output-motion.js",
+        "dist/assets/js/content-index.js",
+        "dist/assets/js/content-sidebar.js",
+        "dist/assets/css/content-sidebar.css"
       ],
-      "scope": "最新图示优先：满视口统一screen背景，零外框/内框/套窗内缩，四入口侧栏依次home/0、life/1、resume/2、project/3。目录每次载入收起，左缘临时展开，目录旁图钉固定；本次会话固定选择跨导航保留，刷新清除。自介并入resume展开详情；8个公开命令由commands.js统一派生解析路由、Tab候选和浏览路线与操作两组平面帮助。先短摘要、按需详情；普通流prompt自动跟随，阅读历史暂停。",
-      "primitiveSource": "docs/DESIGN.md frontmatter；运行来源为 dist/assets/css/styles.css。"
+      "scope": "满视口统一screen背景，零外框/内框/套窗内缩。桌面内容目录默认展开、宽304px，可在224–420px内拖动或键盘调整并保留主区至少320px；工具栏目录按钮与侧栏收起按钮控制开合，不再使用左缘peek或图钉。手机使用默认关闭的抽屉。首页、生活、经历、项目四入口与日期/标题/摘要内容列表共享导航；点击条目在右侧读取单条，支持#project/geometry等链接。8个公开命令、有限会话、可打断渐显、按需媒体和阅读保护延续；人工日期明确标为示例日期。",
+      "primitiveSource": "docs/DESIGN.md frontmatter；基础运行样式为dist/assets/css/styles.css，内容目录与阅读媒体覆盖样式为dist/assets/css/content-sidebar.css。"
     },
     "colorMeta": {
       "amber-bg": {
@@ -145,8 +148,8 @@
         "purpose": "中文说明与终端正文衬线16px/1.7。"
       },
       "menu": {
-        "displayName": "四入口侧栏",
-        "purpose": "目录标题与菜单项统一衬线16px/1.5，编号12px等宽。"
+        "displayName": "内容目录与栏目入口",
+        "purpose": "两列短名栏目按钮15px/1.5；内容标题17px/1.55，窄容器16px；日期与类型12px、摘要13px/1.6，摘要最多两行，目录内容宽度不超过228px时一行。"
       },
       "command": {
         "displayName": "原生输入",
@@ -202,9 +205,9 @@
         "purpose": "主题开关滑块移动。"
       },
       {
-        "name": "desktop-peek",
-        "value": "menu-enter 160ms ease-out both",
-        "purpose": "桌面临时预览覆盖滑入；reduced-motion关闭。"
+        "name": "sidebar-resize",
+        "value": "immediate layout; RAF-coalesced pointer updates",
+        "purpose": "桌面目录宽度实时调整，不做宽度过渡；悬停、聚焦和拖动仅强调1px分隔线。手机保留抽屉滑入。"
       }
     ],
     "breakpoints": [
@@ -243,20 +246,20 @@
       "frameBorder": "none",
       "toolbarMinHeight": "52px",
       "toolbarPadding": "3px 16px",
-      "desktopMenuDefault": "closed",
-      "expandedColumns": "208px minmax(0, 1fr)",
-      "compactExpandedColumns": "196px minmax(0, 1fr)",
+      "desktopMenuDefault": "open",
+      "expandedColumns": "minmax(0, var(--sidebar-width, 304px)) minmax(0, 1fr)",
+      "compactExpandedColumns": "minmax(0, var(--sidebar-width, 304px)) minmax(0, 1fr)",
       "frameMainPadding": "0",
       "screenPadding": "24px 32px",
       "screenOverflow": "auto",
       "mobileShellWidth": "100%",
       "mobileToolbarMinHeight": "52px",
       "mobileMenuDefault": "closed",
-      "mobileMenuWidth": "min(268px, 84%)",
+      "mobileMenuWidth": "min(320px, 90%)",
       "mobileBackdropOpacity": 0.7,
       "mobileFrameMainPadding": "0",
-      "mobileScreenPadding": "24px",
-      "smallMobileScreenHorizontalPadding": "24px",
+      "mobileScreenPadding": "24px 20px",
+      "smallMobileScreenHorizontalPadding": "20px",
       "commandPlacement": "normal flow after terminal-records",
       "commandDocked": false,
       "commandSticky": false,
@@ -276,7 +279,7 @@
       "logoLetterSpacing": "-2px",
       "referenceWidth": "min(100%, 820px)",
       "referenceFirstColumn": "minmax(140px, 180px)",
-      "mediaAspectRatio": "16 / 9",
+      "mediaAspectRatio": "auto，采用媒体原始比例",
       "mediaObjectFit": "contain",
       "shellDisplay": "flex",
       "shellPadding": "0",
@@ -284,14 +287,14 @@
       "mobileBrandFontSize": "22px",
       "wordmarkGap": "10px",
       "mobileWordmarkGap": "8px",
-      "mobileToolbarGap": "12px",
-      "mobileToolbarHorizontalPadding": "12px",
+      "mobileToolbarGap": "8px",
+      "mobileToolbarHorizontalPadding": "10px",
       "formWidth": "100%",
       "separateMasthead": false,
       "separateFooter": false,
       "submitButton": false,
-      "compactVisibility": "1000px以下隐藏状态；桌面目录旁为图钉，手机同处为关闭按钮。",
-      "mobileVisibility": "760px以下隐藏路径与主题名称。",
+      "compactVisibility": "1000px以下隐藏状态；目录收起按钮在所有设备位于侧栏顶部。",
+      "mobileVisibility": "760px以下隐藏路径与主题名称，360px及以下目录按钮只显示SVG并保留无障碍名称。",
       "shellMargin": "0",
       "pageBackground": "var(--screen)",
       "toolbarBackground": "var(--screen)",
@@ -299,17 +302,13 @@
       "frameBackground": "var(--screen)",
       "mainBackground": "var(--screen)",
       "mainBorder": "none",
-      "mobileClosedScreenLeftPadding": "52px",
+      "mobileClosedScreenLeftPadding": "20px",
       "menuLabelDisplay": "16px/1.5 var(--font-body)",
-      "desktopRevealWidth": "20px",
-      "desktopRevealHeight": "100%",
-      "desktopRevealChevron": "18px 24px",
+      "desktopRevealWidth": "auto，最小44px",
+      "desktopRevealHeight": "44px",
+      "desktopRevealChevron": "18px 18px SVG目录图标",
       "mobileRevealSize": "44px 44px",
-      "mobileRevealPosition": "top:calc(50% - 22px);left:0",
-      "desktopPeekWidth": "208px",
-      "compactPeekWidth": "196px",
-      "peekPosition": "absolute overlay",
-      "peekContentShift": false,
+      "mobileRevealPosition": "static in .toolbar-start, beside wordmark",
       "brandFontSize": "24px",
       "mobileEntryMarginTop": "20px",
       "echoMarginBottom": "8px",
@@ -326,13 +325,18 @@
       "mainScrollPaddingBottom": "68px",
       "returnControlAddsLayoutHeight": false,
       "mobileReferenceFirstColumn": "110px",
-      "menuPinLocation": ".sidebar-header beside 目录",
-      "menuPinSize": "44px",
       "helpTermColumns": "8ch max-content",
       "helpRowMinHeight": "28px",
       "helpRowPadding": "2px 0",
       "helpGroupMarginTop": "16px",
-      "helpDescriptionLineHeight": 1.5
+      "helpDescriptionLineHeight": 1.5,
+      "sidebarWidthDefault": "304px",
+      "sidebarWidthRange": "224px–420px；最大宽度同时受主区至少320px限制",
+      "sidebarResizeHandle": "10px命中区，1px视觉分隔线；左右方向键每次16px，Home/End到当前最窄/最宽，双击恢复304px",
+      "sidebarContentLayout": "顶部44px收起按钮与两列栏目按钮；下方日期/类型、标题、两行摘要列表独立滚动，窄容器摘要一行",
+      "mediaWidth": "min(100%, 960px, 媒体原始宽度)",
+      "mediaAlignment": "figure在阅读区水平居中，图注与媒体同宽并左对齐",
+      "detailsMaxWidth": "none；段落仍限制72ch"
     },
     "interaction": {
       "sidebar": [
@@ -347,12 +351,12 @@
       "session": "最多五条回显+短摘要+按需详情与唯一新prompt；默认跟随输入，手动阅读暂停；侧栏清会话，home/clear回首页。",
       "input": "原生单input保留编辑/选区/中文输入，Enter执行，enterkeyhint=send。首页首次自动聚焦并保留自然位置；有输出后编辑模式停靠底部。未激活为空心静态，激活且页面有焦点时为实心闪烁；空输入在光标旁提示“输入 help 查询命令”，键入后隐藏。未激活空输入保留可点击激活与帮助提示；右侧仅编辑时显示“Esc 返回阅读”。",
       "tab": "非Shift Tab保持input，唯一匹配补全、多匹配循环、空输入可用、无匹配不跳焦；ShiftTab离开。",
-      "accessibility": "combobox关联listbox/option；手机抽屉inert、焦点循环；关闭后聚焦可见入口。",
-      "shortcuts": "/返回输入，↑↓回调历史，Escape清空输入并可关闭未固定目录或手机抽屉。",
+      "accessibility": "combobox关联listbox/option；内容条目以aria-current=location标记当前选择；可调分隔柄使用vertical separator及动态宽度数值。手机抽屉使frame-main inert并循环实际可见控件，关闭后聚焦工具栏目录按钮。",
+      "shortcuts": "/激活输入；↑↓回调历史；Escape先关闭补全，再返回阅读并保留草稿。焦点位于目录或分隔柄时可收起目录，拖动中按Escape取消本次拖动。",
       "blankClick": "点击输入或闲置提示进入编辑；正文空白点击不聚焦输入。",
       "status": "真实input同步就绪/输入中，无假延迟。",
-      "toolbar": "仅logo/姓名、路径/状态与主题；图钉/手机关闭按钮位于.sidebar-header。",
-      "menu": "每次载入closed；左缘悬停/点击/键盘激活临时展开，图钉aria-pressed切换固定。pointerleave180ms仅作用于peek，目录保有键盘焦点时保留；setMenu清理timer。固定跨导航保留，刷新清除。",
+      "toolbar": "目录按钮与logo/姓名组成.toolbar-start；后接路径/状态和主题。侧栏顶部在所有设备提供收起/关闭按钮，不再显示图钉。",
+      "menu": "桌面每次载入默认展开、304px宽；可拖动或用键盘在224–420px内调整，始终为主区预留至少320px。工具栏目录按钮与侧栏顶部按钮开合；宽度和桌面开合选择仅在本页面会话保留，刷新恢复默认。手机默认关闭，以遮罩抽屉展开，选择条目后聚焦正文。",
       "visibility": "只有input聚焦、document有焦点且页面可见时光标闪烁；失焦为空心静态。OS减少动态效果保持静态光标。",
       "help": "commands.js直接渲染浏览路线、操作两组平面列表及快捷键，共8个公开命令，无details；CSS Grid命令列固定8ch，或N独立对齐，不用制表符。",
       "shortcutDetails": "open展开最近记录详情并阅读；close收起并回输入；/、编辑、Tab、↑↓恢复跟随。",
@@ -403,7 +407,15 @@
           "number": "03"
         }
       ],
-      "routeScope": "只保留home/life/resume/project/help视图；不兼容旧路由。无效hash显示home，未识别命令提示帮助。"
+      "routeScope": "保留home/life/resume/project/help栏目及有效单条内容hash，如#project/geometry；单条仅属于life/resume/project。无效条目回到有效栏目，无效栏目显示home，不兼容旧路由。",
+      "contentIndex": {
+        "metadataModule": "dist/assets/js/content-index.js",
+        "sidebarModule": "dist/assets/js/content-sidebar.js",
+        "source": "dist/assets/js/content.js的paths和samples；home/help合并去重，其余栏目按各自items筛选。",
+        "row": "可选日期、类型/示例标记、标题与正文摘要；无日期时省略。",
+        "dates": "优先有效publishedAt，否则有效updatedAt；真实日期显示发布/更新。dateExample:true明确显示示例日期，不代表真实发表或更新时间。",
+        "selection": "点击目录条目或摘要标题链接，在主区仅显示选中条目的h2标题、日期、正文和媒体；URL与当前条目同步。"
+      }
     },
     "themeBehavior": {
       "available": [
@@ -425,7 +437,7 @@
       "legacyCommand": "theme或theme参数仅提示使用右上角开关。"
     },
     "media": {
-      "width": "100%",
+      "width": "min(100%, var(--media-width), var(--asset-width, var(--media-width)))",
       "video": {
         "controls": true,
         "preload": "none",
@@ -436,7 +448,11 @@
       "examples": "就近标识；example:false 仅去除外部标识，媒体内 DEMO 需替换真实文件。",
       "emptyPath": "items:[] 不显示条目，保留标题、介绍与待整理提示。",
       "captionIDs": "每次构建递增唯一",
-      "initialMediaDOM": false
+      "initialMediaDOM": false,
+      "maxWidth": "960px",
+      "alignment": "figure水平居中；正文左对齐且最长72ch；图注与figure同宽并左对齐。",
+      "aspectRatio": "auto，保持原比例",
+      "intrinsicWidth": "图片load后以naturalWidth限制展示宽度；视频初始640px，loadedmetadata后采用videoWidth，避免把较小素材放大到960px。"
     },
     "focus": {
       "outline": "2px solid var(--accent)",
@@ -534,39 +550,37 @@
     "reducedMotion": "prefers-reduced-motion:reduce关闭动画、过渡与空间位移；页面隐藏时暂停块光标闪烁。",
     "menuStates": {
       "closed": {
-        "default": "每次载入默认；刷新不记忆pin",
-        "visible": "左缘按钮",
-        "desktopTrigger": "精细鼠标悬停、点击或键盘激活进入peek",
-        "mobileTrigger": "点击/键盘激活打开抽屉"
+        "default": "760px及以下初始化；桌面可主动收起",
+        "visible": "工具栏目录按钮始终可用",
+        "desktopTrigger": "点击或键盘激活目录按钮展开",
+        "mobileTrigger": "点击或键盘激活目录按钮打开抽屉"
       },
-      "pinned": {
-        "default": false,
-        "trigger": "目录旁图钉；aria-pressed=true",
-        "layout": "208px网格列，1000px以下196px",
-        "persistence": "本次会话跨导航保持，直到取消固定；刷新清除",
-        "close": "再次点击图钉取消固定并进入peek"
-      },
-      "peek": {
-        "trigger": "桌面左缘悬停/点击/键盘激活，或取消固定",
-        "layout": "absolute覆盖，data-menu-peek=true；主内容坐标不变",
-        "pin": "目录旁图钉",
-        "close": "移出180ms且目录无键盘焦点、目录与左缘均未hover；Escape也可关闭",
-        "timer": "仅peek安排关闭，每次setMenu先清理旧timer"
+      "open": {
+        "default": "大于760px时初始化展开",
+        "layout": "304px默认网格列，224–420px可调整，主区至少320px",
+        "close": "工具栏目录按钮、侧栏收起按钮，或目录/分隔柄内按Escape",
+        "persistence": "宽度与桌面开合状态在本页面会话保留；刷新恢复默认，无peek或图钉状态"
       },
       "mobile-open": {
-        "layout": "左侧min(268px,84%)抽屉与遮罩，frame-main inert；隐藏图钉，显示关闭按钮",
-        "focus": "Tab在关闭按钮与路线间循环；选择聚焦内容，主动关闭回左缘",
-        "close": "选择/关闭按钮/Escape/遮罩"
+        "layout": "左侧min(320px,90%)抽屉与遮罩，frame-main inert，隐藏调宽分隔柄",
+        "focus": "Tab在实际可见目录控件间循环；选择后聚焦正文，主动关闭回工具栏目录按钮",
+        "close": "选择条目/关闭按钮/Escape/遮罩"
       },
-      "breakpointReset": "跨760px进入手机时关闭抽屉，返回桌面时沿用本次会话固定选择"
+      "resize": {
+        "pointer": "10px命中区，1px可见线，拖动按动画帧合并布局更新",
+        "keyboard": "左右方向键16px；Home/End到动态宽度上下限；双击恢复304px",
+        "cancel": "Escape、pointercancel、失去捕获、窗口失焦或布局切换取消拖动并清理会话"
+      },
+      "breakpointReset": "跨760px进入手机关闭抽屉；回到桌面沿用本次页面的桌面开合选择与期望宽度，并重新按可用空间限制宽度。"
     },
     "summaryPipeline": {
       "module": "dist/assets/js/summaries.js",
       "api": "window.LIZPINK_SUMMARIES.create(route)",
       "dataSources": [
-        "dist/assets/js/content.js"
+        "dist/assets/js/content.js",
+        "dist/assets/js/content-index.js"
       ],
-      "default": "先短衬线摘要，再附原生details/summary展开入口；初始不创建完整图文或媒体DOM。help直接呈现，无details。",
+      "default": "栏目先显示短摘要与可点击的条目标题，保留原生details/summary整体展开入口；目录或摘要标题选择单条时只构建该条reader。help直接呈现，无details。",
       "routes": {
         "life": "内容类型/数量与示例状态；介绍仅在详情出现。",
         "resume": "Student、兴趣、履历项/PDF待补状态、示例媒体类型与数量；完整个人介绍在展开详情中。",
@@ -579,7 +593,7 @@
       "firstBuild": "第一次summary激活/toggle open或open命令，调用原富文renderer；withView隔离目标。",
       "collapsed": "保留已建body，不重复构建；关闭时暂停其中video。",
       "subsequentCommands": "暂停旧记录video，最多五条记录。",
-      "media": "图片loading=lazy、decoding=async；视频preload=none；caption ID使用全局递增序号保持唯一。",
+      "media": "图片loading=lazy、decoding=async，load后按naturalWidth约束宽度；视频preload=none、初始640px，metadata后采用videoWidth；媒体原比例居中，caption ID全局递增唯一。",
       "openCommand": "仅最近记录若有details：populate、open、暂停跟随、聚焦summary并滚到起点。",
       "closeCommand": "收起最近记录details并返回输入/恢复跟随。"
     },
@@ -639,12 +653,12 @@
       "css": ".ds-theme-control{display:flex;align-items:center;gap:12px;font-family:var(--font-body)}.ds-theme-toggle{position:relative;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;width:78px;min-height:44px;padding:0 15px;border:0;background:transparent;cursor:pointer}.ds-theme-toggle::before{content:\"\";position:absolute;inset:7px 0;border:1px solid var(--line);border-radius:18px;background:var(--chrome)}.ds-theme-dot{position:relative;z-index:1;width:9px;height:9px;border-radius:50%}.ds-amber{background:#e6bc76}.ds-green{background:#9ff279}.ds-thumb{position:absolute;top:11px;left:4px;width:30px;height:22px;border:1px solid var(--accent);border-radius:13px;background:var(--accent-soft);transition:transform 180ms ease}.ds-theme-toggle[aria-checked=\"true\"] .ds-thumb{transform:translateX(40px)}.ds-theme-label{min-width:2em;color:var(--muted);font-size:14px;white-space:nowrap}.ds-theme-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:5px}"
     },
     {
-      "name": "四入口侧栏",
+      "name": "可调宽内容目录",
       "kind": "nav",
       "refersTo": "menu-item",
-      "description": "依次首页、生活01、经历02、项目03；默认收起，由左缘临时展开或图钉固定。",
-      "html": "<nav id=\"ds-route-menu\" class=\"ds-menu\" aria-label=\"网站目录\"><button class=\"ds-menu-item\" type=\"button\" aria-current=\"page\">首页<span>home</span></button><button class=\"ds-menu-item\" type=\"button\">生活与记录<span>01</span></button><button class=\"ds-menu-item\" type=\"button\">经历与能力<span>02</span></button><button class=\"ds-menu-item\" type=\"button\">项目与探索<span>03</span></button></nav>",
-      "css": ".ds-menu{padding:16px 16px 18px;border-right:1px solid var(--line-soft);background:var(--screen)}.ds-menu-item{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:44px;padding:10px 12px;border:0;border-radius:0;background:transparent;color:var(--muted);font:16px/1.5 var(--font-body);text-align:left;white-space:nowrap;cursor:pointer}.ds-menu-item span{color:var(--muted);font:12px/1.6 var(--font-mono)}.ds-menu-item:hover,.ds-menu-item[aria-current=\"page\"]{color:var(--accent)}.ds-menu-item[aria-current=\"page\"]{text-decoration:underline;text-underline-offset:6px}.ds-menu-item:focus-visible{outline:2px solid var(--accent);outline-offset:5px}"
+      "description": "桌面默认304px展开，可在224–420px内调整并收起；顶部两列首页/生活/经历/项目，列表显示可选日期、标题与摘要；点击单条在主区阅读，手机为默认关闭的抽屉。",
+      "html": "<nav class=\"ds-menu\" aria-label=\"网站目录\"><div class=\"ds-sidebar-header\"><p>内容目录</p><button type=\"button\" aria-label=\"收起目录\">收起</button></div><div class=\"ds-sidebar-routes\"><button class=\"ds-menu-item\" type=\"button\">首页<span>0</span></button><button class=\"ds-menu-item\" type=\"button\">生活<span>01</span></button><button class=\"ds-menu-item\" type=\"button\">经历<span>02</span></button><button class=\"ds-menu-item\" type=\"button\" aria-current=\"page\">项目<span>03</span></button></div><ul class=\"ds-content-list\"><li><button class=\"ds-content-item\" type=\"button\" aria-current=\"location\"><span class=\"ds-content-meta\"><time datetime=\"2026-10-22\">示例日期 2026.10.22</time> · 图片示例</span><span class=\"ds-content-title\">一张项目截图的位置</span><span class=\"ds-content-excerpt\">几何示意图用于展示图片排版，待替换。</span></button></li></ul></nav>",
+      "css": ".ds-menu{display:flex;flex-direction:column;width:304px;max-width:100%;padding:12px;background:var(--screen)}.ds-sidebar-header{display:flex;align-items:center;justify-content:space-between;min-height:44px;gap:8px}.ds-sidebar-header p{margin:0;font:500 16px/1.5 var(--font-body)}.ds-sidebar-routes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px}.ds-menu-item{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;padding:8px 10px;border:0;background:transparent;color:var(--muted);font:15px/1.5 var(--font-body);text-align:left}.ds-menu-item span{font:12px/1.6 var(--font-mono)}.ds-menu-item[aria-current=\"page\"]{color:var(--accent)}.ds-content-list{list-style:none;margin:20px 0 0;padding:0}.ds-content-item{display:flex;flex-direction:column;gap:6px;width:100%;min-height:44px;padding:12px;border:0;border-left:1px solid transparent;background:transparent;color:var(--text);text-align:left}.ds-content-item[aria-current=\"location\"]{border-left-color:var(--accent)}.ds-content-item[aria-current=\"location\"] .ds-content-title{color:var(--accent)}.ds-content-meta{color:var(--muted);font:12px/1.5 var(--font-body)}.ds-content-title{font:500 17px/1.55 var(--font-body)}.ds-content-excerpt{color:var(--muted);font:13px/1.6 var(--font-body)}.ds-content-item:hover,.ds-menu-item:hover{background:var(--accent-soft)}.ds-content-item:focus-visible,.ds-menu-item:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}"
     },
     {
       "name": "原生终端输入",
@@ -655,18 +669,18 @@
       "css": ".ds-command{display:flex;align-items:center;gap:13px;width:100%;min-width:0;min-height:48px;margin:20px 0 0;padding:0;font:400 16px/1.6 var(--font-mono)}.ds-command label{color:var(--accent);font-size:18px}.ds-editor{position:relative;flex:1;min-width:0;overflow:hidden;font:inherit}.ds-input{display:block;width:100%;min-width:0;padding:11px 1ch 11px 0;border:0;border-radius:0;background:transparent;color:var(--text);font:inherit}.ds-input::placeholder{color:var(--muted);opacity:1}.ds-input:focus-visible{outline:none}.ds-input:focus{caret-color:transparent}.ds-input:focus::placeholder{color:transparent}.ds-cursor-layer{position:absolute;top:50%;left:0;display:none;transform:translateY(-50%);pointer-events:none}.ds-editor:focus-within .ds-cursor-layer{display:block}.ds-block-cursor{display:inline-block;width:.65ch;height:1.1em;vertical-align:-.18em;background:var(--accent);animation:ds-cursor-blink 950ms steps(1,end) infinite}@keyframes ds-cursor-blink{0%,52%{opacity:1}53%,100%{opacity:0}}@media(prefers-reduced-motion:reduce){.ds-block-cursor{animation:none}}"
     },
     {
-      "name": "目录旁图钉",
-      "kind": "button",
-      "refersTo": "menu-pin",
-      "description": "桌面44px点击区、20px图钉；aria-pressed表达固定状态，手机改显示关闭按钮。",
-      "html": "<div class=\"ds-sidebar-header\"><p class=\"ds-sidebar-label\">目录</p><button class=\"ds-menu-pin\" type=\"button\" aria-label=\"固定目录\" aria-pressed=\"false\" aria-controls=\"ds-route-menu\" title=\"固定目录\"><svg class=\"ds-pin-icon\" width=\"20\" height=\"20\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\"><path d=\"M16 9V3H8v6l-3 3v2h14v-2l-3-3Z\"/><path d=\"M12 14v7\"/></svg></button></div>",
-      "css": ".ds-sidebar-header{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:44px;margin-bottom:12px}.ds-sidebar-label{margin:0 12px;color:var(--muted);font:16px/1.5 var(--font-body)}.ds-menu-pin{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;min-width:44px;min-height:44px;margin-left:auto;padding:0;border:0;border-radius:0;background:transparent;color:var(--muted);cursor:pointer}.ds-pin-icon{display:block;width:20px;height:20px;fill:none;transform:rotate(-25deg)}.ds-menu-pin[aria-pressed=\"true\"]{color:var(--accent)}.ds-menu-pin[aria-pressed=\"true\"] .ds-pin-icon{fill:var(--accent-soft);transform:none}.ds-menu-pin:hover{color:var(--accent)}.ds-menu-pin:focus-visible{outline:2px solid var(--accent);outline-offset:5px}"
+      "name": "目录宽度分隔柄",
+      "kind": "custom",
+      "refersTo": "sidebar-resizer",
+      "description": "桌面10px命中区与1px可见线，支持拖动、左右方向键16px、Home/End与双击恢复默认；动态aria数值反映当前可用宽度范围，手机隐藏。",
+      "html": "<div class=\"ds-sidebar-resizer\" role=\"separator\" tabindex=\"0\" aria-label=\"调整内容目录宽度\" aria-orientation=\"vertical\" aria-valuemin=\"224\" aria-valuemax=\"420\" aria-valuenow=\"304\"></div>",
+      "css": ".ds-sidebar-resizer{position:relative;width:10px;height:200px;cursor:col-resize;touch-action:none}.ds-sidebar-resizer::before{content:\"\";position:absolute;inset:0 auto 0 4px;width:1px;background:var(--line-soft)}.ds-sidebar-resizer:hover::before,.ds-sidebar-resizer:focus-visible::before{background:var(--accent)}.ds-sidebar-resizer:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}"
     },
     {
       "name": "短摘要与原生详情",
       "kind": "custom",
       "refersTo": "details-summary",
-      "description": "默认衬线短摘要；原生details首次展开才创建完整个人介绍、富文与媒体。",
+      "description": "栏目保留衬线摘要与按需原生details；摘要条目标题可以直接选择单条reader，完整图文不预先创建。",
       "html": "<section class=\"ds-output-summary\"><p class=\"ds-summary-title\">经历与能力</p><p class=\"ds-summary-description\">学生 / Student</p><dl class=\"ds-summary-facts\"><div><dt>简历</dt><dd>经历待补充 · PDF 待添加</dd></div></dl></section><details class=\"ds-output-details\"><summary><span>展开经历与图文</span></summary><div class=\"ds-details-body\"></div></details>",
       "css": ".ds-output-summary{max-width:72ch;color:var(--text);font:400 16px/1.7 var(--font-body)}.ds-summary-title{margin:0;color:var(--text);font:500 18px/1.5 var(--font-body)}.ds-summary-description{margin:8px 0 12px;max-width:72ch;color:var(--muted);font-size:16px;line-height:1.7}.ds-summary-facts{margin:12px 0}.ds-summary-facts>div{display:grid;grid-template-columns:60px minmax(0,1fr);gap:8px 12px;margin:6px 0}.ds-summary-facts dt,.ds-summary-facts dd{margin:0}.ds-summary-facts dt{color:var(--muted)}.ds-output-details{margin-top:8px}.ds-output-details>summary{display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:8px 0;color:var(--accent);font:400 16px/1.7 var(--font-body);list-style:none;cursor:pointer;text-decoration:underline;text-underline-offset:4px}.ds-output-details>summary::-webkit-details-marker{display:none}.ds-output-details>summary::before{content:\"\";flex-shrink:0;width:6px;height:6px;border-right:1px solid currentColor;border-bottom:1px solid currentColor;transform:rotate(-45deg)}.ds-output-details[open]>summary::before{transform:rotate(45deg)}.ds-details-body{margin-top:12px;color:var(--text);font:17px/1.9 var(--font-body)}"
     },
@@ -681,12 +695,12 @@
   ],
   "narrative": {
     "northStar": "融入背景的个人终端",
-    "overview": "用户图示与最新明确修订是最高优先约束。网页铺满视口，页面、工具栏、侧栏、框架和主区共用屏幕底色；不使用居中限宽、外框、主区内框或套窗内缩。仅内部工具栏与侧栏保留细分隔线。\n\n保留 `lp_` 与 LizPink 并排及右侧主题开关。侧栏依次为首页、生活与记录01、经历与能力02、项目与探索03，每次载入默认收起；左缘临时展开，目录旁图钉固定。自介、Student与四兴趣并入经历与能力，完整个人介绍在展开详情中。首页保持问候和自动聚焦的命令区，帮助提示集中在光标旁。原生命令、五条会话与Tab补全延续，8个公开命令统一由commands.js管理；当前版本已于2026-10-25发布至 lizpink.github.io。\n\n默认先用短摘要确认内容，富文和媒体按需展开。新提示符自动跟随可见，阅读历史或展开详情时暂停，不强拉到底；输入仍处于普通流。",
+    "overview": "用户图示与最新明确修订是最高优先约束。网页铺满视口，页面、工具栏、侧栏、框架和主区共用屏幕底色；不使用居中限宽、外框、主区内框或套窗内缩。仅内部工具栏与目录边界保留细分隔线。\n\n工具栏目录按钮与lp_、LizPink同组，右侧保留主题开关。桌面内容目录默认304px展开，支持224–420px调宽与收起；手机默认关闭，以抽屉展开。目录顶部保留首页、生活、经历、项目四入口，内容列表按日期、标题、摘要组织；人工日期明确标为示例日期。选择条目在右侧显示单条正文并支持#project/geometry等链接。\n\n文字左对齐并保持72ch阅读行宽，媒体按原比例、原始宽度和960px上限适度居中，图注与媒体同宽。自介仍集中在经历与能力；首页保持问候和自动聚焦的命令区。原生命令、五条会话、可打断渐显及阅读保护延续。发布状态以对应部署任务结果为准。",
     "keyCharacteristics": [
       "满视口、统一背景、零套窗内缩。",
-      "默认收起的四入口侧栏、左缘临时展开与图钉固定。",
-      "关闭、固定、临时预览、手机抽屉四态。",
-      "短摘要与按需详情，自动跟随与阅读保护。"
+      "桌面默认展开、可调宽与折叠的内容目录；手机抽屉。",
+      "日期、标题、摘要列表与可分享的单条reader；示例日期明确。",
+      "72ch左对齐文字，原比例媒体适度居中；命令输入与阅读保护延续。"
     ],
     "rules": [
       {
@@ -697,14 +711,14 @@
     ],
     "dos": [
       "**Do** 遵从最新图示，让页面铺满视口并与背景融合。",
-      "**Do** 明确区分closed、pinned、peek和mobile-open，保证焦点、计时器及覆盖布局稳定。",
+      "**Do** 区分桌面展开/收起、拖动调宽和手机抽屉，保持焦点、宽度限制与主区阅读位置稳定。",
       "**Do** 保留原生输入、五条会话、Tab规则与现有内容真实性。",
       "**Do** 先显示短摘要，按需创建详情，并在阅读历史时暂停跟随。"
     ],
     "donts": [
       "**Don't** 恢复限宽居中、外框、内框、套窗内缩或页面背景分层。",
-      "**Don't** 将临时peek当固定目录推动主内容，或让旧计时器关闭已固定的目录。",
-      "**Don't** 恢复独立站点指南、版权条、侧栏次级链接或执行箭头。",
+      "**Don't** 恢复左缘悬停peek或图钉；手机抽屉不推动正文，拖动结束后清理捕获与临时状态。",
+      "**Don't** 恢复独立站点指南、版权条或执行箭头，也不添加没有真实内容来源的装饰面板。",
       "**Don't** 初始创建全部富文媒体，或在阅读期间强行滚回新提示符。"
     ]
   }
