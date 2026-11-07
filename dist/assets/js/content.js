@@ -31,6 +31,7 @@ window.LIZPINK_CONTENT = {
   // 可选 publishedAt、updatedAt 使用 YYYY-MM-DD；真实记录填写真实日期，无日期时可省略。
   // 下列 dateExample:true 的日期为人工排版示例，不表示真实发表或更新时间。
   // 列表优先显示有效 publishedAt（发布），否则显示有效 updatedAt（更新）。
+  // 侧栏按该日期从新到旧排列，同日保持 items 顺序，无日期的放在最后。
   samples: {
     profile: { example: true, dateExample: true, publishedAt: "2026-10-05", type: "text", title: "一段经历，放在这里", text: "这里可以写一段真实的学习或实践经历：做了什么、负责什么、学到了什么。学校、时间和技能等具体信息，留待之后补充。" },
     question: { example: true, dateExample: true, publishedAt: "2026-10-18", type: "text", title: "从一个问题开始", text: "这里可以记录一个感兴趣的问题、相关阅读和尝试过的方法。暂时没有结果也可以，学习过程本身就值得保存。" },

@@ -18,14 +18,16 @@ function load(...values) {
   return { api: window.LIZPINK_CONTENT_INDEX, content: window.LIZPINK_CONTENT };
 }
 
-test("bundled examples keep each route's order, shared items and explicit artificial date flags", () => {
+test("bundled examples sort by displayed publication date and keep shared items and artificial date flags", () => {
   const { api, content } = load();
   assert.equal(Object.isFrozen(api), true);
+  const expected = { life: ["notebook", "journal"], resume: ["geometry", "profile"], project: ["animation", "geometry", "question"] };
   for (const route of ["life", "resume", "project"]) {
-    const expected = content.paths.find(item => item.id === route).items;
-    assert.deepEqual(plain(api.items(route).map(item => item.key)), plain(expected));
+    const routeTitle = content.paths.find(item => item.id === route).title;
+    assert.deepEqual(plain(api.items(route).map(item => item.key)), expected[route]);
     api.items(route).forEach(item => {
       assert.equal(item.route, route);
+      assert.equal(item.routeTitle, routeTitle);
       assert.equal(item.title, content.samples[item.key].title);
       assert.equal(item.type, content.samples[item.key].type);
       assert.equal(item.example, true);
@@ -41,10 +43,11 @@ test("bundled examples keep each route's order, shared items and explicit artifi
 
 test("combined indexes use first path reference as canonical route", () => {
   const { api } = load();
-  const expected = ["journal", "notebook", "profile", "geometry", "question", "animation"];
+  const expected = ["animation", "geometry", "notebook", "question", "journal", "profile"];
   for (const route of ["home", "help", "unknown", undefined]) {
     assert.deepEqual(plain(api.items(route).map(item => item.key)), expected);
     assert.equal(api.items(route).find(item => item.key === "geometry").route, "resume");
+    assert.equal(api.items(route).find(item => item.key === "geometry").routeTitle, "经历");
   }
   for (const route of ["home", "help", "unknown", "research"]) assert.equal(api.get(route, "geometry"), null);
 });
@@ -119,6 +122,90 @@ test("valid publication date takes precedence, otherwise valid update date is us
   assert.deepEqual(plain(api.get("life", "updated").date), { value: "2026-11-07", text: "2026.11.07", label: "更新", example: false });
   assert.equal(api.get("life", "onlyUpdate").date.label, "更新");
   assert.equal(api.get("life", "invalid").date, null);
+});
+
+test("chronological order crosses year boundaries and follows the displayed date rather than newer updates", () => {
+  const { api } = load({
+    paths: [{ id: "life", items: ["yearEnd", "missing", "publication", "invalid", "newYear", "fallback", "oldYear"] }],
+    samples: {
+      yearEnd: { publishedAt: "2026-12-31" },
+      missing: {},
+      publication: { publishedAt: "2025-01-01", updatedAt: "2029-01-01" },
+      invalid: { publishedAt: "2027-02-29", updatedAt: "not a date" },
+      newYear: { publishedAt: "2027-01-01" },
+      fallback: { publishedAt: "2026-02-30", updatedAt: "2026-12-30" },
+      oldYear: { publishedAt: "2025-12-31" }
+    }
+  });
+  assert.deepEqual(plain(api.items("life").map(item => item.key)), ["newYear", "yearEnd", "fallback", "oldYear", "publication", "missing", "invalid"]);
+  assert.equal(api.get("life", "fallback").date.label, "更新");
+  assert.equal(api.get("life", "publication").date.value, "2025-01-01");
+});
+
+test("equal dates and undated entries remain stable after sorting and canonical ownership is chosen before sorting", () => {
+  const { api } = load({
+    paths: [
+      { id: "life", title: "日常", items: ["firstUndated", "firstTie", "shared", "secondTie", "invalidUndated"] },
+      { id: "resume", title: "履历", items: ["shared", "thirdTie", "lastUndated", "newest"] }
+    ],
+    samples: {
+      firstUndated: {}, firstTie: { publishedAt: "2026-10-05" },
+      shared: { publishedAt: "2026-10-05" }, secondTie: { publishedAt: "2026-10-05" },
+      invalidUndated: { publishedAt: "2026-11-31" }, thirdTie: { updatedAt: "2026-10-05" },
+      lastUndated: {}, newest: { publishedAt: "2026-11-01" }
+    }
+  });
+  for (const route of ["home", "help"]) {
+    const entries = api.items(route);
+    assert.deepEqual(plain(entries.map(item => item.key)), ["newest", "firstTie", "shared", "secondTie", "thirdTie", "firstUndated", "invalidUndated", "lastUndated"]);
+    assert.equal(entries.filter(item => item.key === "shared").length, 1);
+    assert.equal(entries.find(item => item.key === "shared").route, "life");
+    assert.equal(entries.find(item => item.key === "shared").routeTitle, "日常");
+  }
+  assert.equal(api.get("resume", "shared").routeTitle, "履历");
+  assert.deepEqual(plain(api.items("life").map(item => item.key)), ["firstTie", "shared", "secondTie", "firstUndated", "invalidUndated"]);
+});
+
+test("route titles come from each owning path and fall back to short names only when missing or unusable", () => {
+  const { api } = load({
+    paths: [
+      { id: "life", title: " 自定义生活 ", items: ["custom"] },
+      { id: "life", items: ["defaultLife"] },
+      { id: "resume", title: "   ", items: ["defaultResume"] },
+      { id: "project", title: 123, items: ["defaultProject"] }
+    ],
+    samples: { custom: {}, defaultLife: {}, defaultResume: {}, defaultProject: {} }
+  });
+  assert.deepEqual(plain(api.items("home").map(({ key, routeTitle }) => [key, routeTitle])), [
+    ["custom", " 自定义生活 "], ["defaultLife", "生活"], ["defaultResume", "经历"], ["defaultProject", "项目"]
+  ]);
+});
+
+test("sorting frozen multi-route data leaves path order, key arrays and metadata untouched", () => {
+  const content = {
+    paths: [
+      { id: "life", title: "生活", items: ["old", "shared", "undated"] },
+      { id: "project", title: "项目", items: ["shared", "new"] }
+    ],
+    samples: {
+      old: { title: "Old", publishedAt: "2024-12-31" },
+      shared: { title: "Shared", publishedAt: "2025-01-01" },
+      undated: { title: "Undated" }, new: { title: "New", publishedAt: "2026-01-01" }
+    }
+  };
+  const before = JSON.stringify(content);
+  const freeze = value => {
+    if (value && typeof value === "object") { Object.values(value).forEach(freeze); Object.freeze(value); }
+  };
+  freeze(content);
+  const { api } = load(content);
+  assert.deepEqual(plain(api.items("home").map(item => item.key)), ["new", "shared", "old", "undated"]);
+  assert.deepEqual(plain(api.items("life").map(item => item.key)), ["shared", "old", "undated"]);
+  assert.deepEqual(plain(api.items("project").map(item => item.key)), ["new", "shared"]);
+  const output = api.items("home"); output.reverse(); output[0].routeTitle = "Changed";
+  assert.equal(api.get("project", "shared").routeTitle, "项目");
+  assert.equal(api.items("home").find(item => item.key === "shared").routeTitle, "生活");
+  assert.equal(JSON.stringify(content), before);
 });
 
 test("hash parsing validates route membership and preserves valid routes for bad keys", () => {

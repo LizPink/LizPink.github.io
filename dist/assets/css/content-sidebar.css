@@ -145,12 +145,13 @@
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  gap: 4px 8px;
+  gap: 4px 6px;
   color: var(--muted);
   font: 12px/1.5 var(--font-body);
 }
 
-.content-item-meta time { font: 12px/1.5 var(--font-mono); }
+.content-item-meta time { font: 12px/1.5 var(--font-mono); white-space: nowrap; }
+.content-item-example { font-size: 11px; white-space: nowrap; }
 .content-item-title { font: 500 17px/1.55 var(--font-body); }
 
 .content-index-empty { margin: 4px 0 0; color: var(--muted); font: 14px/1.8 var(--font-body); }
@@ -158,6 +159,10 @@
 @container content-sidebar (max-width: 228px) {
   .content-item { padding: 8px; }
   .content-item-title { font-size: 16px; }
+}
+
+@container content-sidebar (max-width: 164px) {
+  .content-item-meta { column-gap: 2px; }
 }
 
 #sidebar-resizer {

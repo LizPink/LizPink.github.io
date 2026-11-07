@@ -4,6 +4,7 @@
 
   const contentRoutes = new Set(["life", "resume", "project"]);
   const routes = new Set(["home", "life", "resume", "project", "help"]);
+  const routeTitles = { life: "生活", resume: "经历", project: "项目" };
 
   function formatDate(value) {
     if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return null;
@@ -39,6 +40,7 @@
         seen.add(key);
         result.push({
           key, route: path.id,
+          routeTitle: typeof path.title === "string" && path.title.trim() ? path.title : routeTitles[path.id],
           title: typeof sample.title === "string" ? sample.title : "",
           excerpt: typeof sample.text === "string" ? sample.text.replace(/\s+/g, " ").trim() : "",
           type: typeof sample.type === "string" ? sample.type : "text",
@@ -47,7 +49,16 @@
         });
       });
     });
-    return result;
+    // Sort the new index, never the source paths/items. Stable ties retain the
+    // source order, including undated entries and the first reference of a key.
+    return result.sort((left, right) => {
+      const leftDate = left.date?.value;
+      const rightDate = right.date?.value;
+      if (leftDate === rightDate) return 0;
+      if (!leftDate) return 1;
+      if (!rightDate) return -1;
+      return leftDate < rightDate ? 1 : -1;
+    });
   }
 
   function get(route, key) {

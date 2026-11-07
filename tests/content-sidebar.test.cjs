@@ -89,9 +89,9 @@ function harness({ mobile = false, width = 1200, entries } = {}) {
     cancelAnimationFrame(id) { frames.delete(id); }
   });
   const data = entries || [
-    { key: "one", route: "project", title: "<one>", excerpt: "第一条的简介", type: "text", example: true, date: { value: "2026-11-01", text: "2026.11.01", label: "发布", example: true } },
-    { key: "two", route: "project", title: "第二条", excerpt: "第二条的简介", type: "image", example: false, date: null },
-    { key: "three", route: "life", title: "日常", excerpt: "日常记录", type: "video", example: true, date: { value: "2026-10-31", text: "2026.10.31", label: "更新" } }
+    { key: "one", route: "project", routeTitle: "项目", title: "<one>", excerpt: "第一条的简介", type: "text", example: true, date: { value: "2026-11-01", text: "2026.11.01", label: "发布", example: true } },
+    { key: "two", route: "project", routeTitle: "项目", title: "第二条", excerpt: "第二条的简介", type: "image", example: false, date: null },
+    { key: "three", route: "life", routeTitle: "生活", title: "日常", excerpt: "日常记录", type: "video", example: true, date: { value: "2026-10-31", text: "2026.10.31", label: "更新" } }
   ];
   window.LIZPINK_CONTENT_INDEX = { items: route => ["project", "life", "resume"].includes(route) ? data.filter(item => item.route === route) : data };
   const context = vm.createContext({ window, document, ResizeObserver: class { constructor(callback) { observer = callback; } observe() {} } });
@@ -214,11 +214,11 @@ test("breakpoint transitions preserve desktop collapse choice and release inert/
   assert.equal(h.api.isOpen(), false); assert.equal(h.nodes["frame-main"].inert, false);
 });
 
-test("content uses literal text, honest date labels, and preserves nodes/focus when only selection changes", () => {
+test("content names its section and date honestly and preserves nodes/focus on selection", () => {
   const h = harness(); h.api.update("project", "one");
   const first = h.nodes["content-list"].querySelectorAll("[data-content-key]")[0];
   assert.match(first.textContent, /<one>/);
-  assert.match(first.textContent, /示例日期 2026.11.01/);
+  assert.equal(first.getAttribute("aria-label"), "项目 示例日期 2026.11.01 <one>");
   assert.equal(first.getAttribute("aria-current"), "location");
   first.focus(); h.nodes["content-list"].scrollTop = 120; h.api.update("project", "two");
   assert.equal(h.nodes["content-list"].querySelectorAll("[data-content-key]")[0], first);
@@ -228,18 +228,23 @@ test("content uses literal text, honest date labels, and preserves nodes/focus w
   assert.equal(h.nodes["content-list"].querySelectorAll("[data-content-key]")[1].getAttribute("aria-current"), "location");
   h.api.update("life", "three");
   assert.equal(h.nodes["content-list"].scrollTop, 0);
-  assert.match(h.nodes["content-list"].textContent, /更新 2026.10.31/);
+  const life = h.nodes["content-list"].querySelectorAll("[data-content-key]")[0];
+  assert.equal(life.getAttribute("aria-label"), "生活 更新 2026.10.31 日常");
   assert.equal(h.nodes["content-index-title"].textContent, "生活");
 });
 
-test("content rows contain only a date and title, with no empty metadata for undated rows", () => {
+test("metadata shows section, date and a compact example marker; undated rows keep their section", () => {
   const h = harness(); h.api.update("home");
   const buttons = h.nodes["content-list"].querySelectorAll("[data-content-key]");
   assert.deepEqual(buttons[0].children.map(node => node.className), ["content-item-meta", "content-item-title"]);
-  assert.equal(buttons[0].children[0].children.length, 1);
-  assert.equal(buttons[0].children[0].children[0].tagName, "time");
-  assert.deepEqual(buttons[1].children.map(node => node.className), ["content-item-title"]);
-  assert.equal(buttons[1].textContent, "第二条");
+  const meta = buttons[0].children[0];
+  assert.deepEqual(meta.children.map(node => node.textContent), ["项目", "2026.11.01", "示例"]);
+  assert.equal(meta.children[1].tagName, "time");
+  assert.equal(meta.children[1].dateTime, "2026-11-01");
+  assert.deepEqual(buttons[1].children.map(node => node.className), ["content-item-meta", "content-item-title"]);
+  assert.deepEqual(buttons[1].children[0].children.map(node => node.textContent), ["项目"]);
+  assert.equal(buttons[1].getAttribute("aria-label"), "项目 第二条");
+  assert.deepEqual(buttons[2].children[0].children.map(node => node.textContent), ["生活", "2026.10.31"]);
   assert.doesNotMatch(h.nodes["content-list"].textContent, /简介|日常记录|文字示例|图片|视频/);
   assert.equal(h.nodes["content-list"].descendants().some(node => node.className === "content-item-excerpt"), false);
 });

@@ -228,13 +228,22 @@
         button.type = "button";
         button.dataset.contentRoute = item.route;
         button.dataset.contentKey = item.key;
+        const meta = element("span", "content-item-meta");
+        meta.append(element("span", "content-item-section", item.routeTitle));
         if (item.date) {
-          const meta = element("span", "content-item-meta");
-          const time = element("time", "", `${item.date.example ? "示例日期" : item.date.label} ${item.date.text}`);
+          const time = element("time", "", item.date.text);
           time.dateTime = item.date.value;
           meta.append(time);
-          button.append(meta);
+          if (item.date.example) {
+            const example = element("span", "content-item-example", "示例");
+            example.title = "用于排版预览的示例日期";
+            meta.append(example);
+          }
         }
+        button.setAttribute("aria-label", [item.routeTitle,
+          item.date && `${item.date.example ? "示例日期" : item.date.label} ${item.date.text}`,
+          item.title].filter(Boolean).join(" "));
+        button.append(meta);
         button.append(element("span", "content-item-title", item.title));
         row.append(button); return row;
       });
