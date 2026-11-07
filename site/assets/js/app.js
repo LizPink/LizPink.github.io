@@ -95,9 +95,10 @@
       label.append($(reader ? "h2" : "h3", reader ? "summary-title" : "", sample.title));
       article.append(label);
       const metadata = $("p", "reader-date");
-      [["创建于", sample.publishedAt], ["更新于", sample.updatedAt]].forEach(([label, value], index) => {
+      const createdDate = contentIndex.formatDate(sample.publishedAt);
+      const updatedDate = contentIndex.formatDate(sample.updatedAt) || createdDate;
+      [["创建于", createdDate], ["更新于", updatedDate]].forEach(([label, date], index) => {
         if (index) metadata.append(document.createTextNode(" "));
-        const date = contentIndex.formatDate(value);
         const field = $("span", "reader-date-field");
         field.append(document.createTextNode(`${label} `));
         if (date) {
