@@ -4,7 +4,7 @@ sections: 	[project]
 publishedAt:	"2026-10-01"
 ---
 
-这这个项目中，我打算从零开始实现一个自己的光线追踪渲染器！我的项目主页可以在 GitHub [项目主页](https://github.com/LizPink/2026Fall-Renderer-from-Scratch)找到，这里会同步更新项目的开发信息。
+这这个项目中，我打算从零开始实现一个自己的光线追踪渲染器！这个项目的源代码已经发布到 GitHub [项目主页](https://github.com/LizPink/2026Fall-Renderer-from-Scratch)，这里会同步更新项目的开发信息。
 
 ## 代码规范
 
