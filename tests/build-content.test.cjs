@@ -312,7 +312,7 @@ test("CRLF-only text media changes keep generated URLs stable across separate bu
   assert.match(await fs.readFile(path.join(f.outputDir, "assets/content/article/clip.zh.vtt"), "utf8"), /\r\n/);
 });
 
-test("summary stays plain, body preserves rich Markdown and raw HTML is escaped", async t => {
+test("summary stays plain, body preserves rich Markdown and executable HTML is escaped", async t => {
   const f = await fixture(t, { entries: [{ key: "safe", metadata: { title: '</script><script>bad()</script>', summary: " 简短\n 摘要 " },
     body: '<script>globalThis.compromised = true</script>\n\n## A **bold** heading\n\nText with **bold**, `code`, and [website](https://example.org/).'
   }] });
@@ -491,6 +491,9 @@ test("importing a builder copy does not execute its CLI or generate output", asy
   await write(copy, await fs.readFile(script));
   await write(path.join(root, "scripts/asset-version.mjs"), await fs.readFile(path.join(project, "scripts/asset-version.mjs")));
   await write(path.join(root, "scripts/content-dates.mjs"), await fs.readFile(path.join(project, "scripts/content-dates.mjs")));
+  for (const name of ["html-content.mjs", "content-paths.mjs", "build-files.mjs"]) {
+    await write(path.join(root, "scripts", name), await fs.readFile(path.join(project, "scripts", name)));
+  }
   const result = spawnSync(process.execPath, ["--input-type=module", "-e", `await import(${JSON.stringify(pathToFileURL(copy).href)});`], { cwd: root, encoding: "utf8" });
   assert.equal(result.status, 0, result.stderr || result.error?.message);
   assert.equal(result.stdout, "");

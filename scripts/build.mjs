@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildContent } from "./build-content.mjs";
 import { assetVersion, withAssetVersion } from "./asset-version.mjs";
+import { renameWithRetry, removeWithRetry, unlinkWithRetry } from "./build-files.mjs";
 
 export const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -75,10 +76,10 @@ export async function build(root = projectRoot) {
   const staging = generatedPath(root, `.build/site-${unique}`);
   const backup = generatedPath(root, `.build/previous-${unique}`);
   const output = generatedPath(root, "dist");
-  let movedPrevious = false;
+  let movedPrevious = false, content, failure;
   try {
     await fs.cp(path.join(root, "site"), staging, { recursive: true, errorOnExist: true, force: false });
-    const content = await buildContent({ contentDir: path.join(root, "content"), outputDir: staging });
+    content = await buildContent({ contentDir: path.join(root, "content"), outputDir: staging });
     const publicFiles = path.join(root, "content/files");
     async function checkFiles(directory) {
       for (const entry of await fs.readdir(directory, { withFileTypes: true })) {
@@ -100,20 +101,35 @@ export async function build(root = projectRoot) {
       .replaceAll("{{SITE_GREETING}}", escape(content.greeting).replace(name, `<span>${name}</span>`));
     if (/\{\{SITE_[A-Z_]+\}\}/.test(html)) throw new Error("页面包含未填写的站点字段。");
     await fs.writeFile(htmlFile, await versionSiteAssets(staging, html));
-    try { await fs.rename(output, backup); movedPrevious = true; }
+    try { await renameWithRetry(output, backup); movedPrevious = true; }
     catch (error) { if (error.code !== "ENOENT") throw error; }
-    try { await fs.rename(staging, output); }
+    try { await renameWithRetry(staging, output); }
     catch (error) {
-      if (movedPrevious) { await fs.rename(backup, output); movedPrevious = false; }
+      if (movedPrevious) {
+        try { await renameWithRetry(backup, output); movedPrevious = false; }
+        catch (restoreError) {
+          throw new AggregateError([error, restoreError], `发布失败且未能恢复原网站，原网站保留在 ${backup}。${error.message}`, { cause: error });
+        }
+      }
       throw error;
     }
-    if (movedPrevious) await fs.rm(backup, { recursive: true, force: true });
-    return content;
+    if (movedPrevious) await removeWithRetry(backup);
+  } catch (error) {
+    failure = error;
   } finally {
-    await fs.rm(staging, { recursive: true, force: true });
-    await lock.close();
-    await fs.unlink(lockPath);
+    // A cleanup failure must not skip closing the handle or releasing the lock.
+    const cleanupErrors = [];
+    for (const cleanup of [() => removeWithRetry(staging), () => lock.close(), () => unlinkWithRetry(lockPath)]) {
+      try { await cleanup(); } catch (error) { cleanupErrors.push(error); }
+    }
+    if (cleanupErrors.length) {
+      failure = new AggregateError([...(failure ? [failure] : []), ...cleanupErrors],
+        failure ? `${failure.message}；构建临时文件清理失败。` : "网站已生成，但构建临时文件清理失败。",
+        failure ? { cause: failure } : {});
+    }
   }
+  if (failure) throw failure;
+  return content;
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

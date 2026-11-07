@@ -340,9 +340,9 @@
       "sidebarWidthRange": "180px–420px；最大宽度同时受主区至少320px限制",
       "sidebarResizeHandle": "10px命中区，1px视觉分隔线；左右方向键每次16px，Home/End到当前最窄/最宽，双击恢复200px",
       "sidebarContentLayout": "顶部44px收起按钮与逐行单列的首页/生活/经历/项目四个短名入口；下方内容列表仅显示可选日期和标题并独立滚动，不显示摘要或类型标签",
-      "mediaWidth": "min(100%, 960px, 媒体原始宽度)",
-      "mediaAlignment": "figure在阅读区水平居中，图注与媒体同宽并左对齐",
-      "detailsMaxWidth": "none；段落仍限制72ch",
+      "mediaWidth": "min(正文列宽, 960px, 原始宽度, 作者指定宽度×缩放倍数)；无作者宽度时采用原始宽度，未加载原始尺寸时回退960px",
+      "mediaAlignment": "figure在文章正文列内水平居中，图片下方仅保留与媒体同宽的居中图注",
+      "detailsMaxWidth": "none；文章段落、列表、引用及标题铺满.article-body正文列；首页about、栏目概览与履历说明保留原有阅读行宽",
       "themeOptionMinWidth": "44px",
       "themeOptionMinHeight": "44px",
       "themeControlRadius": "7px",
@@ -355,7 +355,8 @@
       "smallMobileWordmarkSize": "20px",
       "smallMobileWordmarkGap": "6px",
       "smallMobileWordmarkOverflow": "过长姓名省略，保持左右目录和模式按钮44px命中区",
-      "themeOptionPadding": "0"
+      "themeOptionPadding": "0",
+      "articleTextWidth": "100% of available .article-body column；有本页目录时保留右侧180px目录及32px间距"
     },
     "interaction": {
       "sidebar": [
@@ -472,7 +473,7 @@
       }
     },
     "media": {
-      "width": "min(100%, var(--media-width), var(--asset-width, var(--media-width)))",
+      "width": "min(100%, var(--media-width), var(--asset-width, var(--media-width)), calc(var(--asset-display-width, var(--asset-width, var(--media-width))) * var(--asset-scale, 1)))",
       "video": {
         "controls": true,
         "preload": "none",
@@ -485,9 +486,10 @@
       "captionIDs": "每次构建递增唯一",
       "initialMediaDOM": false,
       "maxWidth": "960px",
-      "alignment": "figure水平居中；正文左对齐且最长72ch；图注与figure同宽并左对齐。",
+      "alignment": "文章正文左对齐并铺满.article-body可用列，不受72ch限制；figure在正文列内居中，图注与figure同宽，图片下方仅保留居中图注；首页about和栏目概览保留原有阅读行宽。",
       "aspectRatio": "auto，保持原比例",
-      "intrinsicWidth": "图片load后以naturalWidth限制展示宽度；视频初始640px，loadedmetadata后采用videoWidth，避免把较小素材放大到960px。"
+      "intrinsicWidth": "图片load后以naturalWidth限制展示宽度；视频初始640px，loadedmetadata后采用videoWidth，避免把较小素材放大到960px。",
+      "authorSizing": "可选--asset-display-width为像素或百分比宽度，--asset-scale为数字倍数且默认1；--asset-width由媒体加载后的naturalWidth/videoWidth维护，不覆盖作者尺寸。"
     },
     "focus": {
       "outline": "2px solid var(--accent)",
@@ -710,6 +712,14 @@
         "status": "2026-10-25已通过检查",
         "scope": "项目、档案、联系旧命令不再识别，旧文章链接显示首页；三路线与图片/视频详情正常，320×640下8项补全焦点正常且无横向溢出，控制台error/warn为0。数据、渲染器、摘要、专用CSS及旧入口已删除，仅保留五个视图与8项公开命令。此前验证记录属于删除清理前。"
       }
+    },
+    "contentParsing": {
+      "source": "Markdown与常见HTML混写，统一语法树后生成标题、链接和媒体",
+      "module": "scripts/html-content.mjs",
+      "paths": "scripts/content-paths.mjs；正反斜杠、当前文章素材绝对路径、file链接、跨机器content/entries/key后缀；不改作者源码",
+      "htmlImages": "width/style.width映射--asset-display-width；style.zoom映射--asset-scale；保留自然宽度、960px与可用宽度上限",
+      "unsupported": "不支持的HTML作为文字显示；不保留事件和任意样式；代码示例不解析为HTML",
+      "captions": "图片下方仅保留居中图注；图片与图注间8px，上文至图片、图注至下文均32px"
     }
   },
   "components": [
@@ -772,12 +782,12 @@
   ],
   "narrative": {
     "northStar": "融入背景的个人终端",
-    "overview": "用户图示与最新明确修订是最高优先约束。网页铺满视口，页面、工具栏、侧栏、框架和主区共用屏幕底色；不使用居中限宽、外框、主区内框或套窗内缩。仅内部工具栏与目录边界保留细分隔线。\n\n工具栏目录按钮与lp_、LizPink同组，右侧提供仅太阳/月亮图标的浅色/深色模式按钮。桌面内容目录默认200px展开，支持180–420px调宽与收起；手机默认关闭，以抽屉展开。目录顶部逐行单列显示首页、生活、经历、项目，内容列表显示分区、有效日期和标题，按更新日期优先降序。选择条目在右侧显示单条正文并支持#project/geometry等链接。\n\n文字左对齐并保持72ch阅读行宽，媒体按原比例、原始宽度和960px上限适度居中，图注与媒体同宽。自介仍集中在经历；首页保持问候和自动聚焦的命令区。有效栏目命令、数字0–3和help每次替换旧输出并从顶部阅读；↑↓保留命令输入历史，未知命令不清屏。原生输入、可打断渐显及阅读保护延续。发布状态以对应部署任务结果为准。\n\n栏目统一显示首页、生活、经历、项目，英文route保持不变。公开命令共7个；帮助标题与help描述均为帮助，open/close描述与详情按钮统一展开/收起。数字和中文别名回显规范英文，历史回调保留原输入。成功Tab补全仅清空底部反馈文字，候选列表与选区保留，错误说明仍可用。",
+    "overview": "用户图示与最新明确修订是最高优先约束。网页铺满视口，页面、工具栏、侧栏、框架和主区共用屏幕底色；不使用居中限宽、外框、主区内框或套窗内缩。仅内部工具栏与目录边界保留细分隔线。\n\n工具栏目录按钮与lp_、LizPink同组，右侧提供仅太阳/月亮图标的浅色/深色模式按钮。桌面内容目录默认200px展开，支持180–420px调宽与收起；手机默认关闭，以抽屉展开。目录顶部逐行单列显示首页、生活、经历、项目，内容列表显示分区、有效日期和标题，按更新日期优先降序。选择条目在右侧显示单条正文并支持#project/geometry等链接。\n\n文章文字左对齐并铺满自身正文列，保留右侧本页目录的独立空间；首页about和栏目概览仍保留72ch阅读行宽。媒体按原比例、原始宽度和960px上限在正文列内居中，图片下方仅保留与媒体同宽的居中图注。自介仍集中在经历；首页保持问候和自动聚焦的命令区。有效栏目命令、数字0–3和help每次替换旧输出并从顶部阅读；↑↓保留命令输入历史，未知命令不清屏。原生输入、可打断渐显及阅读保护延续。发布状态以对应部署任务结果为准。\n\n栏目统一显示首页、生活、经历、项目，英文route保持不变。公开命令共7个；帮助标题与help描述均为帮助，open/close描述与详情按钮统一展开/收起。数字和中文别名回显规范英文，历史回调保留原输入。成功Tab补全仅清空底部反馈文字，候选列表与选区保留，错误说明仍可用。",
     "keyCharacteristics": [
       "满视口、统一背景、零套窗内缩。",
       "桌面默认展开、可调宽与折叠的内容目录；手机抽屉。",
       "分区、日期与标题组成的精简内容列表及可分享的单条reader；更新日期优先排序。",
-      "72ch左对齐文字，原比例媒体适度居中；命令输入与阅读保护延续。"
+      "文章文字铺满自身正文列，原比例媒体与图注居中；首页概览行宽、命令输入与阅读保护延续。"
     ],
     "rules": [
       {

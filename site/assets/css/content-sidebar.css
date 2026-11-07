@@ -218,18 +218,22 @@
 
 .summary-preview-link:hover { color: var(--accent); text-decoration-color: currentColor; }
 .details-body { width: 100%; max-width: none; }
-.content-reader { min-width: 0; font: 17px/1.9 var(--font-body); }
-.content-reader :is(p, ul, ol, blockquote, .sample-heading, .resume-section) { max-width: var(--reading-width); }
-.content-reader h2.summary-title { max-width: var(--reading-width); margin: 0 0 14px; }
+.content-reader { min-width: 0; max-width: none; font: 17px/1.9 var(--font-body); }
+.content-reader h2.summary-title { max-width: none; margin: 0 0 14px; }
 .content-reader .sample-heading .summary-title { margin: 0; }
 .content-reader > .sample-entry:first-of-type,
 .content-reader .sample-entry:first-child { padding-top: 0; border-top: 0; }
 .reader-meta, .reader-meta p { margin: 0 0 20px; color: var(--muted); font: 13px/1.7 var(--font-body); }
 .reader-date, .reader-meta time { margin: 0 0 16px; color: var(--muted); font: 13px/1.7 var(--font-mono); }
 .sample-text { text-wrap: pretty; }
-.sample-media { width: min(100%, var(--media-width), var(--asset-width, var(--media-width))); margin: 0 auto 24px; }
+.sample-media {
+  /* Natural width stays separate from author sizing, including before media loads. */
+  width: min(100%, var(--media-width), var(--asset-width, var(--media-width)), calc(var(--asset-display-width, var(--asset-width, var(--media-width))) * var(--asset-scale, 1)));
+  /* Collapsing block margins keep the outer text/media gaps equal. */
+  margin: 32px auto;
+}
 .sample-media img, .sample-media video { max-width: 100%; height: auto; aspect-ratio: auto; }
-.sample-media figcaption { text-align: left; }
+.sample-media figcaption { text-align: center; }
 
 @media (max-width: 760px) {
   .toolbar-end { gap: 4px; }

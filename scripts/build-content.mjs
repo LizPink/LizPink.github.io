@@ -6,6 +6,9 @@ import MarkdownIt from "markdown-it";
 import { parseDocument } from "yaml";
 import { assetVersion, withAssetVersion } from "./asset-version.mjs";
 import { applyGitUpdateDates } from "./content-dates.mjs";
+import { parseArticleTokens } from "./html-content.mjs";
+import { normalizeContentPath, preserveWindowsDestinations } from "./content-paths.mjs";
+import { renameWithRetry, removeWithRetry } from "./build-files.mjs";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const routeNames = { life: "生活", resume: "经历", project: "项目" };
@@ -171,11 +174,14 @@ async function optionalFile(file) {
 }
 
 async function renderEntry(entry, content, entries, assets, versionOf) {
-  const markdown = new MarkdownIt({ html: false, linkify: false, typographer: false });
+  const markdown = new MarkdownIt({ html: true, linkify: false, typographer: false });
+  preserveWindowsDestinations(markdown);
+  const originalNormalization = markdown.normalizeLink;
+  markdown.normalizeLink = value => originalNormalization(normalizeContentPath(value, entry));
   const originalValidation = markdown.validateLink;
   markdown.validateLink = value => { checkProtocol(value, entry.file); return originalValidation(value); };
   const escape = markdown.utils.escapeHtml;
-  const tokens = markdown.parse(entry.markdown, {});
+  const tokens = parseArticleTokens(markdown, entry.markdown);
   const headings = [];
   const targets = new Map();
   const usedIds = new Set();
@@ -194,6 +200,8 @@ async function renderEntry(entry, content, entries, assets, versionOf) {
       usedIds.add(id); token.attrSet("id", id);
       if (!targets.has(name)) targets.set(name, id);
       targets.set(id, id);
+      const authoredId = token.meta?.authoredId;
+      if (authoredId && !targets.has(authoredId)) targets.set(authoredId, id);
       headings.push({ id, text, level: Number(token.tag.slice(1)) });
     }
     if (!firstParagraph && token.type === "paragraph_open" && tokens[index + 1]?.type === "inline") {
@@ -202,6 +210,7 @@ async function renderEntry(entry, content, entries, assets, versionOf) {
   }
 
   async function asset(value) {
+    value = normalizeContentPath(value, entry);
     checkProtocol(value, entry.file);
     if (/^[a-z][a-z\d+.-]*:/i.test(value)) throw error(entry.file, "媒体及附件必须存放在条目目录内。");
     const match = value.match(/^([^?#]*)([?#][\s\S]*)?$/);
@@ -226,14 +235,23 @@ async function renderEntry(entry, content, entries, assets, versionOf) {
     const value = image.attrGet("src");
     const resource = await asset(value);
     const extension = path.extname(resource.target).toLowerCase();
-    const description = compact(plain(image.children)) || entry.metadata.title;
+    const description = image.meta?.caption || compact(plain(image.children)) || entry.metadata.title;
     const label = escape(description);
     const captionId = `${entry.key}-media-${++mediaIndex}`;
+    const sizing = [];
+    if (image.meta?.displayWidth) sizing.push(`--asset-display-width:${image.meta.displayWidth}`);
+    if (image.meta?.scale) sizing.push(`--asset-scale:${image.meta.scale}`);
+    const figureStyle = sizing.length ? ` style="${escape(sizing.join(";"))}"` : "";
     if (extension === ".mp4") {
       mediaCounts.videos += 1;
       const base = resource.target.slice(0, -path.extname(resource.target).length);
       let poster = "", track = "";
-      for (const type of ["svg", "png", "jpg", "webp"]) {
+      if (image.meta?.poster) {
+        const item = await asset(image.meta.poster);
+        if (!imageExtensions.has(path.extname(item.target).toLowerCase())) throw error(entry.file, "视频封面必须是图片文件。");
+        poster = ` poster="${escape(item.url)}"`;
+      }
+      for (const type of poster ? [] : ["svg", "png", "jpg", "webp"]) {
         const file = `${base}.poster.${type}`;
         if (await optionalFile(file)) {
           const item = await asset(`./${path.relative(entry.directory, file).split(path.sep).map(encodeURIComponent).join("/")}`);
@@ -245,18 +263,20 @@ async function renderEntry(entry, content, entries, assets, versionOf) {
         const item = await asset(`./${path.relative(entry.directory, captions).split(path.sep).map(encodeURIComponent).join("/")}`);
         track = `<track kind="captions" src="${escape(item.url)}" srclang="zh" label="中文说明" default>`;
       }
-      return `<figure class="sample-media" style="--asset-width:640px"><video src="${escape(resource.url)}"${poster} controls preload="none" playsinline width="640" height="360" aria-label="${label}" aria-describedby="${escape(captionId)}">${track}你的浏览器暂不支持此视频。</video><figcaption id="${escape(captionId)}">${label}</figcaption></figure>\n`;
+      const videoSizing = ["--asset-width:640px", ...sizing].join(";");
+      return `<figure class="sample-media" style="${escape(videoSizing)}"><video src="${escape(resource.url)}"${poster} controls preload="none" playsinline width="640" height="360" aria-label="${label}" aria-describedby="${escape(captionId)}">${track}你的浏览器暂不支持此视频。</video><figcaption id="${escape(captionId)}">${label}</figcaption></figure>\n`;
     }
     if (!imageExtensions.has(extension)) throw error(entry.file, `图片仅支持图像文件或MP4视频：${value}`);
     mediaCounts.images += 1;
-    return `<figure class="sample-media"><a class="media-zoom" href="${escape(resource.url)}" target="_blank" rel="noopener noreferrer" aria-label="查看大图：${label}"><img src="${escape(resource.url)}" alt="${label}" loading="lazy" decoding="async" width="960" height="540"></a><figcaption id="${escape(captionId)}">${label}<span class="media-hint">点击图片查看大图</span></figcaption></figure>\n`;
+    return `<figure class="sample-media"${figureStyle}><a class="media-zoom" href="${escape(resource.url)}" target="_blank" rel="noopener noreferrer" aria-label="查看大图：${label}"><img src="${escape(resource.url)}" alt="${label}" loading="lazy" decoding="async" width="960" height="540"></a><figcaption id="${escape(captionId)}">${label}</figcaption></figure>\n`;
   }
 
   for (const block of tokens) {
     if (block.type !== "inline") continue;
     for (const token of block.children || []) {
       if (token.type !== "link_open") continue;
-      const href = token.attrGet("href");
+      const href = markdown.normalizeLink(token.attrGet("href"));
+      token.attrSet("href", href);
       checkProtocol(href, entry.file);
       if (href.startsWith("#")) {
         const target = decodeURIComponent(href.slice(1));
@@ -319,7 +339,8 @@ async function publish(content, assets, outputDir) {
   const stagedMedia = path.join(staging, "content");
   const media = path.join(outputDir, "assets/content");
   const previous = path.join(staging, "previous-content");
-  let backedUp = false, installed = false;
+  let backedUp = false, installed = false, preserveRecovery = false;
+  let pendingFailure;
   try {
     await fs.mkdir(stagedMedia, { recursive: true });
     for (const [name, source] of assets) {
@@ -333,18 +354,47 @@ async function publish(content, assets, outputDir) {
     const stagedScript = path.join(staging, "content.js");
     await fs.writeFile(stagedScript, script, "utf8");
     await fs.mkdir(path.join(outputDir, "assets/js"), { recursive: true });
-    if (await optionalFile(media)) { await fs.rename(media, previous); backedUp = true; }
-    await fs.rename(stagedMedia, media); installed = true;
+    if (await optionalFile(media)) { await renameWithRetry(media, previous); backedUp = true; }
+    await renameWithRetry(stagedMedia, media); installed = true;
     // This atomic replacement is last, after all parsing and resource copies succeed.
-    await fs.rename(stagedScript, path.join(outputDir, "assets/js/content.js"));
+    await renameWithRetry(stagedScript, path.join(outputDir, "assets/js/content.js"));
   } catch (failure) {
-    if (installed) { await fs.rename(media, stagedMedia); installed = false; }
-    if (backedUp) { await fs.rename(previous, media); backedUp = false; }
+    pendingFailure = failure;
+    const restoreErrors = [];
+    if (installed) {
+      try { await renameWithRetry(media, stagedMedia); installed = false; }
+      catch (restoreFailure) { restoreErrors.push(restoreFailure); }
+    }
+    // Do not replace an installed tree if moving it back failed. Keep the old
+    // backup intact instead of risking it in a rename to an occupied target.
+    if (backedUp && !installed) {
+      try { await renameWithRetry(previous, media); backedUp = false; }
+      catch (restoreFailure) { restoreErrors.push(restoreFailure); }
+    }
+    if (restoreErrors.length) {
+      preserveRecovery = true;
+      const combined = new AggregateError([failure, ...restoreErrors],
+        `内容生成失败：${failure.message}；素材恢复也失败，恢复文件保留在：${staging}`, { cause: failure });
+      combined.recoveryDirectory = staging;
+      if (failure.code) combined.code = failure.code;
+      throw combined;
+    }
     throw failure;
   } finally {
-    // Only remove the absolute, freshly-created staging directory, never outputDir.
-    if (!inside(path.dirname(outputDir), staging) || !path.basename(staging).startsWith(".content-build-")) throw new Error("暂存目录校验失败。");
-    await fs.rm(staging, { recursive: true, force: true });
+    // A failed rollback leaves the only previous-media backup in this tree.
+    // Preserve it for recovery; otherwise clean only our own staging directory.
+    if (!preserveRecovery) {
+      try {
+        if (!inside(path.dirname(outputDir), staging) || !path.basename(staging).startsWith(".content-build-")) throw new Error("暂存目录校验失败。");
+        await removeWithRetry(staging);
+      } catch (cleanupFailure) {
+        if (!pendingFailure) throw cleanupFailure;
+        const combined = new AggregateError([pendingFailure, cleanupFailure],
+          `内容生成失败：${pendingFailure.message}；清理暂存目录也失败：${staging}`, { cause: pendingFailure });
+        if (pendingFailure.code) combined.code = pendingFailure.code;
+        throw combined;
+      }
+    }
   }
 }
 
