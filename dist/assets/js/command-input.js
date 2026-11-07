@@ -22,6 +22,13 @@
   composer.classList.add("command-composer");
   let commandActive = false;
   composer.dataset.commandMode = "false";
+  const syncPageFocus = () => {
+    composer.dataset.pageFocused = String(document.hasFocus() && !document.hidden);
+  };
+  syncPageFocus();
+  window.addEventListener("focus", syncPageFocus);
+  window.addEventListener("blur", syncPageFocus);
+  document.addEventListener("visibilitychange", syncPageFocus);
   // A blank placeholder lets CSS follow empty values, including history recall.
   input.placeholder = " ";
   const idleHint = document.createElement("button");
@@ -29,10 +36,33 @@
   idleHint.id = "command-idle-hint";
   idleHint.className = "command-idle-hint";
   idleHint.setAttribute("aria-controls", "command-input");
-  idleHint.setAttribute("aria-label", "开始输入命令（快捷键 /）");
-  idleHint.textContent = "按下 / 输入命令";
+  idleHint.setAttribute("aria-label", "按下斜杠键开始输入，输入 help 查询命令");
+  const idleCopy = document.createElement("span");
+  idleCopy.className = "command-idle-copy";
+  const idleShortcut = document.createElement("span");
+  idleShortcut.textContent = "按下 / 输入命令";
+  const idleSeparator = document.createElement("span");
+  idleSeparator.className = "command-idle-separator";
+  idleSeparator.textContent = "·";
+  const idleHelp = document.createElement("span");
+  idleHelp.textContent = "输入 help 查询命令";
+  idleCopy.append(idleShortcut, idleSeparator, idleHelp);
+  idleHint.append(idleCopy);
   input.closest(".command-editor").append(idleHint);
   idleHint.addEventListener("click", () => input.focus({preventScroll:true}));
+  const emptyHelp = document.createElement("span");
+  emptyHelp.className = "command-empty-help";
+  emptyHelp.setAttribute("aria-hidden", "true");
+  emptyHelp.textContent = "输入 help 查询命令";
+  input.closest(".command-editor").append(emptyHelp);
+  const inputHelp = document.createElement("span");
+  inputHelp.id = "command-input-help";
+  inputHelp.className = "sr-only";
+  inputHelp.textContent = "输入 help 查询命令。按 Enter 执行，按 Escape 返回阅读。";
+  composer.append(inputHelp);
+  const inputDescriptions = new Set((input.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean));
+  inputDescriptions.add(inputHelp.id);
+  input.setAttribute("aria-describedby", [...inputDescriptions].join(" "));
   const modeToggle = document.createElement("button");
   modeToggle.type = "button";
   modeToggle.id = "command-mode-toggle";
@@ -84,7 +114,7 @@
     const viewport = main.getBoundingClientRect();
     const visible = origin.top >= viewport.top && origin.bottom <= viewport.bottom - 4;
     const popupHeight = suggestions.scrollHeight;
-    docked = commandActive || !visible;
+    docked = (commandActive && records.children.length > 0) || !visible;
     composer.dataset.docked = String(docked);
     frame.dataset.inputDocked = String(docked);
     const top = docked ? frameRect.height - height : origin.top - frameRect.top;
@@ -101,6 +131,7 @@
   }
   window.LIZPINK_INPUT = {
     commandMode: () => commandActive,
+    focusInitial: () => input.focus({preventScroll:true}),
     leaveCommandMode: () => setCommandMode(false),
     protectReading: () => reading() || docked || commandActive, refresh
   };
@@ -120,7 +151,7 @@
   }
   window.visualViewport?.addEventListener("resize", fitViewport);
   window.visualViewport?.addEventListener("scroll", schedule);
-  input.addEventListener("focus", () => { setCommandMode(true); schedule(); });
+  input.addEventListener("focus", () => { syncPageFocus(); setCommandMode(true); schedule(); });
   composer.addEventListener("focusout", event => {
     if (!composer.contains(event.relatedTarget)) setCommandMode(false);
   });

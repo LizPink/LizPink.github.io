@@ -336,10 +336,10 @@
         "project"
       ],
       "profile": "Student与四兴趣集中在resume摘要；完整about.paragraphs并入resume展开详情的个人介绍。",
-      "legacyInfo": "about/info等旧别名与旧链接内部兼容转resume，不列入公开命令、Tab候选或帮助。",
-      "home": "仅问候与terminal-hint，不重复身份/兴趣/简介。",
+      "legacyInfo": "不保留历史命令或旧路由兼容；仅保留现行命令的数字与中文简写。",
+      "home": "仅问候与命令区，首次进入自动聚焦；帮助提示集中在光标旁。",
       "session": "最多五条回显+短摘要+按需详情与唯一新prompt；默认跟随输入，手动阅读暂停；侧栏清会话，home/clear回首页。",
-      "input": "原生单input保留编辑/选区/中文输入，Enter隐式提交，enterkeyhint=send；阅读且空输入时显示闲置块光标与muted色的“按下 / 输入命令”按钮，编辑时仅显示实际镜像光标和右侧“Esc 返回阅读”。输入自动吸附，编辑模式停靠底部。",
+      "input": "原生单input保留编辑/选区/中文输入，Enter执行，enterkeyhint=send。首页首次自动聚焦并保留自然位置；有输出后编辑模式停靠底部。未激活为空心静态，激活且页面有焦点时为实心闪烁；空输入在光标旁提示“输入 help 查询命令”，键入后隐藏。未激活空输入保留可点击激活与帮助提示；右侧仅编辑时显示“Esc 返回阅读”。",
       "tab": "非Shift Tab保持input，唯一匹配补全、多匹配循环、空输入可用、无匹配不跳焦；ShiftTab离开。",
       "accessibility": "combobox关联listbox/option；手机抽屉inert、焦点循环；关闭后聚焦可见入口。",
       "shortcuts": "/返回输入，↑↓回调历史，Escape清空输入并可关闭未固定目录或手机抽屉。",
@@ -347,7 +347,7 @@
       "status": "真实input同步就绪/输入中，无假延迟。",
       "toolbar": "仅logo/姓名、路径/状态与主题；图钉/手机关闭按钮位于.sidebar-header。",
       "menu": "每次载入closed；左缘悬停/点击/键盘激活临时展开，图钉aria-pressed切换固定。pointerleave180ms仅作用于peek，目录保有键盘焦点时保留；setMenu清理timer。固定跨导航保留，刷新清除。",
-      "visibility": "标签页隐藏暂停blink；OS减少动态效果关闭位移和闪烁。",
+      "visibility": "只有input聚焦、document有焦点且页面可见时光标闪烁；失焦为空心静态。OS减少动态效果保持静态光标。",
       "help": "commands.js直接渲染浏览路线、操作两组平面列表及快捷键，共8个公开命令，无details；CSS Grid命令列固定8ch，或N独立对齐，不用制表符。",
       "shortcutDetails": "open展开最近记录详情并阅读；close收起并回输入；/、编辑、Tab、↑↓恢复跟随。",
       "commands": {
@@ -373,8 +373,8 @@
           "Tab completions",
           "help"
         ],
-        "legacyAliases": "内部兼容，不公开列出；about/info转resume，research/研究转project。旧栏目hash规范到#project，保留query与历史状态，不新增历史项。",
-        "theme": "不列入帮助或补全；旧命令只提示使用右上角开关。",
+        "legacyAliases": "不兼容历史命令和旧路由；仅保留现行命令的数字与中文简写。",
+        "theme": "仅通过右上角开关切换，不提供theme命令。",
         "routes": [
           "home",
           "life",
@@ -397,7 +397,7 @@
           "number": "03"
         }
       ],
-      "routeScope": "只保留home/life/resume/project/help视图；project为原research栏目的新名称，旧research命令和链接内部兼容。无效hash回home，未识别命令提示帮助。"
+      "routeScope": "只保留home/life/resume/project/help视图；不兼容旧路由。无效hash显示home，未识别命令提示帮助。"
     },
     "themeBehavior": {
       "available": [
@@ -675,7 +675,7 @@
   ],
   "narrative": {
     "northStar": "融入背景的个人终端",
-    "overview": "用户图示与最新明确修订是最高优先约束。网页铺满视口，页面、工具栏、侧栏、框架和主区共用屏幕底色；不使用居中限宽、外框、主区内框或套窗内缩。仅内部工具栏与侧栏保留细分隔线。\n\n保留 `lp_` 与 LizPink 并排及右侧主题开关。侧栏依次为首页、生活与记录01、经历与能力02、项目与探索03，每次载入默认收起；左缘临时展开，目录旁图钉固定。自介、Student与四兴趣并入经历与能力，完整个人介绍在展开详情中。首页保持问候和末句提示。原生命令、五条会话与Tab补全延续，8个公开命令统一由commands.js管理；当前版本已于2026-10-25发布至 lizpink.github.io。\n\n默认先用短摘要确认内容，富文和媒体按需展开。新提示符自动跟随可见，阅读历史或展开详情时暂停，不强拉到底；输入仍处于普通流。",
+    "overview": "用户图示与最新明确修订是最高优先约束。网页铺满视口，页面、工具栏、侧栏、框架和主区共用屏幕底色；不使用居中限宽、外框、主区内框或套窗内缩。仅内部工具栏与侧栏保留细分隔线。\n\n保留 `lp_` 与 LizPink 并排及右侧主题开关。侧栏依次为首页、生活与记录01、经历与能力02、项目与探索03，每次载入默认收起；左缘临时展开，目录旁图钉固定。自介、Student与四兴趣并入经历与能力，完整个人介绍在展开详情中。首页保持问候和自动聚焦的命令区，帮助提示集中在光标旁。原生命令、五条会话与Tab补全延续，8个公开命令统一由commands.js管理；当前版本已于2026-10-25发布至 lizpink.github.io。\n\n默认先用短摘要确认内容，富文和媒体按需展开。新提示符自动跟随可见，阅读历史或展开详情时暂停，不强拉到底；输入仍处于普通流。",
     "keyCharacteristics": [
       "满视口、统一背景、零套窗内缩。",
       "默认收起的四入口侧栏、左缘临时展开与图钉固定。",

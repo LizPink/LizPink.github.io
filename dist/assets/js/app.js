@@ -142,7 +142,6 @@
     const reveal = document.querySelector("#menu-reveal");
     reveal.hidden = open && menuMode !== "peek";
     reveal.setAttribute("aria-expanded", String(open));
-    document.querySelector("#menu-hint").setAttribute("aria-expanded", String(open));
     reveal.title = "展开目录";
     document.querySelector("#menu-backdrop").hidden = !open || !compactViewport.matches;
     document.querySelector(".frame-main").inert = open && compactViewport.matches;
@@ -231,7 +230,6 @@
     activeRoute = routes.includes(base) ? base : "home";
     // Route visibility also applies to keyboard commands that append output.
     document.querySelector("#intro").hidden = activeRoute !== "home";
-    document.querySelector("#terminal-hint").hidden = activeRoute !== "home";
     records.querySelectorAll("video").forEach(video => video.pause());
     if (!append || activeRoute === "home") {
       followingOutput = true;
@@ -350,11 +348,6 @@
       return;
     }
     resumeFollowing();
-    if (command === "theme" || command.startsWith("theme ")) {
-      input.value = ""; syncCursor();
-      feedback.textContent = "配色请使用右上角开关。";
-      return;
-    }
     if (command === "clear") { history.length = 0; historyPosition = 0; input.value = ""; navigate("home"); focusCommand(); syncCursor(); return; }
     const route = command;
     if (routes.includes(route)) { resumeFollowing(true); input.value = ""; navigate(route, false, {append:true, label:raw.trim()}); input.focus({preventScroll:true}); syncCursor(); }
@@ -408,12 +401,6 @@
       menuKeyboardMode = event.detail === 0;
       (document.querySelector("#route-menu [aria-current='page']") || document.querySelector("#route-menu [data-route]")).focus({preventScroll:true});
     }
-  });
-  document.querySelector("#menu-hint").addEventListener("click", event => {
-    menuReturnTarget = event.currentTarget;
-    menuKeyboardMode = true;
-    setMenu(true);
-    (document.querySelector("#route-menu [aria-current='page']") || document.querySelector("#route-menu [data-route]")).focus({preventScroll:true});
   });
   document.querySelector("#menu-reveal").addEventListener("pointerenter", () => {
     clearTimeout(menuCloseTimer);
@@ -503,15 +490,7 @@
   window.addEventListener("popstate", restoreLocation);
   function readHash() {
     try {
-      const hash = decodeURIComponent(location.hash.slice(1)) || "home";
-      const route = commandCatalog.normalize(hash);
-      // Keep old section links working at the new URL, without an extra Back step.
-      if (route === "project" && hash !== route) {
-        const url = new URL(location.href);
-        url.hash = route;
-        window.history.replaceState(window.history.state, "", url);
-      }
-      return route;
+      return commandCatalog.normalize(decodeURIComponent(location.hash.slice(1)) || "home");
     } catch { return "home"; }
   }
   window.LIZPINK_THEME.apply(window.LIZPINK_THEME.current());
@@ -524,5 +503,6 @@
     pauseFollowing(); initialDetails.populate(); initialDetails.open = true;
     commandInput.refresh(); main.scrollTop = 0;
   }
+  if (activeRoute === "home") commandInput.focusInitial();
   syncCursor();
 })();

@@ -16,13 +16,11 @@
   const completions = Object.freeze(items.map(item => item.name));
   const routes = Object.freeze(items.filter(item => item.kind === "view").map(item => item.name));
 
-  // Older URLs and familiar aliases remain valid without crowding public help.
+  // Numeric shortcuts and Chinese labels for the current public commands.
   const aliases = Object.freeze({
     ...Object.fromEntries(items.filter(item => item.number !== undefined).map(item => [item.number, item.name])),
-    "首页": "home", "关于": "resume", "简历": "resume", "经历": "resume",
-    "项目": "project", "research": "project", "研究": "project",
-    "生活": "life", "帮助": "help", "about": "resume", "info": "resume",
-    "cv": "resume", "menu": "home", "ls": "help"
+    "首页": "home", "简历": "resume", "经历": "resume",
+    "项目": "project", "生活": "life", "帮助": "help"
   });
 
   function normalize(text) {
