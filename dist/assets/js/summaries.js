@@ -68,11 +68,11 @@
       ]);
       addSamplePreview(overview, path, content, false);
       detailLabel = "展开经历与图文";
-    } else if (route === "research" || route === "life") {
+    } else if (route === "project" || route === "life") {
       const path = content.paths?.find(item => item.id === route);
-      title(path?.title || (route === "research" ? "研究与探索" : "生活与记录"));
+      title(path?.title || (route === "project" ? "项目与探索" : "生活与记录"));
       addSamplePreview(overview, path, content);
-      detailLabel = route === "research" ? "展开研究图文" : "展开生活图文";
+      detailLabel = route === "project" ? "展开项目图文" : "展开生活图文";
     } else if (route === "help") {
       return { node: window.LIZPINK_COMMANDS.renderHelp(), detailLabel: null };
     } else {

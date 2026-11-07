@@ -13,7 +13,7 @@
         "dist/assets/js/commands.js",
         "dist/assets/js/summaries.js"
       ],
-      "scope": "最新图示优先：满视口统一screen背景，零外框/内框/套窗内缩，四入口侧栏依次home/0、life/1、resume/2、research/3。目录每次载入收起，左缘临时展开，目录旁图钉固定；本次会话固定选择跨导航保留，刷新清除。自介并入resume展开详情；8个公开命令由commands.js统一派生解析路由、Tab候选和浏览路线与操作两组平面帮助。先短摘要、按需详情；普通流prompt自动跟随，阅读历史暂停。",
+      "scope": "最新图示优先：满视口统一screen背景，零外框/内框/套窗内缩，四入口侧栏依次home/0、life/1、resume/2、project/3。目录每次载入收起，左缘临时展开，目录旁图钉固定；本次会话固定选择跨导航保留，刷新清除。自介并入resume展开详情；8个公开命令由commands.js统一派生解析路由、Tab候选和浏览路线与操作两组平面帮助。先短摘要、按需详情；普通流prompt自动跟随，阅读历史暂停。",
       "primitiveSource": "docs/DESIGN.md frontmatter；运行来源为 dist/assets/css/styles.css。"
     },
     "colorMeta": {
@@ -333,17 +333,17 @@
         "home",
         "life",
         "resume",
-        "research"
+        "project"
       ],
       "profile": "Student与四兴趣集中在resume摘要；完整about.paragraphs并入resume展开详情的个人介绍。",
       "legacyInfo": "about/info等旧别名与旧链接内部兼容转resume，不列入公开命令、Tab候选或帮助。",
       "home": "仅问候与terminal-hint，不重复身份/兴趣/简介。",
       "session": "最多五条回显+短摘要+按需详情与唯一新prompt；默认跟随输入，手动阅读暂停；侧栏清会话，home/clear回首页。",
-      "input": "原生单input保留编辑/选区/中文输入，Enter隐式提交，enterkeyhint=send，无执行箭头/底线/dock/sticky；镜像块光标。",
+      "input": "原生单input保留编辑/选区/中文输入，Enter隐式提交，enterkeyhint=send；阅读且空输入时显示闲置块光标与muted色的“按下 / 输入命令”按钮，编辑时仅显示实际镜像光标和右侧“Esc 返回阅读”。输入自动吸附，编辑模式停靠底部。",
       "tab": "非Shift Tab保持input，唯一匹配补全、多匹配循环、空输入可用、无匹配不跳焦；ShiftTab离开。",
       "accessibility": "combobox关联listbox/option；手机抽屉inert、焦点循环；关闭后聚焦可见入口。",
       "shortcuts": "/返回输入，↑↓回调历史，Escape清空输入并可关闭未固定目录或手机抽屉。",
-      "blankClick": "仅主屏空白点击且无文本选择时聚焦输入。",
+      "blankClick": "点击输入或闲置提示进入编辑；正文空白点击不聚焦输入。",
       "status": "真实input同步就绪/输入中，无假延迟。",
       "toolbar": "仅logo/姓名、路径/状态与主题；图钉/手机关闭按钮位于.sidebar-header。",
       "menu": "每次载入closed；左缘悬停/点击/键盘激活临时展开，图钉aria-pressed切换固定。pointerleave180ms仅作用于peek，目录保有键盘焦点时保留；setMenu清理timer。固定跨导航保留，刷新清除。",
@@ -356,7 +356,7 @@
           "home",
           "life",
           "resume",
-          "research",
+          "project",
           "open",
           "close",
           "clear",
@@ -366,20 +366,20 @@
           "0": "home",
           "1": "life",
           "2": "resume",
-          "3": "research"
+          "3": "project"
         },
         "derived": [
           "parser routes",
           "Tab completions",
           "help"
         ],
-        "legacyAliases": "内部兼容，不公开列出；about/info转resume。",
+        "legacyAliases": "内部兼容，不公开列出；about/info转resume，research/研究转project。旧栏目hash规范到#project，保留query与历史状态，不新增历史项。",
         "theme": "不列入帮助或补全；旧命令只提示使用右上角开关。",
         "routes": [
           "home",
           "life",
           "resume",
-          "research",
+          "project",
           "help"
         ]
       },
@@ -393,11 +393,11 @@
           "number": "02"
         },
         {
-          "id": "research",
+          "id": "project",
           "number": "03"
         }
       ],
-      "routeScope": "只保留home/life/resume/research/help视图；原项目、档案与联系内容及相关路由、数字4/5和别名均已删除。无效hash回home，旧命令未识别，不迁入life。"
+      "routeScope": "只保留home/life/resume/project/help视图；project为原research栏目的新名称，旧research命令和链接内部兼容。无效hash回home，未识别命令提示帮助。"
     },
     "themeBehavior": {
       "available": [
@@ -564,7 +564,7 @@
       "routes": {
         "life": "内容类型/数量与示例状态；介绍仅在详情出现。",
         "resume": "Student、兴趣、履历项/PDF待补状态、示例媒体类型与数量；完整个人介绍在展开详情中。",
-        "research": "内容类型/数量与示例状态；介绍仅在详情出现。",
+        "project": "内容类型/数量与示例状态；介绍仅在详情出现。",
         "help": "从commands.js渲染浏览路线、操作两组平面列表与快捷键，共8个公开命令，无需展开。"
       },
       "maintenance": "这里只维护摘要措辞/标签；真实内容由content.js维护。"
@@ -636,8 +636,8 @@
       "name": "四入口侧栏",
       "kind": "nav",
       "refersTo": "menu-item",
-      "description": "依次首页、生活01、经历02、研究03；默认收起，由左缘临时展开或图钉固定。",
-      "html": "<nav id=\"ds-route-menu\" class=\"ds-menu\" aria-label=\"网站目录\"><button class=\"ds-menu-item\" type=\"button\" aria-current=\"page\">首页<span>home</span></button><button class=\"ds-menu-item\" type=\"button\">生活与记录<span>01</span></button><button class=\"ds-menu-item\" type=\"button\">经历与能力<span>02</span></button><button class=\"ds-menu-item\" type=\"button\">研究与探索<span>03</span></button></nav>",
+      "description": "依次首页、生活01、经历02、项目03；默认收起，由左缘临时展开或图钉固定。",
+      "html": "<nav id=\"ds-route-menu\" class=\"ds-menu\" aria-label=\"网站目录\"><button class=\"ds-menu-item\" type=\"button\" aria-current=\"page\">首页<span>home</span></button><button class=\"ds-menu-item\" type=\"button\">生活与记录<span>01</span></button><button class=\"ds-menu-item\" type=\"button\">经历与能力<span>02</span></button><button class=\"ds-menu-item\" type=\"button\">项目与探索<span>03</span></button></nav>",
       "css": ".ds-menu{padding:16px 16px 18px;border-right:1px solid var(--line-soft);background:var(--screen)}.ds-menu-item{display:flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-height:44px;padding:10px 12px;border:0;border-radius:0;background:transparent;color:var(--muted);font:16px/1.5 var(--font-body);text-align:left;white-space:nowrap;cursor:pointer}.ds-menu-item span{color:var(--muted);font:12px/1.6 var(--font-mono)}.ds-menu-item:hover,.ds-menu-item[aria-current=\"page\"]{color:var(--accent)}.ds-menu-item[aria-current=\"page\"]{text-decoration:underline;text-underline-offset:6px}.ds-menu-item:focus-visible{outline:2px solid var(--accent);outline-offset:5px}"
     },
     {
@@ -675,7 +675,7 @@
   ],
   "narrative": {
     "northStar": "融入背景的个人终端",
-    "overview": "用户图示与最新明确修订是最高优先约束。网页铺满视口，页面、工具栏、侧栏、框架和主区共用屏幕底色；不使用居中限宽、外框、主区内框或套窗内缩。仅内部工具栏与侧栏保留细分隔线。\n\n保留 `lp_` 与 LizPink 并排及右侧主题开关。侧栏依次为首页、生活与记录01、经历与能力02、研究与探索03，每次载入默认收起；左缘临时展开，目录旁图钉固定。自介、Student与四兴趣并入经历与能力，完整个人介绍在展开详情中。首页保持问候和末句提示。原生命令、五条会话与Tab补全延续，8个公开命令统一由commands.js管理；当前版本已于2026-10-25发布至 lizpink.github.io。\n\n默认先用短摘要确认内容，富文和媒体按需展开。新提示符自动跟随可见，阅读历史或展开详情时暂停，不强拉到底；输入仍处于普通流。",
+    "overview": "用户图示与最新明确修订是最高优先约束。网页铺满视口，页面、工具栏、侧栏、框架和主区共用屏幕底色；不使用居中限宽、外框、主区内框或套窗内缩。仅内部工具栏与侧栏保留细分隔线。\n\n保留 `lp_` 与 LizPink 并排及右侧主题开关。侧栏依次为首页、生活与记录01、经历与能力02、项目与探索03，每次载入默认收起；左缘临时展开，目录旁图钉固定。自介、Student与四兴趣并入经历与能力，完整个人介绍在展开详情中。首页保持问候和末句提示。原生命令、五条会话与Tab补全延续，8个公开命令统一由commands.js管理；当前版本已于2026-10-25发布至 lizpink.github.io。\n\n默认先用短摘要确认内容，富文和媒体按需展开。新提示符自动跟随可见，阅读历史或展开详情时暂停，不强拉到底；输入仍处于普通流。",
     "keyCharacteristics": [
       "满视口、统一背景、零套窗内缩。",
       "默认收起的四入口侧栏、左缘临时展开与图钉固定。",

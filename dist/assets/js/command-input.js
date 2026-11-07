@@ -22,7 +22,17 @@
   composer.classList.add("command-composer");
   let commandActive = false;
   composer.dataset.commandMode = "false";
-  input.placeholder = "输入命令";
+  // A blank placeholder lets CSS follow empty values, including history recall.
+  input.placeholder = " ";
+  const idleHint = document.createElement("button");
+  idleHint.type = "button";
+  idleHint.id = "command-idle-hint";
+  idleHint.className = "command-idle-hint";
+  idleHint.setAttribute("aria-controls", "command-input");
+  idleHint.setAttribute("aria-label", "开始输入命令（快捷键 /）");
+  idleHint.textContent = "按下 / 输入命令";
+  input.closest(".command-editor").append(idleHint);
+  idleHint.addEventListener("click", () => input.focus({preventScroll:true}));
   const modeToggle = document.createElement("button");
   modeToggle.type = "button";
   modeToggle.id = "command-mode-toggle";
@@ -30,7 +40,7 @@
   modeToggle.setAttribute("aria-controls", "command-input");
   modeToggle.setAttribute("aria-pressed", "false");
   modeToggle.setAttribute("aria-label", "按斜杠键或点击开始输入命令");
-  modeToggle.textContent = "/ 输入命令";
+  modeToggle.textContent = "按下 / 输入命令";
   composer.querySelector(".command-row").append(modeToggle);
   const modeAnnouncement = document.createElement("span");
   modeAnnouncement.className = "sr-only";
@@ -45,7 +55,7 @@
     composer.dataset.commandMode = String(active);
     modeToggle.setAttribute("aria-pressed", String(active));
     modeToggle.setAttribute("aria-label", active ? "返回阅读并保留草稿" : "按斜杠键或点击开始输入命令");
-    modeToggle.textContent = active ? "Esc 返回阅读" : "/ 输入命令";
+    modeToggle.textContent = active ? "Esc 返回阅读" : "按下 / 输入命令";
     modeAnnouncement.textContent = active ? "命令模式，按 Escape 返回阅读并保留草稿。" : "阅读模式，草稿已保留，按斜杠键继续输入。";
     refresh();
   }

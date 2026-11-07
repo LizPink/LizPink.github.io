@@ -6,7 +6,7 @@
     { name: "home", description: "返回首页", kind: "view", group: "浏览路线", number: "0" },
     { name: "life", description: "生活与记录", kind: "view", group: "浏览路线", number: "1" },
     { name: "resume", description: "经历与能力", kind: "view", group: "浏览路线", number: "2" },
-    { name: "research", description: "研究与探索", kind: "view", group: "浏览路线", number: "3" },
+    { name: "project", description: "项目与探索", kind: "view", group: "浏览路线", number: "3" },
     { name: "open", description: "展开最新输出的详情", kind: "action", group: "操作" },
     { name: "close", description: "收起最新输出的详情", kind: "action", group: "操作" },
     { name: "clear", description: "清屏，回到首页", kind: "action", group: "操作" },
@@ -20,7 +20,8 @@
   const aliases = Object.freeze({
     ...Object.fromEntries(items.filter(item => item.number !== undefined).map(item => [item.number, item.name])),
     "首页": "home", "关于": "resume", "简历": "resume", "经历": "resume",
-    "研究": "research", "生活": "life", "帮助": "help", "about": "resume", "info": "resume",
+    "项目": "project", "research": "project", "研究": "project",
+    "生活": "life", "帮助": "help", "about": "resume", "info": "resume",
     "cv": "resume", "menu": "home", "ls": "help"
   });
 
@@ -29,7 +30,7 @@
     return Object.prototype.hasOwnProperty.call(aliases, command) ? aliases[command] : command;
   }
 
-  // Adjacent transpositions count as one typo, like "reserach" or "opne".
+  // Adjacent transpositions count as one typo, like "proejct" or "opne".
   function editDistance(left, right) {
     const rows = Array.from({length: left.length + 1}, (_, index) => [index]);
     rows[0] = Array.from({length: right.length + 1}, (_, index) => index);

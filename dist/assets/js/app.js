@@ -23,7 +23,7 @@
   let menuReturnTarget;
   const commandCatalog = window.LIZPINK_COMMANDS;
   const routes = commandCatalog.routes;
-  const titles = { home:"起始页", resume:"经历与能力", research:"研究与探索", life:"生活与记录", help:"命令帮助" };
+  const titles = { home:"起始页", resume:"经历与能力", project:"项目与探索", life:"生活与记录", help:"命令帮助" };
   const $ = (tag, className, text) => {
     const element = document.createElement(tag);
     if (className) element.className = className;
@@ -125,7 +125,7 @@
       view.append(article);
     });
   }
-  function research() { const path = beginPath("research"); renderPathSamples(path); }
+  function project() { const path = beginPath("project"); renderPathSamples(path); }
   function life() { const path = beginPath("life"); renderPathSamples(path); }
   function setMenu(open, focus = false) {
     clearTimeout(menuCloseTimer);
@@ -167,7 +167,7 @@
     try { build(); } finally { view = previous; }
   }
   function buildFullOutput(route, target) {
-    withView(target, () => ({home, resume, research, life, help})[route]());
+    withView(target, () => ({home, resume, project, life, help})[route]());
   }
   function scrollWithinTerminal(target) {
     const delta = target.getBoundingClientRect().top - main.getBoundingClientRect().top - 24;
@@ -501,7 +501,19 @@
   }
   window.addEventListener("hashchange", restoreLocation);
   window.addEventListener("popstate", restoreLocation);
-  function readHash() { try { return decodeURIComponent(location.hash.slice(1)) || "home"; } catch { return "home"; } }
+  function readHash() {
+    try {
+      const hash = decodeURIComponent(location.hash.slice(1)) || "home";
+      const route = commandCatalog.normalize(hash);
+      // Keep old section links working at the new URL, without an extra Back step.
+      if (route === "project" && hash !== route) {
+        const url = new URL(location.href);
+        url.hash = route;
+        window.history.replaceState(window.history.state, "", url);
+      }
+      return route;
+    } catch { return "home"; }
+  }
   window.LIZPINK_THEME.apply(window.LIZPINK_THEME.current());
   document.documentElement.dataset.pageHidden = String(document.hidden);
   document.addEventListener("visibilitychange", () => { document.documentElement.dataset.pageHidden = String(document.hidden); });
