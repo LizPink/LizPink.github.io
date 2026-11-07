@@ -94,13 +94,24 @@
       const label = $("div", "sample-heading");
       label.append($(reader ? "h2" : "h3", reader ? "summary-title" : "", sample.title));
       article.append(label);
-      const itemDate = contentIndex.get(path.id, key)?.date;
-      if (itemDate) {
-        const metadata = $("p", "reader-date");
-        const time = $("time", "", itemDate.text); time.dateTime = itemDate.value;
-        metadata.append(document.createTextNode(`${itemDate.label} `), time);
-        article.append(metadata);
-      }
+      const metadata = $("p", "reader-date");
+      [["创建于", sample.publishedAt], ["更新于", sample.updatedAt]].forEach(([label, value], index) => {
+        if (index) metadata.append(document.createTextNode(" "));
+        const date = contentIndex.formatDate(value);
+        const field = $("span", "reader-date-field");
+        field.append(document.createTextNode(`${label} `));
+        if (date) {
+          const time = $("time", "", date.text);
+          time.dateTime = date.value;
+          field.append(time);
+        } else {
+          const missing = $("span", "reader-date-empty", "—");
+          missing.setAttribute("aria-label", "未填写");
+          field.append(missing);
+        }
+        metadata.append(field);
+      });
+      article.append(metadata);
       const layout = $("div", "article-layout");
       const body = $("div", "article-body");
       // Only the build-generated Markdown HTML reaches this trusted sink.

@@ -16,7 +16,9 @@ content/
 
 日常写作只修改 `content/`。页面布局、命令、输入、目录和字体等UI源码在 `site/`。`scripts/build-content.mjs` 解析内容与媒体；`scripts/build.mjs` 复制UI、生成内容、替换站点字段，成功后原子替换完整 `dist/`。`dist/` 已gitignore，不手改或作为内容源提交。
 
-`content/site.yml` 顶层的 `name` 用于站点品牌，`greeting`、`role`、`interests` 和 `about.paragraphs` 用于首页问候与个人资料；顶层 `description` 只作为页面meta描述，不在首页重复显示。栏目名称与说明放在 `paths`，只维护 `description`，原 `introduction` 已合并删除。栏目固定使用 `life`（生活）、`resume`（经历）、`project`（项目），排列顺序由 `paths` 决定；文章归属由文章自己的 `sections` 决定，不必再维护一份文章列表。
+`content/site.yml` 顶层的 `name` 用于站点品牌，`greeting`、`role`、`interests` 和 `about.paragraphs` 用于首页问候与个人资料；顶层 `description` 已删除，不再填写，也不再生成对应的description meta标签。栏目名称与说明放在 `paths`，只维护 `description`，原 `introduction` 已合并删除。栏目固定使用 `life`（生活）、`resume`（经历）、`project`（项目），排列顺序由 `paths` 决定；文章归属由文章自己的 `sections` 决定，不必再维护一份文章列表。
+
+`role` 只填写值，例如 `role: 学生`；界面自动添加“职业：”标签，以与关注行一致的普通次要文字色显示“职业：学生”，不要把标签或重复英文写进配置。“关注”行来自 `interests`，使用主区实际剩余宽度，空间不足时自然换行；`about.paragraphs` 仍保持可读限宽，窄屏不溢出。
 
 个人介绍统一修改 `about.paragraphs`，只在首页显示；具体教育经历、技能或实践条目修改 `resume.sections`，在经历的展开全文中显示。经历概览始终保留“简历”一行：有PDF时显示可点击入口，没有时显示“PDF待添加”；展开全文不再重复PDF入口或首页资料。
 
@@ -53,10 +55,10 @@ publishedAt: "2026-11-07"
 | --- | --- |
 | `title` | 页面和左侧目录显示的标题；修改标题不改变链接。 |
 | `sections` | 所属栏目。写 `[resume, project]` 可让同一篇内容出现在两个栏目，不需要复制文章或媒体。 |
-| `publishedAt` | 可选发布日期，格式为带引号的 `YYYY-MM-DD`；没有更新日期时用于排序。 |
-| `updatedAt` | 可选的真实更新日期，格式相同，优先用于排序；旧文实际更新后可前移。 |
+| `publishedAt` | 可选创建/首次发布日期，格式为带引号的 `YYYY-MM-DD`；没有更新日期时用于列表排序。 |
+| `updatedAt` | 可选的真实更新日期，格式相同，优先用于列表排序；未填时正文显示“更新于 —”，不自动复制创建日期。 |
 
-最近列表与左侧全量目录采用同一规则：优先有效 `updatedAt`，没有时采用 `publishedAt`，从新到旧排列；两者都没有时正常排在最后。正文有更新日期时显示“更新”，否则显示发布日期“日期”。不设置独立的示例或示例日期元字段；内容性质通过正文自然说明。迁移的六篇排版示例保留了演示日期，每篇正文第一段明确说明日期和内容的用途。替换成真实内容时，也应一并核对日期和正文说明。
+最近列表与左侧全量目录采用同一规则：优先有效 `updatedAt`，没有时采用 `publishedAt`，从新到旧排列；两者都没有时正常排在最后。正文标题下始终同时显示“创建于 … · 更新于 …”：分别读取 `publishedAt` 与 `updatedAt`，某项缺失就显示“—”，不会相互代填。沿用 `publishedAt` 表示创建/首次发布日期，不新增 `createdAt`。例如上面的文章只填创建日期，会显示“创建于 2026.11.07 · 更新于 —”；旧文实际更新并填写真实 `updatedAt` 后可在列表前移。不设置独立的示例或示例日期元字段；内容性质通过正文自然说明。迁移的六篇排版示例保留了演示日期，每篇正文第一段明确说明日期和内容的用途。替换成真实内容时，也应一并核对日期和正文说明。
 
 文件夹名是内容编号，例如 `geometry` 对应 `#project/geometry`。**改文件夹名会改变URL**，已有分享链接也需要同步更新；只改标题、正文或日期无需改文件夹名。
 

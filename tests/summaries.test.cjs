@@ -54,7 +54,8 @@ test("real site configuration supplies each persistent title/description and the
   }
   const { node } = create("home");
   assert.equal(node.className, "home-profile");
-  assert.equal(find(node, "home-role")?.textContent, config.role);
+  assert.equal(config.role, "学生");
+  assert.equal(find(node, "home-role")?.textContent, `职业：${config.role}`);
   assert.equal(find(node, "home-interests")?.textContent, `关注：${config.interests.join(" · ")}`);
   assert.deepEqual(find(node, "home-about").children.map(child => child.textContent), config.about.paragraphs);
 });
@@ -107,7 +108,8 @@ test("profile fields appear only on home and never add duplicate headings or met
   const { create } = load(contentWith("resume", {}, profile));
   const { node, detailLabel } = create("home");
   assert.equal(detailLabel, null); assert.equal(all(node, "h1").length + all(node, "h2").length, 0);
-  assert.equal(node.textContent, "ROLE-MARKER关注：Graphics-MARKER · Games-MARKERABOUT-MARKER");
+  assert.equal(find(node, "home-role").textContent, "职业：ROLE-MARKER");
+  assert.equal(node.textContent, "职业：ROLE-MARKER关注：Graphics-MARKER · Games-MARKERABOUT-MARKER");
   assert.doesNotMatch(node.textContent, /NAME-MARKER|GREETING-MARKER|META-MARKER/);
   const resume = create("resume").node;
   assert.doesNotMatch(resume.textContent, /ROLE-MARKER|Graphics-MARKER|Games-MARKER|ABOUT-MARKER|经历待补充/);
@@ -117,6 +119,11 @@ test("profile fields appear only on home and never add duplicate headings or met
 test("empty profile fields are omitted and all supplied labels remain literal safe text", () => {
   const empty = load({ role: " ", interests: ["", null, 12], about: { paragraphs: ["", null] } }).create("home").node;
   assert.equal(empty.children.length, 0); assert.equal(empty.textContent, "");
+  for (const role of [undefined, null, "", " \n\t ", 0, {}, []]) {
+    const node = load({ role }).create("home").node;
+    assert.equal(find(node, "home-role"), undefined);
+    assert.doesNotMatch(node.textContent, /职业：|待补充|Student/);
+  }
   const text = '<img src=x onerror="alert(1)">';
   const content = contentWith("project", { x: { title: text } }, { role: text, interests: [text], about: { paragraphs: [text] } });
   content.paths[0].title = text; content.paths[0].description = text;
@@ -126,6 +133,7 @@ test("empty profile fields are omitted and all supplied labels remain literal sa
     assert.match(node.textContent, /<img src=x/);
     assert.equal(all(node, "img").length, 0);
     assert.equal(descendants(node).some(child => Object.keys(child.attributes).some(attribute => attribute.startsWith("on"))), false);
+    if (route === "home") assert.equal(find(node, "home-role").textContent, `职业：${text}`);
   }
 });
 

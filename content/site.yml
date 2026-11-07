@@ -1,7 +1,6 @@
 name: LizPink
 greeting: "你好，我是 LizPink."
-description: "LizPink 的个人网站。学生 / Student，关注计算机图形学、计算机工程、游戏和人工智能。浏览经历、项目、生活。"
-role: "学生 / Student"
+role: "学生"
 interests:
   - Computer Graphics
   - Computer Engineering

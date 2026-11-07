@@ -46,7 +46,7 @@ function withoutLegacyFlags(value) {
 }
 
 function configureSite(site, file) {
-  for (const field of ["name", "greeting", "description"]) {
+  for (const field of ["name", "greeting"]) {
     if (typeof site[field] !== "string" || !site[field].trim()) throw error(file, `${field}必须是非空文字。`);
   }
   if (typeof site.role !== "string") throw error(file, "role必须是文字。");
@@ -77,6 +77,8 @@ function configureSite(site, file) {
     resume: { sections: [], pdfUrl: "", ...site.resume },
     samples: {}
   });
+  // The removed site-wide description is ignored, not published elsewhere.
+  delete content.description;
   if (!Array.isArray(content.about.paragraphs) || !content.about.paragraphs.every(item => typeof item === "string")) {
     throw error(file, "about.paragraphs必须是文字数组。");
   }

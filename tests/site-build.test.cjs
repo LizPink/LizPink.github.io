@@ -19,13 +19,14 @@ async function fixture(t) {
   return root;
 }
 
-test("full build renders author settings, copies PDF and replaces stale generated assets", async t => {
+test("full build without a site description escapes author settings, copies PDF and replaces stale generated assets", async t => {
   const { build } = await import("../scripts/build.mjs");
   const root = await fixture(t);
   const config = path.join(root, "content/site.yml");
   let yaml = await fs.readFile(config, "utf8");
-  yaml = yaml.replace(/^name:.*$/m, 'name: "Author & <name>"').replace(/^greeting:.*$/m, 'greeting: "Hello, Author & <name>"')
+  yaml = yaml.replace(/^name:.*$/m, 'name: "Author & <name>"').replace(/^greeting:.*$/m, 'greeting: "Hello, Author & <name> <script>bad()</script>"')
     .replace('pdfUrl: ""', 'pdfUrl: "./files/resume.pdf"');
+  assert.doesNotMatch(yaml, /^description:/m);
   await fs.writeFile(config, yaml);
   await fs.mkdir(path.join(root, "content/files"), { recursive: true });
   await fs.writeFile(path.join(root, "content/files/resume.pdf"), "%PDF-1.4\nfixture");
@@ -34,10 +35,15 @@ test("full build renders author settings, copies PDF and replaces stale generate
   assert.match(html, /Author &amp; &lt;name&gt;/);
   assert.doesNotMatch(html, /\{\{SITE_/);
   assert.match(html, /Hello, <span>Author &amp; &lt;name&gt;<\/span>/);
+  assert.match(html, /&lt;script&gt;bad\(\)&lt;\/script&gt;/);
+  assert.doesNotMatch(html, /<name>|<script>bad\(\)<\/script>|undefined|<meta\b[^>]*\bname=["']description["']/i);
+  assert.equal(Object.hasOwn(content, "description"), false);
+  assert.ok(content.paths.every(item => typeof item.description === "string" && item.description.length > 0));
   assert.equal(await fs.readFile(path.join(root, "dist/files/resume.pdf"), "utf8"), "%PDF-1.4\nfixture");
   const window = {};
   vm.runInNewContext(await fs.readFile(path.join(root, "dist/assets/js/content.js"), "utf8"), { window });
   assert.equal(window.LIZPINK_CONTENT.name, content.name);
+  assert.equal(Object.hasOwn(window.LIZPINK_CONTENT, "description"), false);
   assert.equal(Object.keys(window.LIZPINK_CONTENT.samples).length, 6);
   await fs.writeFile(path.join(root, "dist/stale.txt"), "old generated content");
   await build(root);

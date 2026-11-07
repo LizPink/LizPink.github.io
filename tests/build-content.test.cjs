@@ -14,7 +14,7 @@ const script = path.join(project, "scripts/build-content.mjs");
 const modulePromise = import(pathToFileURL(script).href);
 const plain = value => JSON.parse(JSON.stringify(value));
 const defaultSite = () => ({
-  name: "Test", greeting: "Hello", description: "A test site", role: "Student", interests: ["Graphics"],
+  name: "Test", greeting: "Hello", role: "Student", interests: ["Graphics"],
   about: { paragraphs: ["Introduction"] }, resume: { sections: [], pdfUrl: "" },
   paths: ["life", "resume", "project"].map(id => ({ id, title: id }))
 });
@@ -133,6 +133,20 @@ test("column descriptions replace legacy introductions and obsolete fields fail 
   const legacyResume = defaultSite(); legacyResume.resume.introduction = "Legacy resume introduction";
   const badResume = await fixture(t, { site: legacyResume });
   await assert.rejects(badResume.build(), /resume\.introduction已移除.*about\.paragraphs/);
+});
+
+test("site-wide description is optional and discarded while column descriptions remain", async t => {
+  const site = defaultSite(); site.paths[0].description = "Visible life description";
+  const f = await fixture(t, { site });
+  const content = await f.build();
+  assert.equal(Object.hasOwn(content, "description"), false);
+  assert.equal(content.paths[0].description, "Visible life description");
+  site.description = "obsolete site description must not be published";
+  await write(path.join(f.contentDir, "site.yml"), stringify(site));
+  const legacy = await f.build();
+  assert.equal(Object.hasOwn(legacy, "description"), false);
+  assert.equal(legacy.paths[0].description, "Visible life description");
+  assert.doesNotMatch(await f.output(), /obsolete site description must not be published/);
 });
 
 test("Chinese/spaced image, uppercase MP4, optional poster/subtitles and PDF produce usable independent assets", async t => {
@@ -355,7 +369,7 @@ test("resume PDF is validated and versioned but full-build retains copy ownershi
 
 test("site text and list fields reject authoring mistakes before generating broken UI data", async t => {
   const changes = [
-    site => { delete site.name; }, site => { site.greeting = "  "; }, site => { site.description = 42; },
+    site => { delete site.name; }, site => { site.greeting = "  "; }, site => { site.greeting = 42; },
     site => { site.role = ["Student"]; }, site => { site.interests = "Graphics"; },
     site => { site.interests = [12]; }, site => { site.paths[0].title = {}; },
     site => { site.paths[0].description = null; }

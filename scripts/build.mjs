@@ -97,7 +97,6 @@ export async function build(root = projectRoot) {
     const escape = value => String(value).replace(/[&<>"']/g, ch => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[ch]));
     const name = escape(content.name);
     html = html.replaceAll("{{SITE_NAME}}", name)
-      .replaceAll("{{SITE_DESCRIPTION}}", escape(content.description))
       .replaceAll("{{SITE_GREETING}}", escape(content.greeting).replace(name, `<span>${name}</span>`));
     if (/\{\{SITE_[A-Z_]+\}\}/.test(html)) throw new Error("页面包含未填写的站点字段。");
     await fs.writeFile(htmlFile, await versionSiteAssets(staging, html));

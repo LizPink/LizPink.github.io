@@ -14,7 +14,7 @@
 
   function profile(content) {
     const node = element("section", "home-profile");
-    if (hasText(content.role)) node.append(element("p", "home-role", content.role));
+    if (hasText(content.role)) node.append(element("p", "home-role", `职业：${content.role}`));
     const interests = Array.isArray(content.interests) ? content.interests.filter(hasText) : [];
     if (interests.length) node.append(element("p", "home-interests", `关注：${interests.join(" · ")}`));
     const paragraphs = Array.isArray(content.about?.paragraphs) ? content.about.paragraphs.filter(hasText) : [];
