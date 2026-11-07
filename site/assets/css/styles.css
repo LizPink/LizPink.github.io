@@ -184,8 +184,8 @@ html[data-page-hidden="true"] .block-cursor { animation-play-state: paused; }
 .completion-option code { padding: 1px 4px; color: inherit; font: inherit; }
 .completion-option[aria-selected="true"] { color: var(--accent); }
 .completion-option[aria-selected="true"] code { background: var(--accent-soft); color: var(--accent); }
-.help-reference { max-width: 820px; font: 400 16px/1.7 var(--font-body); }
-.help-group { margin-top: 16px; }
+.help-reference { min-width: 0; font: 400 16px/1.7 var(--font-body); }
+.help-group { max-width: 820px; margin-top: 16px; }
 .help-group-title { margin: 0 0 8px; color: var(--muted); font: 500 14px/1.5 var(--font-body); }
 .help-commands { margin: 0; }
 .help-commands > div { display: grid; grid-template-columns: minmax(140px, 180px) minmax(0, 1fr); align-items: baseline; gap: 8px 20px; min-height: 28px; padding: 2px 0; }
