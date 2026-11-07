@@ -36,17 +36,15 @@
       link.dataset.contentKey = item.key;
       link.dataset.contentRoute = path.id;
       row.append(link);
-      if (item.example) row.append(element("span", "summary-preview-label", "示例"));
       list.append(row);
     });
     node.append(list);
     if (!showCounts) return;
-    const counts = [
-      ["text", "条文字"], ["image", "张图片"], ["video", "段视频"]
-    ].map(([type, label]) => {
-      const count = items.filter(item => item.type === type).length;
-      return count ? `${count} ${label}` : "";
-    }).filter(Boolean);
+    const imageCount = items.reduce((sum, item) => sum + (item.mediaCounts?.images || 0), 0);
+    const videoCount = items.reduce((sum, item) => sum + (item.mediaCounts?.videos || 0), 0);
+    const textCount = items.filter(item => !item.mediaCounts?.images && !item.mediaCounts?.videos).length;
+    const counts = [[textCount, "条文字"], [imageCount, "张图片"], [videoCount, "段视频"]]
+      .filter(([count]) => count).map(([count, label]) => `${count} ${label}`);
     const label = counts.join(" · ") || `${items.length} 项内容`;
     node.append(element("p", "summary-meta", label));
   }

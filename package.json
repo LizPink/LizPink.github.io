@@ -1,0 +1,17 @@
+{
+  "name": "lizpink-terminal",
+  "version": "1.0.0",
+  "private": true,
+  "description": "A terminal-style personal site generated from Markdown content.",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "dev": "node scripts/dev.mjs",
+    "preview": "npm run build && node scripts/serve.mjs",
+    "test": "npm run build && node --test tests/*.test.cjs"
+  },
+  "devDependencies": {
+    "markdown-it": "15.0.3",
+    "yaml": "2.9.1"
+  }
+}

@@ -151,7 +151,6 @@
 }
 
 .content-item-meta time { font: 12px/1.5 var(--font-mono); white-space: nowrap; }
-.content-item-example { font-size: 11px; white-space: nowrap; }
 .content-item-title { font: 500 17px/1.55 var(--font-body); }
 
 .content-index-empty { margin: 4px 0 0; color: var(--muted); font: 14px/1.8 var(--font-body); }

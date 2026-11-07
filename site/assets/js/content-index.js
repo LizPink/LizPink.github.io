@@ -16,12 +16,10 @@
   }
 
   function dateFor(sample) {
-    // dateExample marks artificial layout dates, not publication evidence.
-    const example = Boolean(sample.dateExample);
     const published = formatDate(sample.publishedAt);
-    if (published) return { ...published, label: "发布", example };
+    if (published) return { ...published, label: "日期" };
     const updated = formatDate(sample.updatedAt);
-    return updated ? { ...updated, label: "更新", example } : null;
+    return updated ? { ...updated, label: "更新" } : null;
   }
 
   function items(route) {
@@ -44,7 +42,6 @@
           title: typeof sample.title === "string" ? sample.title : "",
           excerpt: typeof sample.text === "string" ? sample.text.replace(/\s+/g, " ").trim() : "",
           type: typeof sample.type === "string" ? sample.type : "text",
-          example: Boolean(sample.example),
           date: dateFor(sample)
         });
       });

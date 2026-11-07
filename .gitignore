@@ -1,4 +1,6 @@
 node_modules/
+dist/
+.build/
 .sites-runtime/
 *.tar.gz
 .impeccable/review/

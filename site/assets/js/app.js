@@ -11,9 +11,9 @@
   const outputMotion = window.LIZPINK_OUTPUT_MOTION;
   const contentIndex = window.LIZPINK_CONTENT_INDEX;
   const sidebar = window.LIZPINK_SIDEBAR;
+  const articleOutline = window.LIZPINK_OUTLINE;
   let followingOutput = true;
   let followFrame;
-  let mediaSequence = 0;
   const history = [];
   let historyPosition = 0;
   let activeRoute = "home";
@@ -73,10 +73,6 @@
     if (introduction) view.append($("p", "view-description", introduction));
     return path;
   }
-  function mediaUrl(value) {
-    if (!value) return null;
-    try { const url = new URL(value, location.href); return ["http:", "https:", "file:"].includes(url.protocol) ? url.href : null; } catch { return null; }
-  }
   function renderPathSamples(path, {reader = false} = {}) {
     if (!path.items.some(key => content.samples[key])) {
       view.append($("p", "route-empty", "这个角落还在整理，之后会陆续放入内容。"));
@@ -86,55 +82,51 @@
       const sample = content.samples[key];
       if (!sample) return;
       const article = $("article", "sample-entry");
-      article.dataset.example = String(Boolean(sample.example));
       const label = $("div", "sample-heading");
       label.append($(reader ? "h2" : "h3", reader ? "summary-title" : "", sample.title));
-      if (sample.example) label.append($("span", "example-badge", `${{text:"文字",image:"图片",video:"视频"}[sample.type] || "内容"}示例`));
       article.append(label);
       const itemDate = contentIndex.get(path.id, key)?.date;
       if (itemDate) {
         const metadata = $("p", "reader-date");
         const time = $("time", "", itemDate.text); time.dateTime = itemDate.value;
-        metadata.append(document.createTextNode(`${itemDate.example ? "示例日期" : itemDate.label} `), time);
+        metadata.append(document.createTextNode("日期 "), time);
         article.append(metadata);
       }
-      article.append($("p", "sample-text", sample.text));
-      const src = mediaUrl(sample.src);
-      if (["image", "video"].includes(sample.type)) {
-        const mediaDescriptionId = `media-description-${key}-${++mediaSequence}`;
-        const figure = $("figure", "sample-media");
-        const unavailable = () => { figure.replaceChildren($("p", "media-unavailable", "这段媒体暂时无法显示。")); };
-        if (!src) unavailable();
-        else if (sample.type === "image") {
-          const image = $("img"); image.src = src; image.alt = sample.alt || sample.title; image.width = 960; image.height = 540; image.loading = "lazy"; image.decoding = "async";
-          image.addEventListener("load", () => {
-            if (image.naturalWidth) figure.style.setProperty("--asset-width", `${image.naturalWidth}px`);
-          }, {once:true});
-          const zoom = $("a", "media-zoom");
-          zoom.href = src; zoom.target = "_blank"; zoom.rel = "noopener noreferrer";
-          zoom.setAttribute("aria-label", `查看大图：${sample.title}（新标签页）`);
-          zoom.append(image);
-          image.addEventListener("error", unavailable, {once:true}); figure.append(zoom);
-        } else {
-          const video = $("video"); video.src = src; video.controls = true; video.preload = "none"; video.playsInline = true; video.width = 640; video.height = 360;
-          figure.style.setProperty("--asset-width", `${video.width}px`);
-          video.addEventListener("loadedmetadata", () => {
-            if (video.videoWidth) figure.style.setProperty("--asset-width", `${video.videoWidth}px`);
-          }, {once:true});
-          const poster = mediaUrl(sample.poster); if (poster) video.poster = poster;
-          video.setAttribute("aria-label", sample.title);
-          video.setAttribute("aria-describedby", mediaDescriptionId);
-          const captions = mediaUrl(sample.captions);
-          if (captions) { const track = $("track"); track.kind = "captions"; track.src = captions; track.srclang = "zh"; track.label = "中文说明"; track.default = true; video.append(track); }
-          video.append(document.createTextNode("你的浏览器暂不支持此视频。"));
-          video.addEventListener("error", unavailable, {once:true}); figure.append(video);
-        }
-        const caption = $("figcaption", "", sample.caption || (sample.example ? "示例媒体 · 待替换" : sample.title));
-        caption.id = mediaDescriptionId;
-        if (sample.type === "image" && src) caption.append($("span", "media-hint", "点击图片查看大图 ↗"));
-        figure.append(caption); article.append(figure);
-      }
-      view.append(article);
+      const layout = $("div", "article-layout");
+      const body = $("div", "article-body");
+      // Only the build-generated Markdown HTML reaches this trusted sink.
+      body.innerHTML = sample.body;
+      body.querySelectorAll("h2, h3, h4, h5, h6").forEach(heading => {
+        const level = Math.min(6, Number(heading.tagName.slice(1)) + (reader ? 1 : 2));
+        const replacement = $("h" + level);
+        for (const attribute of heading.attributes) replacement.setAttribute(attribute.name, attribute.value);
+        replacement.append(...heading.childNodes); heading.replaceWith(replacement);
+      });
+      body.querySelectorAll(".sample-media").forEach(figure => {
+        const media = figure.querySelector("img, video");
+        if (!media) return;
+        const isVideo = media.tagName === "VIDEO";
+        const naturalSize = () => {
+          const width = isVideo ? media.videoWidth : media.naturalWidth;
+          if (width) figure.style.setProperty("--asset-width", width + "px");
+        };
+        media.addEventListener(isVideo ? "loadedmetadata" : "load", naturalSize, {once:true});
+        media.addEventListener("error", () => figure.replaceChildren($("p", "media-unavailable", "这段媒体暂时无法显示。")), {once:true});
+        if (isVideo) figure.style.setProperty("--asset-width", "640px");
+        naturalSize();
+      });
+      body.addEventListener("click", event => {
+        const link = event.target.closest("a[data-article-anchor]");
+        if (!link || !body.contains(link)) return;
+        event.preventDefault();
+        const target = [...body.querySelectorAll("[id]")].find(node => node.id === link.dataset.articleAnchor);
+        if (!target) return;
+        beginReading(); scrollWithinTerminal(target);
+        target.tabIndex = -1; target.focus({preventScroll:true}); commandInput.refresh();
+      });
+      layout.append(body); article.append(layout); view.append(article);
+      articleOutline?.mount({ layout, body, headings:sample.headings || [], scrollRoot:main,
+        onNavigate:beginReading, onLayout:() => commandInput.refresh() });
     });
   }
   function project() { const path = beginPath("project"); renderPathSamples(path); }
@@ -227,6 +219,7 @@
   }
   function render(route, {label = route, animate = false, itemKey = null} = {}) {
     outputMotion?.finish();
+    articleOutline?.clear();
     feedback.textContent = "";
     resetCompletion();
     const base = commandCatalog.normalize(route);
@@ -255,7 +248,7 @@
     updateFollowState();
     document.querySelector("#frame-location").textContent = `~/${activeRoute}${activeItem ? `/${activeItem.key}` : ""}`;
     sidebar.update(activeRoute, activeItem?.key || null);
-    document.title = `${activeItem?.title || titles[activeRoute]} · LizPink`;
+    document.title = `${activeItem?.title || titles[activeRoute]} · ${content.name}`;
     document.querySelector("#terminal-status").textContent = "就绪";
     syncCursor();
     document.querySelector("#route-announcement").textContent = `已打开：${activeItem?.title || titles[activeRoute]}`;
