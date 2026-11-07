@@ -27,9 +27,15 @@
     }
 
     const summary = container.querySelector(":scope > .output-summary");
-    summary?.querySelectorAll(
-      ".summary-title, .summary-description, .summary-facts > div, .summary-preview > li, .summary-meta"
-    ).forEach(node => add(node));
+    if (summary) {
+      add(summary.querySelector(":scope > .summary-title"), summary.querySelector(":scope > .summary-description"));
+      summary.querySelectorAll(":scope > .summary-facts > div").forEach(node => add(node));
+      const overview = summary.querySelector(":scope > .summary-overview");
+      const title = overview?.querySelector(":scope > .summary-section-title");
+      const rows = [...(overview?.querySelectorAll(":scope > .summary-preview > li") || [])];
+      if (rows.length) rows.forEach((row, index) => add(index === 0 ? title : null, row));
+      else add(title, overview?.querySelector(":scope > .summary-empty"));
+    }
     add(container.querySelector(":scope > .output-details > summary"));
     return { units, help: false };
   }

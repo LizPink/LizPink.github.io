@@ -88,6 +88,53 @@ test("build returns the legacy data API, shared memberships, and deterministic d
   assert.equal(await f.output(), first);
 });
 
+test("build and client display agree on update-first sorting across years, stable ties and shared routes", async t => {
+  const f = await fixture(t, { entries: [
+    { key: "renewed", metadata: { sections: ["life", "project"], publishedAt: "2024-02-29", updatedAt: "2029-01-01", order: 99 } },
+    { key: "yearEnd", metadata: { sections: ["life"], publishedAt: "2026-12-31" } },
+    { key: "newYear", metadata: { sections: ["life"], publishedAt: "2027-01-01", order: 0 } },
+    { key: "tie-b", metadata: { sections: ["life"], updatedAt: "2027-01-01", order: 1 } },
+    { key: "tie-a", metadata: { sections: ["life"], publishedAt: "2027-01-01", order: 1 } },
+    { key: "backdatedUpdate", metadata: { sections: ["life"], publishedAt: "2030-01-01", updatedAt: "2025-12-31" } },
+    { key: "undated-z", metadata: { sections: ["life"], order: 0 } },
+    { key: "undated-a", metadata: { sections: ["life"], order: 0 } }
+  ] });
+  const content = await f.build();
+  const expected = ["renewed", "newYear", "tie-a", "tie-b", "yearEnd", "backdatedUpdate", "undated-a", "undated-z"];
+  assert.deepEqual(content.paths.find(item => item.id === "life").items, expected);
+  assert.deepEqual(content.paths.find(item => item.id === "project").items, ["renewed"]);
+  const window = { LIZPINK_CONTENT: content };
+  require("node:vm").runInNewContext(await fs.readFile(path.join(project, "site/assets/js/content-index.js"), "utf8"), { window });
+  const api = window.LIZPINK_CONTENT_INDEX;
+  assert.deepEqual(plain(api.items("life").map(item => item.key)), expected);
+  assert.deepEqual(plain(api.get("life", "renewed").date), { value: "2029-01-01", text: "2029.01.01", label: "更新" });
+  assert.deepEqual(plain(api.get("life", "yearEnd").date), { value: "2026-12-31", text: "2026.12.31", label: "日期" });
+  assert.equal(api.get("life", "backdatedUpdate").date.value, "2025-12-31");
+  assert.equal(api.get("life", "undated-a").date, null);
+  assert.equal(api.items("home").find(item => item.key === "renewed").route, "life");
+  assert.equal(api.get("project", "renewed").route, "project");
+});
+
+test("column descriptions replace legacy introductions and obsolete fields fail with migration guidance", async t => {
+  const site = defaultSite();
+  site.paths[0].description = "Combined column introduction";
+  const f = await fixture(t, { site });
+  const content = await f.build();
+  assert.equal(content.paths[0].description, site.paths[0].description);
+  assert.ok(content.paths.every(item => !Object.hasOwn(item, "introduction")));
+  assert.equal(Object.hasOwn(content.resume, "introduction"), false);
+  for (const value of ["Legacy introduction", "", []]) {
+    const legacy = defaultSite(); legacy.paths[0].introduction = value;
+    const bad = await fixture(t, { site: legacy });
+    await write(path.join(bad.outputDir, "assets/js/content.js"), "previous content");
+    await assert.rejects(bad.build(), /paths\.life\.introduction已合并到description/);
+    assert.equal(await bad.output(), "previous content");
+  }
+  const legacyResume = defaultSite(); legacyResume.resume.introduction = "Legacy resume introduction";
+  const badResume = await fixture(t, { site: legacyResume });
+  await assert.rejects(badResume.build(), /resume\.introduction已移除.*about\.paragraphs/);
+});
+
 test("Chinese/spaced image, uppercase MP4, optional poster/subtitles and PDF produce usable independent assets", async t => {
   const f = await fixture(t, { entries: [{ key: "mixed", metadata: { publishedAt: "2026-10-22" },
     body: [
@@ -260,8 +307,10 @@ test("dates validate leap days and reject invalid calendar values", async t => {
   const valid = await fixture(t, { entries: [{ key: "leap", metadata: { publishedAt: "2000-02-29", updatedAt: "2026-11-07" } }] });
   assert.equal((await valid.build()).samples.leap.publishedAt, "2000-02-29");
   for (const value of ["1900-02-29", "2026-02-29", "2026-04-31", "2026-13-01", "0000-01-01", "2026-1-01", "2026-11-07T00:00:00Z"]) {
-    const f = await fixture(t, { entries: [{ key: "bad", metadata: { publishedAt: value } }] });
-    await assert.rejects(f.build(), /有效的YYYY-MM-DD/);
+    for (const field of ["publishedAt", "updatedAt"]) {
+      const f = await fixture(t, { entries: [{ key: "bad", metadata: { publishedAt: "2024-02-29", [field]: value } }] });
+      await assert.rejects(f.build(), /有效的YYYY-MM-DD/);
+    }
   }
 });
 
@@ -309,7 +358,7 @@ test("site text and list fields reject authoring mistakes before generating brok
     site => { delete site.name; }, site => { site.greeting = "  "; }, site => { site.description = 42; },
     site => { site.role = ["Student"]; }, site => { site.interests = "Graphics"; },
     site => { site.interests = [12]; }, site => { site.paths[0].title = {}; },
-    site => { site.paths[0].description = null; }, site => { site.paths[0].introduction = []; }
+    site => { site.paths[0].description = null; }
   ];
   for (const change of changes) {
     const site = defaultSite(); change(site);

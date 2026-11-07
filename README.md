@@ -39,7 +39,7 @@ lizpink-terminal/
 │       │   ├── commands.js           # 命令定义、补全候选与帮助正文
 │       │   ├── command-input.js      # 输入编辑、补全与历史
 │       │   ├── content-index.js      # 内容索引、日期排序与内容链接
-│       │   ├── summaries.js          # 栏目摘要与文章展示
+│       │   ├── summaries.js          # 常驻分区说明、简历行与最近10条概览
 │       │   ├── content-sidebar.js    # 左侧目录、折叠与调宽
 │       │   ├── article-outline.js    # 本页目录与章节定位
 │       │   ├── image-viewer.js       # 图片预览、关闭与原位置恢复
@@ -54,6 +54,7 @@ lizpink-terminal/
 │   ├── dev.mjs                # 监听源码变化，重建并刷新本地预览
 │   └── serve.mjs              # 本地服务与视频分段请求
 ├── dist/                      # 自动生成的发布目录，不提交或手工编辑
+├── node_modules/              # 安装依赖时自动生成，已gitignore，不提交
 ├── .build/                    # 临时构建目录与构建锁，不提交
 ├── tests/                     # 内容构建、资源版本、命令、目录与动效检查
 ├── docs/                      # 维护、产品与设计说明
@@ -73,9 +74,11 @@ lizpink-terminal/
 
 点击正文图片可在同页暗背景中居中预览，按 `Esc`、右上角×或图片外空白关闭，回到原来的阅读位置。图片仍使用原有 Markdown 写法。
 
+首页显示问候、身份、兴趣和个人介绍；顶层 `description` 只用于页面meta。分区只维护 `paths[].description`，进入生活、经历或项目时显示常驻说明和最多10条最近内容（日期＋标题），不足10条按实际显示，不显示媒体数量。日期优先 `updatedAt`，其次 `publishedAt`，无日期置后；左侧保留按相同规则排序的全部内容。`open`/`close` 切换分区全文与概览，标题和说明始终保留；经历还保留常驻简历行，有PDF显示链接，无PDF显示“PDF待添加”。
+
 ## 本地维护
 
-使用 Node.js 22 或更新版本。首次运行 `npm ci` 安装项目依赖，然后运行 `npm run dev`，打开终端提示的本地地址。修改 `content/` 中的 Markdown、配置或素材后，预览会自动更新；错误内容会在终端提示，保留上一版可用预览。
+使用 Node.js 22 或更新版本。`node_modules/` 是安装后自动生成的实际依赖目录，已由gitignore排除。首次运行 `npm ci` 安装项目依赖，然后运行 `npm run dev`，打开终端提示的本地地址。修改 `content/` 中的 Markdown、配置或素材后，预览会自动更新；错误内容会在终端提示，保留上一版可用预览。
 
 运行 `npm test` 构建并检查，`npm run build` 仅生成发布文件。推送 `main` 后由 GitHub Actions 自动构建并发布；功能分支供本地体验，推送不会更新线上网站。
 

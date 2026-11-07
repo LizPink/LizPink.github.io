@@ -6,8 +6,9 @@ const path = require("node:path");
 const test = require("node:test");
 const vm = require("node:vm");
 
-const scripts = ["content.js", "commands.js", "summaries.js", "output-motion.js"]
-  .map(name => fs.readFileSync(path.join(__dirname, "../dist/assets/js", name), "utf8"));
+const contentSource = fs.readFileSync(path.join(__dirname, "../dist/assets/js/content.js"), "utf8");
+const scripts = ["content-index.js", "commands.js", "summaries.js", "output-motion.js"]
+  .map(name => fs.readFileSync(path.join(__dirname, "../site/assets/js", name), "utf8"));
 const flush = () => new Promise(resolve => setImmediate(resolve));
 
 class Signals {
@@ -73,11 +74,13 @@ function harness(options = {}) {
     }
   }
   const document = Object.assign(new Signals(), {
-    hidden: Boolean(options.hidden), createElement: tagName => new Node(tagName)
+    hidden: Boolean(options.hidden), baseURI: "https://example.test/", createElement: tagName => new Node(tagName)
   });
   const preference = Object.assign(new Signals(), { matches: Boolean(options.reduce) });
   const window = { matchMedia: () => preference, getSelection: () => selection };
-  const context = vm.createContext({ window, document });
+  const context = vm.createContext({ window, document, URL });
+  vm.runInContext(contentSource, context);
+  if (options.content) window.LIZPINK_CONTENT = options.content;
   scripts.forEach(source => vm.runInContext(source, context));
   function output(route) {
     const container = new Node("div", "terminal-result");
@@ -124,6 +127,16 @@ test("real summaries retain every node/content and reveal only summary units wit
     assert.equal(env.calls.some(call => ["p", "img", "video"].includes(call.node.tagName) &&
       call.node.parentElement?.className === "details-body"), false);
     assert.ok(env.calls.some(call => call.node.tagName === "summary"));
+    const title = env.calls.find(call => call.node === output.querySelector(".summary-title"));
+    const intro = env.calls.find(call => call.node === output.querySelector(".summary-description"));
+    assert.equal(title.timing.delay, intro.timing.delay);
+    const sectionTitle = env.calls.find(call => call.node === output.querySelector(".summary-section-title"));
+    const firstRow = env.calls.find(call => call.node === output.querySelector(".summary-preview > li"));
+    assert.equal(sectionTitle.timing.delay, firstRow.timing.delay);
+    output.querySelectorAll(".summary-preview > li").forEach(row => {
+      assert.equal(env.calls.filter(call => call.node === row).length, 1);
+      assert.equal(env.calls.some(call => row.contains(call.node) && call.node !== row), false);
+    });
     const total = Math.max(...env.calls.map(call => call.timing.delay + call.timing.duration));
     assert.ok(total >= 200 && total <= 280, `${route}: ${total}ms`);
     env.calls.forEach(call => {
@@ -135,6 +148,24 @@ test("real summaries retain every node/content and reveal only summary units wit
     env.api.finish();
     assertClean(env, output);
   }
+});
+
+test("ten recent rows reveal complete dates and titles within the same 280ms budget", () => {
+  const keys = Array.from({ length: 14 }, (_, index) => `entry-${index}`);
+  const env = harness({ content: {
+    paths: [{ id: "project", title: "项目", description: "分区介绍", items: keys }],
+    samples: Object.fromEntries(keys.map((key, index) => [key, { title: `标题 ${index}`, publishedAt: `2026-11-${String(index + 1).padStart(2, "0")}` }]))
+  } });
+  const output = env.output("project"); env.api.play(output);
+  const rows = output.querySelectorAll(".summary-preview > li");
+  assert.equal(rows.length, 10);
+  rows.forEach(row => {
+    assert.equal(row.querySelector("time") !== null, true);
+    assert.equal(row.querySelector("button") !== null, true);
+    assert.equal(env.calls.some(call => row.contains(call.node) && call.node !== row), false);
+  });
+  assert.ok(Math.max(...env.calls.map(call => call.timing.delay + call.timing.duration)) <= 280.001);
+  env.api.finish();
 });
 
 test("real help reveals command and sidebar shortcut rows whole, batching headings with first rows", () => {

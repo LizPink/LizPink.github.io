@@ -16,10 +16,10 @@
   }
 
   function dateFor(sample) {
-    const published = formatDate(sample.publishedAt);
-    if (published) return { ...published, label: "日期" };
     const updated = formatDate(sample.updatedAt);
-    return updated ? { ...updated, label: "更新" } : null;
+    if (updated) return { ...updated, label: "更新" };
+    const published = formatDate(sample.publishedAt);
+    return published ? { ...published, label: "日期" } : null;
   }
 
   function items(route) {

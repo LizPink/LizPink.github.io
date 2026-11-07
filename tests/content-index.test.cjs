@@ -7,7 +7,7 @@ const test = require("node:test");
 const vm = require("node:vm");
 
 const read = name => fs.readFileSync(path.join(__dirname, "../dist/assets/js", name), "utf8");
-const source = read("content-index.js");
+const source = fs.readFileSync(path.join(__dirname, "../site/assets/js/content-index.js"), "utf8");
 const plain = value => JSON.parse(JSON.stringify(value));
 function load(...values) {
   const window = {};
@@ -21,7 +21,7 @@ function load(...values) {
 test("generated articles sort by displayed date and keep shared membership", () => {
   const { api, content } = load();
   assert.equal(Object.isFrozen(api), true);
-  const expected = { life: ["notebook", "journal"], resume: ["geometry", "profile"], project: ["animation", "geometry", "question"] };
+  const expected = { life: ["notebook", "journal"], resume: ["geometry", "profile"], project: ["geometry", "animation", "question"] };
   for (const route of ["life", "resume", "project"]) {
     const routeTitle = content.paths.find(item => item.id === route).title;
     assert.deepEqual(plain(api.items(route).map(item => item.key)), expected[route]);
@@ -30,8 +30,8 @@ test("generated articles sort by displayed date and keep shared membership", () 
       assert.equal(item.routeTitle, routeTitle);
       assert.equal(item.title, content.samples[item.key].title);
       assert.equal(item.type, content.samples[item.key].type);
-      assert.equal(item.date.value, content.samples[item.key].publishedAt);
-      assert.equal(item.date.label, "日期");
+      assert.equal(item.date.value, content.samples[item.key].updatedAt || content.samples[item.key].publishedAt);
+      assert.equal(item.date.label, content.samples[item.key].updatedAt ? "更新" : "日期");
     });
   }
   assert.equal(api.get("resume", "geometry").route, "resume");
@@ -41,7 +41,7 @@ test("generated articles sort by displayed date and keep shared membership", () 
 
 test("combined indexes use first path reference as canonical route", () => {
   const { api } = load();
-  const expected = ["animation", "geometry", "notebook", "question", "journal", "profile"];
+  const expected = ["geometry", "animation", "notebook", "question", "journal", "profile"];
   for (const route of ["home", "help", "unknown", undefined]) {
     assert.deepEqual(plain(api.items(route).map(item => item.key)), expected);
     assert.equal(api.items(route).find(item => item.key === "geometry").route, "resume");
@@ -105,23 +105,29 @@ test("date formatting validates actual Gregorian calendar days without time conv
   ]) assert.equal(api.formatDate(value), null, String(value));
 });
 
-test("valid publication date takes precedence, otherwise valid update date is used", () => {
+test("valid update date takes precedence, otherwise a valid publication date is used", () => {
   const { api } = load({
-    paths: [{ id: "life", items: ["published", "updated", "onlyUpdate", "invalid"] }],
+    paths: [{ id: "life", items: ["published", "updated", "onlyUpdate", "invalidUpdate", "olderUpdate", "invalid", "missing"] }],
     samples: {
       published: { publishedAt: "2024-02-29", updatedAt: "2026-11-07" },
       updated: { publishedAt: "2023-02-29", updatedAt: "2026-11-07" },
       onlyUpdate: { updatedAt: "2026-10-28" },
-      invalid: { publishedAt: "2026-04-31", updatedAt: "yesterday" }
+      invalidUpdate: { publishedAt: "2024-02-29", updatedAt: "2026-02-29" },
+      olderUpdate: { publishedAt: "2029-01-01", updatedAt: "2025-01-01" },
+      invalid: { publishedAt: "2026-04-31", updatedAt: "yesterday" },
+      missing: {}
     }
   });
-  assert.deepEqual(plain(api.get("life", "published").date), { value: "2024-02-29", text: "2024.02.29", label: "日期" });
+  assert.deepEqual(plain(api.get("life", "published").date), { value: "2026-11-07", text: "2026.11.07", label: "更新" });
   assert.deepEqual(plain(api.get("life", "updated").date), { value: "2026-11-07", text: "2026.11.07", label: "更新" });
   assert.equal(api.get("life", "onlyUpdate").date.label, "更新");
+  assert.deepEqual(plain(api.get("life", "invalidUpdate").date), { value: "2024-02-29", text: "2024.02.29", label: "日期" });
+  assert.equal(api.get("life", "olderUpdate").date.value, "2025-01-01");
   assert.equal(api.get("life", "invalid").date, null);
+  assert.equal(api.get("life", "missing").date, null);
 });
 
-test("chronological order crosses year boundaries and follows the displayed date rather than newer updates", () => {
+test("chronological order crosses year boundaries and brings recently updated older articles first", () => {
   const { api } = load({
     paths: [{ id: "life", items: ["yearEnd", "missing", "publication", "invalid", "newYear", "fallback", "oldYear"] }],
     samples: {
@@ -134,9 +140,9 @@ test("chronological order crosses year boundaries and follows the displayed date
       oldYear: { publishedAt: "2025-12-31" }
     }
   });
-  assert.deepEqual(plain(api.items("life").map(item => item.key)), ["newYear", "yearEnd", "fallback", "oldYear", "publication", "missing", "invalid"]);
+  assert.deepEqual(plain(api.items("life").map(item => item.key)), ["publication", "newYear", "yearEnd", "fallback", "oldYear", "missing", "invalid"]);
   assert.equal(api.get("life", "fallback").date.label, "更新");
-  assert.equal(api.get("life", "publication").date.value, "2025-01-01");
+  assert.deepEqual(plain(api.get("life", "publication").date), { value: "2029-01-01", text: "2029.01.01", label: "更新" });
 });
 
 test("equal dates and undated entries remain stable after sorting and canonical ownership is chosen before sorting", () => {
@@ -185,7 +191,7 @@ test("sorting frozen multi-route data leaves path order, key arrays and metadata
       { id: "project", title: "项目", items: ["shared", "new"] }
     ],
     samples: {
-      old: { title: "Old", publishedAt: "2024-12-31" },
+      old: { title: "Old", publishedAt: "2024-12-31", updatedAt: "2027-01-01" },
       shared: { title: "Shared", publishedAt: "2025-01-01" },
       undated: { title: "Undated" }, new: { title: "New", publishedAt: "2026-01-01" }
     }
@@ -196,8 +202,8 @@ test("sorting frozen multi-route data leaves path order, key arrays and metadata
   };
   freeze(content);
   const { api } = load(content);
-  assert.deepEqual(plain(api.items("home").map(item => item.key)), ["new", "shared", "old", "undated"]);
-  assert.deepEqual(plain(api.items("life").map(item => item.key)), ["shared", "old", "undated"]);
+  assert.deepEqual(plain(api.items("home").map(item => item.key)), ["old", "new", "shared", "undated"]);
+  assert.deepEqual(plain(api.items("life").map(item => item.key)), ["old", "shared", "undated"]);
   assert.deepEqual(plain(api.items("project").map(item => item.key)), ["new", "shared"]);
   const output = api.items("home"); output.reverse(); output[0].routeTitle = "Changed";
   assert.equal(api.get("project", "shared").routeTitle, "项目");

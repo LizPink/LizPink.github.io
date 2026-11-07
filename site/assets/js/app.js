@@ -29,19 +29,8 @@
     if (text !== undefined) element.textContent = text;
     return element;
   };
-  const safeUrl = (value) => {
-    try { const url = new URL(value, location.href); return ["https:","http:"].includes(url.protocol) ? url.href : null; } catch { return null; }
-  };
-  function externalLink(text, url, className = "external-link") {
-    const link = $("a", className, text);
-    const target = safeUrl(url);
-    if (target) link.href = target;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    return link;
-  }
   function home() {
-    // The homepage introduces the owner above the inline prompt.
+    document.querySelector("#home-profile").replaceChildren(window.LIZPINK_SUMMARIES.create("home").node);
   }
   function syncOutlineButton() {
     const drawerOpen = sidebar.isMobile() && sidebar.isOpen();
@@ -75,13 +64,7 @@
     view.append(commandCatalog.renderHelp());
   }
   function resume() {
-    const path = beginPath("resume", null);
-    const paragraphs = content.about?.paragraphs?.length ? content.about.paragraphs : [content.resume.introduction].filter(Boolean);
-    if (paragraphs.length) {
-      const introduction = $("div", "profile-introduction prose");
-      paragraphs.forEach(text => introduction.append($("p", "", text)));
-      view.append(introduction);
-    }
+    const path = pathFor("resume");
     if (content.resume.sections.length) {
       content.resume.sections.forEach(section => {
         const block = $("section", "resume-section");
@@ -94,14 +77,10 @@
         view.append(block);
       });
     }
-    if (content.resume.pdfUrl && safeUrl(content.resume.pdfUrl)) view.append(externalLink("打开 PDF 简历 ↗", content.resume.pdfUrl));
-    renderPathSamples(path);
+    if (path.items.some(key => content.samples[key])) renderPathSamples(path);
   }
-  function beginPath(id, description) {
-    const path = content.paths.find(item => item.id === id);
-    const introduction = description === undefined ? path.introduction : description;
-    if (introduction) view.append($("p", "view-description", introduction));
-    return path;
+  function pathFor(id) {
+    return content.paths.find(item => item.id === id);
   }
   function renderPathSamples(path, {reader = false} = {}) {
     if (!path.items.some(key => content.samples[key])) {
@@ -119,7 +98,7 @@
       if (itemDate) {
         const metadata = $("p", "reader-date");
         const time = $("time", "", itemDate.text); time.dateTime = itemDate.value;
-        metadata.append(document.createTextNode("日期 "), time);
+        metadata.append(document.createTextNode(`${itemDate.label} `), time);
         article.append(metadata);
       }
       const layout = $("div", "article-layout");
@@ -159,8 +138,8 @@
         onNavigate:beginReading, onLayout:() => { commandInput.refresh(); syncOutlineButton(); } });
     });
   }
-  function project() { const path = beginPath("project"); renderPathSamples(path); }
-  function life() { const path = beginPath("life"); renderPathSamples(path); }
+  function project() { renderPathSamples(pathFor("project")); }
+  function life() { renderPathSamples(pathFor("life")); }
   function closeMobileDirectory() {
     if (sidebar.isMobile() && sidebar.isOpen()) sidebar.close();
   }
@@ -200,10 +179,8 @@
     });
     details.addEventListener("toggle", () => {
       if (!details.isConnected) return;
-      const initialOpen = details.initialOpen === true;
-      details.initialOpen = false;
       commandInput.refresh();
-      if (details.open) { pauseFollowing(); populate(); label.textContent = "收起"; if (!initialOpen) scrollWithinTerminal(result.node); }
+      if (details.open) { pauseFollowing(); populate(); label.textContent = "收起"; scrollWithinTerminal(result.node); }
       else { label.textContent = result.detailLabel; body.querySelectorAll("video").forEach(video => video.pause()); }
       updateFollowState();
     });
@@ -493,13 +470,9 @@
   outlineButton.addEventListener("click", togglePageOutline);
   window.LIZPINK_SIDEBAR_SHORTCUTS.init({toggleLeft:toggleLeftDirectory, toggleRight:togglePageOutline});
   imageViewer?.init({root:records, scrollRoot:main, onOpen:beginReading});
+  home();
   const initialLocation = contentIndex.parseHash(location.hash);
   render(initialLocation.route, {itemKey:initialLocation.key});
-  const initialDetails = records.lastElementChild?.querySelector(".output-details");
-  if (initialDetails) {
-    pauseFollowing(); initialDetails.populate(); initialDetails.initialOpen = true; initialDetails.open = true;
-    commandInput.refresh(); main.scrollTop = 0;
-  }
   if (activeItem) { pauseFollowing(); main.scrollTop = 0; }
   if (activeRoute === "home") commandInput.focusInitial();
   syncCursor();

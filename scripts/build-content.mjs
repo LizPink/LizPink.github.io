@@ -60,17 +60,21 @@ function configureSite(site, file) {
       throw error(file, "paths含有无效或重复的栏目id。");
     }
     seen.add(item.id);
-    for (const field of ["title", "description", "introduction"]) {
+    if (Object.hasOwn(item, "introduction")) throw error(file, `paths.${item.id}.introduction已合并到description，请只填写description。`);
+    for (const field of ["title", "description"]) {
       if (Object.hasOwn(item, field) && typeof item[field] !== "string") throw error(file, `paths.${item.id}.${field}必须是文字。`);
     }
     const number = { life: "01", resume: "02", project: "03" }[item.id];
-    return { title: routeNames[item.id], number, command: item.id, description: "", introduction: "", ...item, items: [] };
+    return { title: routeNames[item.id], number, command: item.id, description: "", ...item, items: [] };
   });
   if (seen.size !== 3) throw error(file, "paths必须包含life、resume、project。");
+  if (record(site.resume) && Object.hasOwn(site.resume, "introduction")) {
+    throw error(file, "resume.introduction已移除，请在about.paragraphs填写首页介绍。");
+  }
   const content = withoutLegacyFlags({
     ...site, paths,
     about: { paragraphs: [], ...site.about },
-    resume: { introduction: "", sections: [], pdfUrl: "", ...site.resume },
+    resume: { sections: [], pdfUrl: "", ...site.resume },
     samples: {}
   });
   if (!Array.isArray(content.about.paragraphs) || !content.about.paragraphs.every(item => typeof item === "string")) {
@@ -134,8 +138,8 @@ async function readEntry(directory, key) {
 }
 
 function entryOrder(left, right) {
-  const a = left.metadata.publishedAt || left.metadata.updatedAt || "";
-  const b = right.metadata.publishedAt || right.metadata.updatedAt || "";
+  const a = left.metadata.updatedAt || left.metadata.publishedAt || "";
+  const b = right.metadata.updatedAt || right.metadata.publishedAt || "";
   return compareText(b, a) || (left.metadata.order ?? Infinity) - (right.metadata.order ?? Infinity) || compareText(left.key, right.key);
 }
 
