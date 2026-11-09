@@ -124,6 +124,7 @@
         replacement.append(...heading.childNodes); heading.replaceWith(replacement);
       });
       body.querySelectorAll(".sample-media").forEach(figure => {
+        if (figure.classList.contains("sample-comparison")) return;
         const media = figure.querySelector("img, video");
         if (!media) return;
         const isVideo = media.tagName === "VIDEO";
@@ -146,6 +147,7 @@
         target.tabIndex = -1; target.focus({preventScroll:true}); commandInput.refresh();
       });
       layout.append(body); article.append(layout); view.append(article);
+      window.LIZPINK_IMAGE_COMPARISON?.init(body);
       articleOutline?.mount({ layout, body, headings:sample.headings || [], scrollRoot:main,
         onNavigate:beginReading, onLayout:() => { commandInput.refresh(); syncOutlineButton(); } });
     });
@@ -458,7 +460,7 @@
     const target = document.activeElement;
     const editing = ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName) || target.isContentEditable;
     const protectedContext = (
-      (sidebar.isMobile() && sidebar.isOpen()) || target.closest("#route-menu, video, audio, [role='dialog']") ||
+      (sidebar.isMobile() && sidebar.isOpen()) || target.closest("#route-menu, video, audio, .image-comparison, [role='dialog']") ||
       !window.getSelection()?.isCollapsed
     );
     if (event.key === "/" && !event.repeat && !event.ctrlKey && !event.metaKey && !event.altKey && !editing && !protectedContext) { event.preventDefault(); focusCommand(); }

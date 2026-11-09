@@ -1,0 +1,85 @@
+/* Images stay readable as an ordinary pair when JavaScript is unavailable. */
+.image-comparison { --comparison-background: var(--screen); position: relative; min-width: 0; }
+.image-viewer .image-comparison { --comparison-background: #080a08; }
+.image-comparison img-comparison-slider { display: block; width: 100%; }
+.image-comparison .comparison-image { display: block; width: 100%; max-width: 100%; height: auto; object-fit: contain; }
+.image-comparison .comparison-image + .comparison-image { margin-top: 12px; }
+.image-comparison img-comparison-slider:defined {
+  --divider-width: 2px;
+  --divider-color: #e9dcc0;
+  --divider-shadow: 0 1px 3px rgba(0, 0, 0, .8);
+  --default-handle-width: 48px;
+  --default-handle-color: #e9dcc0;
+  --default-handle-opacity: 1;
+  --default-handle-shadow: 0 1px 3px rgba(0, 0, 0, .8);
+  aspect-ratio: var(--comparison-ratio, 16 / 9);
+  background: var(--comparison-background);
+  cursor: ew-resize;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.image-comparison img-comparison-slider:defined .comparison-image {
+  height: auto;
+  aspect-ratio: var(--comparison-ratio, 16 / 9);
+  margin: 0;
+  background: var(--comparison-background);
+  object-fit: contain;
+  object-position: center;
+}
+.image-comparison img-comparison-slider:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.image-comparison[data-comparison-state="loading"] img-comparison-slider { pointer-events: none; }
+.comparison-labels { display: none; }
+.comparison-ready .comparison-labels {
+  position: absolute;
+  inset: 10px 10px auto;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  pointer-events: none;
+}
+.comparison-labels > span {
+  max-width: calc(50% - 10px);
+  padding: 3px 7px;
+  background: rgba(8, 10, 8, .88);
+  color: #e9dcc0;
+  font: 12px/1.6 var(--font-body);
+  overflow-wrap: anywhere;
+}
+.comparison-labels > span:last-child { text-align: right; }
+.sample-comparison > .comparison-expand { display: none; }
+.sample-comparison[data-comparison-state="ready"] > .comparison-expand {
+  display: block;
+  min-height: 44px;
+  margin: 2px auto 0;
+  padding: 8px 12px;
+  color: var(--muted);
+  font: 13px/1.6 var(--font-body);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.sample-comparison > .comparison-expand:hover { color: var(--accent); }
+.comparison-status {
+  margin: 12px 0;
+  color: var(--muted);
+  font: 14px/1.8 var(--font-body);
+  text-align: center;
+}
+.image-comparison[data-comparison-state="loading"] .comparison-status {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 16px;
+  background: var(--comparison-background);
+  pointer-events: none;
+}
+.comparison-originals { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 24px; font: 13px/1.8 var(--font-body); }
+@media (max-width: 760px) {
+  .comparison-ready .comparison-labels { inset: 8px 8px auto; gap: 12px; }
+  .comparison-labels > span { max-width: calc(50% - 6px); font-size: 11px; }
+}

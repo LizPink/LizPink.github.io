@@ -1,15 +1,55 @@
 import { parseFragment } from "parse5";
 
+const comparisonParsers = new WeakSet();
+
+function enableComparisonBlocks(markdown) {
+  if (comparisonParsers.has(markdown)) return;
+  comparisonParsers.add(markdown);
+  markdown.block.ruler.before("fence", "article_comparison", (state, startLine, endLine, silent) => {
+    if (state.sCount[startLine] - state.blkIndent >= 4) return false;
+    const lineText = line => state.src.slice(state.bMarks[line] + state.tShift[line], state.eMarks[line]);
+    if (!/^:::compare[ \t]*$/.test(lineText(startLine))) return false;
+    if (silent) return true;
+    let nextLine = startLine + 1;
+    for (; nextLine < endLine; nextLine += 1) {
+      if (state.sCount[nextLine] < state.blkIndent && lineText(nextLine).trim()) break;
+      if (/^:::compare[ \t]*$/.test(lineText(nextLine))) throw new Error("图片对比块不能嵌套。");
+      if (state.sCount[nextLine] - state.blkIndent < 4 && /^:::[ \t]*$/.test(lineText(nextLine))) break;
+    }
+    if (nextLine >= endLine || !/^:::[ \t]*$/.test(lineText(nextLine))) {
+      throw new Error(`图片对比块（第 ${startLine + 1} 行）缺少结束标记 :::。`);
+    }
+    const token = state.push("article_comparison", "", 0);
+    token.block = true;
+    token.map = [startLine, nextLine + 1];
+    token.content = state.getLines(startLine + 1, nextLine, state.blkIndent, false);
+    state.line = nextLine + 1;
+    return true;
+  }, { alt: ["paragraph", "reference", "blockquote", "list"] });
+  markdown.renderer.rules.article_comparison = (tokens, index, options, environment) => {
+    const comparison = tokens[index];
+    const id = environment.articleComparisons.push(comparison) - 1;
+    const tag = environment.articleComparisonTag;
+    return `<${tag} data-index="${id}"></${tag}>\n`;
+  };
+}
+
 // Render Markdown first, then turn the parsed HTML tree into a controlled token
 // stream. Raw HTML and Markdown share headings, links and managed media; code
 // fences remain text nodes and are never interpreted as authored HTML.
-export function parseArticleTokens(markdown, source) {
+export function parseArticleTokens(markdown, source, context = {}) {
+  enableComparisonBlocks(markdown);
   const Token = markdown.parseInline("x", {})[0].constructor;
-  const html = markdown.render(source, {});
+  // Choose a temporary tag absent from author input. Raw HTML cannot impersonate
+  // a generated comparison, and the marker never reaches the published output.
+  let comparisonTag = "lz-article-comparison";
+  while (source.toLowerCase().includes(comparisonTag)) comparisonTag += "-block";
+  const environment = { ...context, articleComparisons: [], articleComparisonTag: comparisonTag };
+  const html = markdown.render(source, environment);
   const tree = parseFragment(html, { sourceCodeLocationInfo: true });
   const inlineTags = new Set(["span", "strong", "em", "s", "del", "u", "mark", "small", "sub", "sup", "kbd", "samp", "abbr"]);
   const containers = new Set(["div", "section", "article", "header", "footer", "main"]);
-  const blocks = new Set(["p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "ul", "ol", "li", "table", "thead", "tbody", "tfoot", "tr", "th", "td", "hr", "pre", "figure", "figcaption", "details", "summary", ...containers]);
+  const blocks = new Set(["p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "ul", "ol", "li", "table", "thead", "tbody", "tfoot", "tr", "th", "td", "hr", "pre", "figure", "figcaption", "details", "summary", comparisonTag, ...containers]);
   const attrs = node => Object.fromEntries((node.attrs || []).map(attribute => [attribute.name, attribute.value]));
   const text = node => node.nodeName === "#text" ? node.value : (node.childNodes || []).map(text).join("");
   const token = (type, tag = "", nesting = 0) => new Token(type, tag, nesting);
@@ -43,6 +83,7 @@ export function parseArticleTokens(markdown, source) {
     if (attributes.title) image.attrSet("title", attributes.title);
     image.children = [literal(label)];
     image.meta = {};
+    if (video) image.meta.video = true;
     const style = Object.fromEntries((attributes.style || "").split(";").flatMap(declaration => {
       const colon = declaration.indexOf(":");
       return colon < 0 ? [] : [[declaration.slice(0, colon).trim().toLowerCase(), declaration.slice(colon + 1).trim()]];
@@ -106,6 +147,27 @@ export function parseArticleTokens(markdown, source) {
       if (!blocks.has(node.tagName)) { pending.push(...inlines([node])); continue; }
       flush();
       const tag = node.tagName, attributes = attrs(node), children = node.childNodes || [];
+      if (tag === comparisonTag) {
+        const comparison = environment.articleComparisons[Number(attributes["data-index"])];
+        const parts = parseArticleTokens(markdown, comparison.content, environment);
+        const images = [];
+        for (const part of parts) {
+          if (part.type === "paragraph_open" || part.type === "paragraph_close") continue;
+          if (part.type !== "inline") throw new Error("图片对比块只能包含两张图片，不能包含其它正文或代码。");
+          for (const child of part.children || []) {
+            if (child.type === "image" && !child.meta?.video) images.push(child);
+            else if (child.type !== "text" || child.content.trim()) {
+              throw new Error("图片对比块只能包含两张图片，不能包含其它正文、链接或视频。");
+            }
+          }
+        }
+        if (images.length !== 2) throw new Error(`图片对比块必须恰好包含两张图片，目前有 ${images.length} 张。`);
+        const result = token("image_comparison");
+        result.block = true;
+        result.meta = { images };
+        output.push(result);
+        continue;
+      }
       if (containers.has(tag)) { output.push(...flow(children)); continue; }
       if (tag === "p") { output.push(...paragraph(inlines(children))); continue; }
       if (/^h[1-6]$/.test(tag)) {

@@ -181,7 +181,9 @@ async function renderEntry(entry, content, entries, assets, versionOf) {
   const originalValidation = markdown.validateLink;
   markdown.validateLink = value => { checkProtocol(value, entry.file); return originalValidation(value); };
   const escape = markdown.utils.escapeHtml;
-  const tokens = parseArticleTokens(markdown, entry.markdown);
+  let tokens;
+  try { tokens = parseArticleTokens(markdown, entry.markdown); }
+  catch (failure) { throw error(entry.file, failure.message); }
   const headings = [];
   const targets = new Map();
   const usedIds = new Set();
@@ -231,6 +233,25 @@ async function renderEntry(entry, content, entries, assets, versionOf) {
 
   const mediaCounts = { images: 0, videos: 0 };
   let mediaIndex = 0;
+  async function comparisonFigure(images) {
+    const rendered = [], labels = [];
+    const captionId = `${entry.key}-media-${++mediaIndex}`;
+    for (const [index, image] of images.entries()) {
+      const resource = await asset(image.attrGet("src"));
+      if (!imageExtensions.has(path.extname(resource.target).toLowerCase())) {
+        throw error(entry.file, "图片对比块只支持图片文件，不能使用视频或附件。");
+      }
+      const label = escape(image.meta?.caption || compact(plain(image.children)) || entry.metadata.title);
+      labels.push(label);
+      rendered.push(`<img class="comparison-image" slot="${index ? "second" : "first"}" src="${escape(resource.url)}" alt="${label}" loading="lazy" decoding="async">`);
+    }
+    mediaCounts.images += 2;
+    const sizing = [];
+    if (images[0].meta?.displayWidth) sizing.push(`--asset-display-width:${images[0].meta.displayWidth}`);
+    if (images[0].meta?.scale) sizing.push(`--asset-scale:${images[0].meta.scale}`);
+    const style = sizing.length ? ` style="${escape(sizing.join(";"))}"` : "";
+    return `<figure class="sample-media sample-comparison"${style}><div class="image-comparison" data-image-comparison><img-comparison-slider value="50" tabindex="0" aria-label="拖动分割线对比两张图片" aria-describedby="${escape(captionId)}">${rendered.join("")}</img-comparison-slider><div class="comparison-labels" aria-hidden="true"><span data-comparison-label="first">${labels[0]}</span><span data-comparison-label="second">${labels[1]}</span></div></div><figcaption id="${escape(captionId)}">${labels.join(" / ")}</figcaption><button type="button" class="comparison-expand" data-comparison-expand>放大对比</button></figure>\n`;
+  }
   async function figure(image) {
     const value = image.attrGet("src");
     const resource = await asset(value);
@@ -298,6 +319,13 @@ async function renderEntry(entry, content, entries, assets, versionOf) {
   const rendered = [];
   for (let index = 0; index < tokens.length; index += 1) {
     const open = tokens[index], inline = tokens[index + 1], close = tokens[index + 2];
+    if (open.type === "image_comparison") {
+      const comparison = new open.constructor("html_block", "", 0);
+      comparison.block = true;
+      comparison.content = await comparisonFigure(open.meta.images);
+      rendered.push(comparison);
+      continue;
+    }
     if (open.type !== "paragraph_open" || inline?.type !== "inline" || close?.type !== "paragraph_close" ||
         !inline.children.some(token => token.type === "image")) {
       if (open.type === "inline" && open.children?.some(token => token.type === "image")) {
