@@ -22,7 +22,8 @@ lizpink-terminal/
 │       │   ├── command-input.css     # 命令输入区
 │       │   ├── content-sidebar.css   # 左侧内容目录
 │       │   ├── article-outline.css   # 本页目录与阅读布局
-│       │   └── image-viewer.css      # 同页图片预览与暗背景
+│       │   ├── image-viewer.css      # 同页图片预览与暗背景
+│       │   └── image-comparison.css  # 两图分割线对比与标签
 │       ├── js/
 │       │   ├── app.js                # 页面初始化、路由与终端交互
 │       │   ├── commands.js           # 命令定义、补全候选与帮助正文
@@ -32,9 +33,11 @@ lizpink-terminal/
 │       │   ├── content-sidebar.js    # 左侧目录、折叠与调宽
 │       │   ├── article-outline.js    # 本页目录与章节定位
 │       │   ├── image-viewer.js       # 图片预览、关闭与原位置恢复
+│       │   ├── image-comparison.js   # 对比画布尺寸、键盘与加载状态
 │       │   ├── sidebar-shortcuts.js  # 左右目录快捷键
 │       │   ├── output-motion.js      # 分段输出动效
 │       │   └── theme.js              # 主题切换与偏好
+│       ├── vendor/img-comparison-slider/ # 本地图片对比组件及 MIT 许可
 │       └── fonts/                    # 随网站发布的字体及授权说明
 │           ├── noto-sans-sc.css      # 中文字体按字形范围加载
 │           ├── noto-sans-sc/         # 101 份 Noto Sans SC WOFF2 分片
@@ -134,6 +137,17 @@ updatedAt:		"2026-11-07" # 可省略，默认自动计算
 
 正文可以混写常见 HTML，例如 `<a href="https://example.com">项目主页</a>` 或 `<img src=".\photos\screenshot.png" alt="项目截图" style="zoom:33%;">`。Markdown 和 HTML 的素材路径均支持正斜杠、反斜杠，以及指向本篇素材的本机绝对路径；生成网站时统一转为发布路径，素材仍需放在本篇文章文件夹内。详细格式见 [内容维护指南](docs/CONTENT.md)。
 
+需要比较两次渲染结果时，在正文中直接写一个 `:::compare` 块，里面恰好放两张图片。第一张在分割线左侧，第二张在右侧；图片说明作为两侧标签。以下示例外层的代码围栏只用于 README 展示，写入正文时只复制其中内容：
+
+```markdown
+:::compare
+![仅直接光照](./photos/before.png)
+![加入间接光照](./photos/after.png)
+:::
+```
+
+块内也支持 HTML `<img>`，沿用第一张图的 `width` 或 `zoom` 设置整个对比区域的显示大小。鼠标或触摸可拖动分割线，键盘聚焦后用左右方向键调整，点击“放大对比”可进入灯箱继续比较。两图放进以第一张图比例为准的共同画布，保持各自原比例、完整显示；比例稍有差异时允许留边，不自动裁剪或拉伸。截图范围或视角不同仍需先对齐。一个块只接受两张图片，不混入视频和其它正文；写法不完整时构建会指出问题。
+
 2、当你创建好本地的内容文件之后，可以先进行构建测试与本地预览。具体而言，在项目根目录打开终端，运行命令。如果结果正常，则打开终端显示的网址，就可以看到预览内容。
 
 ```shell
@@ -142,3 +156,11 @@ npm run dev
 ```
 
 3、当确认预览内容没有问题后，将新增文件提交到 Git 仓库，并合并、推送到 `main` 分支。GitHub 会自动检查并发布网站。
+
+## 第三方来源与许可
+
+图片拖动对比使用 [img-comparison-slider](https://github.com/sneas/img-comparison-slider)，许可证版权署名为 **Dmytro Snisarenko（Copyright © 2019）**。本项目固定使用 **8.0.7**，以 [npm 同版本发布包](https://www.npmjs.com/package/img-comparison-slider/v/8.0.7) 为来源，采用 **MIT License**。
+
+运行库及上游许可证保存在 [`site/assets/vendor/img-comparison-slider/`](site/assets/vendor/img-comparison-slider/)，随静态网站一同发布；访客使用时无需连接 CDN。本网站自己的 `image-comparison.js`、`image-comparison.css` 和文章构建逻辑负责对比块语法、图片尺寸适配、标签及灯箱集成。上游的使用方式和参数见 [组件文档](https://github.com/sneas/img-comparison-slider/blob/master/packages/img-comparison-slider/README.md)。
+
+获取来源：运行库、样式与 source map 来自 [8.0.7 发布压缩包](https://registry.npmjs.org/img-comparison-slider/-/img-comparison-slider-8.0.7.tgz)，许可证保留自 [上游 LICENSE](https://github.com/sneas/img-comparison-slider/blob/master/LICENSE)。上游文件原样保留，页面使用本站自有样式，不加载 vendor 的 `styles.css`。
