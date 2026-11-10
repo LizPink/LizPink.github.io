@@ -177,6 +177,65 @@ test("scroll work is coalesced, highlights the last short section at bottom and 
   assert.equal(h.active(), "last");
 });
 
+test("a clamped navigation keeps the chosen heading until the reading position changes", () => {
+  for (const width of [1200, 800]) {
+    const h = harness({ width }); h.targets[1].absoluteTop = 560; h.mount();
+    h.click(1);
+    assert.equal(h.scrollRoot.scrollTop, 500);
+    assert.equal(h.active(), "second");
+    h.scrollRoot.emit("scroll"); h.flush();
+    assert.equal(h.active(), "second", "the delayed programmatic scroll must preserve the chosen entry");
+    h.body.emit("load"); h.resize(); h.fontReady.forEach(callback => callback()); h.flush();
+    assert.equal(h.active(), "second", "layout updates at the same position must preserve the chosen entry");
+    h.click(2); h.flush(); assert.equal(h.active(), "last");
+    h.click(1); h.flush(); assert.equal(h.active(), "second", "entries at the same scroll position remain selectable");
+    h.scrollRoot.scrollTop = 450; h.scrollRoot.emit("scroll"); h.flush();
+    assert.equal(h.active(), "first");
+    h.scrollRoot.scrollTop = 500; h.scrollRoot.emit("scroll"); h.flush();
+    assert.equal(h.active(), "last", "manual scrolling restores the normal bottom-of-page rule");
+    assert.equal(h.window.location.hash, "#project/example");
+  }
+});
+
+test("a chosen heading survives automatic clamping after media and viewport geometry changes", () => {
+  for (const width of [1200, 800]) {
+    const h = harness({ width }); h.targets[1].absoluteTop = 560; h.mount();
+    h.click(1); h.flush();
+    assert.equal(h.scrollRoot.scrollTop, 500);
+    const headingTop = h.targets[1].getBoundingClientRect().top;
+    // A failed image above the heading shrinks the document. The browser moves
+    // the bottom scroll limit and heading together, preserving the reading view.
+    h.scrollRoot.scrollHeight = 800;
+    h.scrollRoot.scrollTop = 400;
+    h.targets[1].absoluteTop -= 100; h.targets[2].absoluteTop -= 100;
+    assert.equal(h.targets[1].getBoundingClientRect().top, headingTop);
+    h.body.emit("error"); h.scrollRoot.emit("scroll"); h.resize(); h.flush();
+    assert.equal(h.active(), "second", "automatic document clamping must retain the chosen entry");
+    h.scrollRoot.emit("scroll"); h.flush();
+    assert.equal(h.active(), "second", "the updated position must become the new navigation baseline");
+    // Increasing the viewport also clamps scrollTop without a reader scroll.
+    h.scrollRoot.clientHeight = 500; h.scrollRoot.scrollTop = 300;
+    h.resize(); h.scrollRoot.emit("scroll"); h.flush();
+    assert.equal(h.active(), "second", "viewport clamping must retain the chosen entry");
+    h.click(2); h.flush(); assert.equal(h.active(), "last");
+    h.click(1); h.flush();
+    assert.equal(h.scrollRoot.scrollTop, 300);
+    assert.equal(h.active(), "second", "both final headings remain selectable at the new scroll limit");
+    h.scrollRoot.scrollTop = 250; h.scrollRoot.emit("scroll"); h.flush();
+    assert.equal(h.active(), "first", "real scrolling after a geometry change must release the choice");
+    h.scrollRoot.scrollTop = 300; h.scrollRoot.emit("scroll"); h.flush();
+    assert.equal(h.active(), "last");
+  }
+});
+
+test("headings in an article shorter than the viewport remain selectable", () => {
+  const h = harness({ height: 900, scrollHeight: 900 }); h.mount();
+  h.click(1); h.flush();
+  assert.equal(h.scrollRoot.scrollTop, 0);
+  assert.equal(h.active(), "second");
+  h.click(2); h.flush(); assert.equal(h.active(), "last");
+});
+
 test("media load and geometry changes recompute section positions and input safety height", () => {
   const h = harness(); h.mount();
   h.scrollRoot.scrollTop = 350; h.scrollRoot.emit("scroll"); h.flush(); assert.equal(h.active(), "second");

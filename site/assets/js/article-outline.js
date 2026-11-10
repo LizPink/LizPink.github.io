@@ -59,6 +59,7 @@
     let frame = null;
     let wide = null;
     let currentId = null;
+    let navigationSelection = null;
     let maxHeight = null;
     let wasConnected = layout.isConnected !== false;
     let localPreference = visibilityPreference;
@@ -117,6 +118,10 @@
         else entry.link.removeAttribute("aria-current");
       });
     }
+    function rememberSelection(entry) {
+      navigationSelection = { entry, scrollTop: scrollRoot.scrollTop,
+        scrollHeight: scrollRoot.scrollHeight, clientHeight: scrollRoot.clientHeight };
+    }
     function update() {
       frame = null;
       if (disposed) return;
@@ -135,6 +140,15 @@
       entries.forEach(entry => { if (entry.target.getBoundingClientRect().top <= threshold + 1) active = entry; });
       const maxScroll = scrollRoot.scrollHeight - scrollRoot.clientHeight;
       if (maxScroll > 1 && scrollRoot.scrollTop >= maxScroll - 2) active = entries.at(-1);
+      // Final headings can share one clamped position. Layout changes can also
+      // move that position automatically, without the visitor scrolling away.
+      if (navigationSelection) {
+        const { entry, scrollTop, scrollHeight, clientHeight } = navigationSelection;
+        if (Math.abs(scrollRoot.scrollTop - scrollTop) < 2 || scrollHeight !== scrollRoot.scrollHeight || clientHeight !== scrollRoot.clientHeight) {
+          active = entry;
+          rememberSelection(entry);
+        } else navigationSelection = null;
+      }
       setActive(active.id);
     }
     function queueUpdate() {
@@ -155,6 +169,7 @@
       // scrolling inside the terminal rather than moving its ancestor surfaces.
       const offset = entry.target.getBoundingClientRect().top - scrollRoot.getBoundingClientRect().top;
       scrollRoot.scrollTop = Math.max(0, Math.min(scrollRoot.scrollHeight - scrollRoot.clientHeight, scrollRoot.scrollTop + offset - 24));
+      rememberSelection(entry);
       if (!entry.target.hasAttribute("tabindex")) {
         changedTabindex.set(entry.target, null);
         entry.target.setAttribute("tabindex", "-1");
