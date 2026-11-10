@@ -189,12 +189,16 @@ async function renderEntry(entry, content, entries, assets, versionOf) {
   const usedIds = new Set();
   const canonical = content.paths.find(item => entry.metadata.sections.includes(item.id)).id;
   const articleHash = `#${canonical}/${encodeURIComponent(entry.key)}`;
-  let firstParagraph = "";
+  let firstParagraph = "", inUpdateLog = false, updateCount = 0;
   for (let index = 0; index < tokens.length; index += 1) {
     const token = tokens[index];
     if (token.type === "heading_open") {
       if (token.tag === "h1") throw error(entry.file, "正文不允许h1，请在元信息填写title，正文从##开始。");
       const text = compact(plain(tokens[index + 1]?.children));
+      if (token.tag === "h2") {
+        inUpdateLog = entry.metadata.sections.includes("project") && /^(更新日志|changelog|release notes)$/i.test(text);
+        updateCount = 0;
+      }
       const name = slug(text);
       const base = `${entry.key}-${name}`;
       let id = base, suffix = 2;
@@ -205,6 +209,20 @@ async function renderEntry(entry, content, entries, assets, versionOf) {
       const authoredId = token.meta?.authoredId;
       if (authoredId && !targets.has(authoredId)) targets.set(authoredId, id);
       headings.push({ id, text, level: Number(token.tag.slice(1)) });
+      if (inUpdateLog && token.tag === "h3") {
+        token.attrJoin("class", "article-update-heading");
+        if (updateCount++) token.attrJoin("class", "article-update-heading-next");
+        const inline = tokens[index + 1], first = inline?.children?.[0];
+        const date = first?.type === "text" && /^(\d{4}-\d{2}-(?:\d{2}|[?？]))(\s+)/.exec(first.content);
+        if (date && text.length > date[0].length) {
+          const html = content => Object.assign(new token.constructor("html_inline", "", 0), { content });
+          const dateText = Object.assign(new token.constructor("text", "", 0), { content: date[1] });
+          const space = Object.assign(new token.constructor("text", "", 0), { content: date[2] });
+          first.content = first.content.slice(date[0].length);
+          inline.children = [html('<span class="article-update-date">'), dateText, html("</span>"), space,
+            html('<span class="article-update-title">'), ...inline.children, html("</span>")];
+        }
+      }
     }
     if (!firstParagraph && token.type === "paragraph_open" && tokens[index + 1]?.type === "inline") {
       firstParagraph = compact(plain(tokens[index + 1].children));

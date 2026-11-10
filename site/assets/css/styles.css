@@ -239,6 +239,22 @@ kbd { color: var(--text); font: 12px var(--font-mono); }
 .article-body :is(h2, h3, h4, h5, h6) { margin: 32px 0 12px; font-family: var(--font-body); font-weight: 500; line-height: 1.5; text-wrap: balance; }
 .article-body :is(h2, h3) { font-size: 23px; }
 .article-body :is(h4, h5, h6) { font-size: 19px; }
+/* Update boundaries follow authored sections, independent of the reader's heading shift. */
+.article-body .article-update-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+  margin: 32px 0 20px;
+  color: var(--accent);
+  font-size: 24px;
+  font-weight: 650;
+  line-height: 1.5;
+  text-wrap: initial;
+}
+.article-body .article-update-heading-next { margin-top: 48px; padding-top: 24px; border-top: 1px solid var(--line-soft); }
+.article-update-date { flex: none; color: var(--muted); font: 400 14px/1.6 var(--font-mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+.article-update-title { min-width: 0; overflow-wrap: anywhere; }
 .article-body a { color: var(--accent); text-underline-offset: 4px; }
 .article-body :is(ul, ol) { padding-left: 24px; margin: 0 0 20px; }
 .article-body li + li { margin-top: 6px; }
@@ -323,6 +339,8 @@ kbd { color: var(--text); font: 12px var(--font-mono); }
   .summary-title { font-size: 24px; }
   .view-description { font-size: 16px; }
   .sample-entry h3 { font-size: 21px; }
+  .article-body .article-update-heading { font-size: 22px; }
+  .article-body .article-update-heading-next { margin-top: 32px; }
   .sample-media figcaption { font-size: 12px; }
 }
 

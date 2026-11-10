@@ -328,6 +328,71 @@ test("summary stays plain, body preserves rich Markdown and executable HTML is e
   assert.equal(context.window.LIZPINK_CONTENT.samples.safe.title, '</script><script>bad()</script>');
 });
 
+test("project changelogs separate entries without changing rich titles, anchors or unrelated sections", async t => {
+  const f = await fixture(t, { entries: [
+    { key: "updates", body: [
+      "[Jump to bold update](#2026-11-09-bold)",
+      "## 更新日志", "### 2026-11-04 First", "First update.",
+      "### 2026-11-09 **Bold**", "Second update.",
+      "### 2026-11-10 [Linked](https://example.org/notes)", "#### Implementation", "Details.",
+      "### Next **steps**", "Undated update.",
+      "### 2026-11-? Preview", "Preview update.",
+      "### 2026-11-？ Specular", "Another preview.",
+      "## Guide", "### 2026-11-11 Ordinary", "Regular section.",
+      "## Release notes", "### 2026-11-12 Release", "A new log section.",
+      "## Changelog", "### Undated release", "Another log section."
+    ].join("\n\n") },
+    { key: "journal", metadata: { sections: ["life"] },
+      body: "## 更新日志\n\n### 2026-11-04 Ordinary journal heading\n\nJournal text." }
+  ] });
+  const content = await f.build(), sample = content.samples.updates;
+  const { parseFragment } = await import("parse5");
+  function descendants(node) { return [node, ...(node.childNodes || []).flatMap(descendants)]; }
+  const nodes = descendants(parseFragment(sample.body));
+  const attr = (node, name) => node.attrs?.find(item => item.name === name)?.value;
+  const hasClass = (node, name) => (attr(node, "class") || "").split(/\s+/).includes(name);
+  const headings = nodes.filter(node => /^h[2-6]$/.test(node.tagName || ""));
+  const byId = id => headings.find(node => attr(node, "id") === id);
+  assert.deepEqual(sample.headings, [
+    { id: "updates-更新日志", text: "更新日志", level: 2 },
+    { id: "updates-2026-11-04-first", text: "2026-11-04 First", level: 3 },
+    { id: "updates-2026-11-09-bold", text: "2026-11-09 Bold", level: 3 },
+    { id: "updates-2026-11-10-linked", text: "2026-11-10 Linked", level: 3 },
+    { id: "updates-implementation", text: "Implementation", level: 4 },
+    { id: "updates-next-steps", text: "Next steps", level: 3 },
+    { id: "updates-2026-11--preview", text: "2026-11-? Preview", level: 3 },
+    { id: "updates-2026-11--specular", text: "2026-11-？ Specular", level: 3 },
+    { id: "updates-guide", text: "Guide", level: 2 },
+    { id: "updates-2026-11-11-ordinary", text: "2026-11-11 Ordinary", level: 3 },
+    { id: "updates-release-notes", text: "Release notes", level: 2 },
+    { id: "updates-2026-11-12-release", text: "2026-11-12 Release", level: 3 },
+    { id: "updates-changelog", text: "Changelog", level: 2 },
+    { id: "updates-undated-release", text: "Undated release", level: 3 }
+  ]);
+  assert.deepEqual(headings.filter(node => hasClass(node, "article-update-heading")).map(node => attr(node, "id")), [
+    "updates-2026-11-04-first", "updates-2026-11-09-bold", "updates-2026-11-10-linked",
+    "updates-next-steps", "updates-2026-11--preview", "updates-2026-11--specular",
+    "updates-2026-11-12-release", "updates-undated-release"
+  ]);
+  assert.deepEqual(headings.filter(node => hasClass(node, "article-update-heading-next")).map(node => attr(node, "id")), [
+    "updates-2026-11-09-bold", "updates-2026-11-10-linked", "updates-next-steps",
+    "updates-2026-11--preview", "updates-2026-11--specular"
+  ]);
+  for (const id of ["updates-2026-11-04-first", "updates-2026-11-09-bold", "updates-2026-11-10-linked",
+    "updates-2026-11--preview", "updates-2026-11--specular", "updates-2026-11-12-release"]) {
+    const parts = descendants(byId(id));
+    assert.equal(parts.filter(node => hasClass(node, "article-update-date")).length, 1, id);
+    assert.equal(parts.filter(node => hasClass(node, "article-update-title")).length, 1, id);
+  }
+  assert.equal(descendants(byId("updates-next-steps")).some(node => hasClass(node, "article-update-date")), false);
+  assert.match(sample.body, /<span class="article-update-title"><strong>Bold<\/strong><\/span>/);
+  assert.match(sample.body, /<span class="article-update-title"><a href="https:\/\/example\.org\/notes"[^>]*>Linked<\/a><\/span>/);
+  assert.match(sample.body, /Next <strong>steps<\/strong>/);
+  assert.ok(nodes.some(node => node.tagName === "a" && attr(node, "data-article-anchor") === "updates-2026-11-09-bold"
+    && attr(node, "href") === "#project/updates"));
+  assert.doesNotMatch(content.samples.journal.body, /article-update-/);
+});
+
 test("reserved JavaScript property names remain ordinary own article keys", async t => {
   const keys = ["__proto__", "constructor", "prototype"];
   const f = await fixture(t, { entries: keys.map(key => ({ key })) });
