@@ -370,11 +370,14 @@ async function renderEntry(entry, content, entries, assets, versionOf) {
     }
     flush(); index += 2;
   }
+  let body;
+  try { body = markdown.renderer.render(rendered, markdown.options, {}); }
+  catch (failure) { throw error(entry.file, failure.message); }
   return {
     title: entry.metadata.title,
     text: compact(entry.metadata.summary ?? firstParagraph),
     type: mediaCounts.videos ? "video" : mediaCounts.images ? "image" : "text",
-    body: markdown.renderer.render(rendered, markdown.options, {}), headings, mediaCounts,
+    body, headings, mediaCounts,
     ...Object.fromEntries(["publishedAt", "updatedAt"].filter(field => Object.hasOwn(entry.metadata, field)).map(field => [field, entry.metadata[field]]))
   };
 }

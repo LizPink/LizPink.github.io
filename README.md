@@ -22,6 +22,7 @@ lizpink-terminal/
 │       │   ├── command-input.css     # 命令输入区
 │       │   ├── content-sidebar.css   # 左侧内容目录
 │       │   ├── article-outline.css   # 本页目录与阅读布局
+│       │   ├── math.css              # 数学公式、中文与窄屏滚动
 │       │   ├── image-viewer.css      # 同页图片预览与暗背景
 │       │   └── image-comparison.css  # 两图分割线对比与标签
 │       ├── js/
@@ -52,6 +53,8 @@ lizpink-terminal/
 ├── scripts/
 │   ├── build-content.mjs      # 解析配置、Markdown 与 HTML，生成内容和素材
 │   ├── html-content.mjs       # 常见 HTML 标签与 Markdown 的统一解析
+│   ├── math-content.mjs       # 数学语法标记与 KaTeX 构建时排版
+│   ├── math-assets.mjs        # 发布同版本公式样式、字体与许可
 │   ├── content-paths.mjs      # 资源分隔符、绝对路径与发布路径转换
 │   ├── content-dates.mjs      # 根据文章的 Git 提交计算更新日期
 │   ├── asset-version.mjs      # 按文件内容生成资源版本，减少旧缓存影响
@@ -157,7 +160,11 @@ npm run dev
 
 3、当确认预览内容没有问题后，将新增文件提交到 Git 仓库，并合并、推送到 `main` 分支。GitHub 会自动检查并发布网站。
 
+数学公式支持 `$...$` 行内写法和 `$$` 独立公式块；中文写在 `\text{...}` 中，详细示例见[内容维护指南](docs/CONTENT.md#添加数学公式)。
+
 ## 第三方来源与许可
+
+数学排版使用 [KaTeX](https://katex.org/) **0.19.1**，数学语法解析使用 [@mdit/plugin-tex](https://mdit-plugins.github.io/tex.html) **1.3.0**，均采用 MIT License，版本固定在 `package.json` 和依赖锁文件中。KaTeX 在生成网站时运行，发布目录 `dist/assets/vendor/katex/` 包含同一安装版本的原始样式、字体及 `LICENSE`；浏览器无需加载 KaTeX JavaScript 或外部 CDN。源码与许可分别来自 [KaTeX 官方仓库](https://github.com/KaTeX/KaTeX) 和 [mdit-plugins 官方仓库](https://github.com/mdit-plugins/mdit-plugins)。
 
 图片拖动对比使用 [img-comparison-slider](https://github.com/sneas/img-comparison-slider)，许可证版权署名为 **Dmytro Snisarenko（Copyright © 2019）**。本项目固定使用 **8.0.7**，以 [npm 同版本发布包](https://www.npmjs.com/package/img-comparison-slider/v/8.0.7) 为来源，采用 **MIT License**。
 

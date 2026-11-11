@@ -1,4 +1,5 @@
 import { parseFragment } from "parse5";
+import { enableArticleMath, articleMathEnvironment } from "./math-content.mjs";
 
 const comparisonParsers = new WeakSet();
 
@@ -39,22 +40,32 @@ function enableComparisonBlocks(markdown) {
 // fences remain text nodes and are never interpreted as authored HTML.
 export function parseArticleTokens(markdown, source, context = {}) {
   enableComparisonBlocks(markdown);
+  enableArticleMath(markdown);
   const Token = markdown.parseInline("x", {})[0].constructor;
   // Choose a temporary tag absent from author input. Raw HTML cannot impersonate
   // a generated comparison, and the marker never reaches the published output.
   let comparisonTag = "lz-article-comparison";
   while (source.toLowerCase().includes(comparisonTag)) comparisonTag += "-block";
-  const environment = { ...context, articleComparisons: [], articleComparisonTag: comparisonTag };
+  const environment = { ...context, articleComparisons: [], articleComparisonTag: comparisonTag, ...articleMathEnvironment(source) };
+  const mathTag = environment.articleMathTag;
   const html = markdown.render(source, environment);
   const tree = parseFragment(html, { sourceCodeLocationInfo: true });
   const inlineTags = new Set(["span", "strong", "em", "s", "del", "u", "mark", "small", "sub", "sup", "kbd", "samp", "abbr"]);
   const containers = new Set(["div", "section", "article", "header", "footer", "main"]);
-  const blocks = new Set(["p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "ul", "ol", "li", "table", "thead", "tbody", "tfoot", "tr", "th", "td", "hr", "pre", "figure", "figcaption", "details", "summary", comparisonTag, ...containers]);
+  const blocks = new Set(["p", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "ul", "ol", "li", "table", "thead", "tbody", "tfoot", "tr", "th", "td", "hr", "pre", "figure", "figcaption", "details", "summary", comparisonTag, mathTag, ...containers]);
   const attrs = node => Object.fromEntries((node.attrs || []).map(attribute => [attribute.name, attribute.value]));
   const text = node => node.nodeName === "#text" ? node.value : (node.childNodes || []).map(text).join("");
   const token = (type, tag = "", nesting = 0) => new Token(type, tag, nesting);
   const literal = content => Object.assign(token("text"), { content });
   const inline = children => Object.assign(token("inline"), { children });
+  const math = node => {
+    const formula = environment.articleMath[Number(attrs(node)["data-index"])];
+    const result = token(formula.displayMode ? "article_math_block" : "article_math_inline");
+    result.content = formula.content;
+    result.meta = { displayMode: formula.displayMode };
+    result.block = formula.displayMode;
+    return result;
+  };
   const wrap = (tag, children, attributes = {}) => {
     const open = token(`${tag}_open`, tag, 1);
     for (const [name, value] of Object.entries(attributes)) open.attrSet(name, value);
@@ -103,6 +114,7 @@ export function parseArticleTokens(markdown, source, context = {}) {
       if (node.nodeName === "#text") return [literal(nodes[index - 1]?.tagName === "br" ? node.value.replace(/^\n/, "") : node.value)];
       if (node.nodeName === "#comment") return [];
       const tag = node.tagName, attributes = attrs(node);
+      if (tag === mathTag) return [math(node)];
       if (tag === "img" || tag === "video") return [media(node)];
       if (tag === "br") return [token("hardbreak", "br")];
       if (tag === "code") return [Object.assign(token("code_inline", "code"), { content: text(node) })];
@@ -147,6 +159,7 @@ export function parseArticleTokens(markdown, source, context = {}) {
       if (!blocks.has(node.tagName)) { pending.push(...inlines([node])); continue; }
       flush();
       const tag = node.tagName, attributes = attrs(node), children = node.childNodes || [];
+      if (tag === mathTag) { output.push(math(node)); continue; }
       if (tag === comparisonTag) {
         const comparison = environment.articleComparisons[Number(attributes["data-index"])];
         const parts = parseArticleTokens(markdown, comparison.content, environment);

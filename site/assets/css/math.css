@@ -1,0 +1,29 @@
+.article-body .katex { font-size: 1.1em; }
+.article-body .katex .cjk_fallback { font-family: var(--font-body); }
+
+.article-math-display {
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+  margin: 28px 0;
+  padding: 12px 4px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+}
+.article-math-display:focus-visible { outline: 1px solid var(--accent); outline-offset: 4px; }
+.article-math-display > .katex-display { min-width: max-content; margin: 0; }
+
+/* Let equation numbers reserve their own width instead of covering a long
+   formula. The two spacers keep the expression centered when room is available. */
+.article-math-display .katex-html:has(> .katex-tag) {
+  display: flex;
+  align-items: baseline;
+  width: max-content;
+  min-width: 100%;
+}
+.article-math-display .katex-html:has(> .katex-tag)::before,
+.article-math-display .katex-html:has(> .katex-tag)::after { content: ""; flex: 1; }
+.article-math-display .katex-html:has(> .katex-tag)::after { order: 1; min-width: 2em; }
+.article-math-display .katex-html > .katex-base { flex: none; }
+.article-math-display .katex-html > .katex-tag { position: static; flex: none; order: 2; }

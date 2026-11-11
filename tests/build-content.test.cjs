@@ -556,7 +556,7 @@ test("importing a builder copy does not execute its CLI or generate output", asy
   await write(copy, await fs.readFile(script));
   await write(path.join(root, "scripts/asset-version.mjs"), await fs.readFile(path.join(project, "scripts/asset-version.mjs")));
   await write(path.join(root, "scripts/content-dates.mjs"), await fs.readFile(path.join(project, "scripts/content-dates.mjs")));
-  for (const name of ["html-content.mjs", "content-paths.mjs", "build-files.mjs"]) {
+  for (const name of ["html-content.mjs", "math-content.mjs", "content-paths.mjs", "build-files.mjs"]) {
     await write(path.join(root, "scripts", name), await fs.readFile(path.join(project, "scripts", name)));
   }
   const result = spawnSync(process.execPath, ["--input-type=module", "-e", `await import(${JSON.stringify(pathToFileURL(copy).href)});`], { cwd: root, encoding: "utf8" });

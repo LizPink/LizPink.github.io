@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { buildContent } from "./build-content.mjs";
 import { assetVersion, withAssetVersion } from "./asset-version.mjs";
 import { renameWithRetry, removeWithRetry, unlinkWithRetry } from "./build-files.mjs";
+import { copyMathAssets } from "./math-assets.mjs";
 
 export const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -79,6 +80,7 @@ export async function build(root = projectRoot) {
   let movedPrevious = false, content, failure;
   try {
     await fs.cp(path.join(root, "site"), staging, { recursive: true, errorOnExist: true, force: false });
+    await copyMathAssets(staging);
     content = await buildContent({ contentDir: path.join(root, "content"), outputDir: staging });
     const publicFiles = path.join(root, "content/files");
     async function checkFiles(directory) {
