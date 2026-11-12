@@ -10,7 +10,7 @@ publishedAt:	"2026-10-01"
 
 ## 更新日志
 
-### 2026-11-04 漫反射材质
+###  2026-11-04 漫反射材质
 
 更新了材质设定，在添加了基础光源模块的基础上，引入了基础的材质（Lambert Material）. 这是一个完全漫反射的材质（反射光能的空间分布是均匀的），其 BRDF 为一个常函数。为了检测渲染器的最新功能，我们仍然采用 Cornell Box 作为检测的场景，只不过我们在场景里额外为各个物体添加了 Lambert 材质。
 
@@ -26,13 +26,13 @@ publishedAt:	"2026-10-01"
 
 <img src="C:\Users\13377\Desktop\Web\lizpink-terminal\content\entries\2026Fall-Render-from-Scratch\photos\20261104-CornellBox.png" alt="20261104-CornellBox" style="zoom:33%;" />
 
-<img src="C:\Users\13377\Desktop\Web\lizpink-terminal\content\entries\2026Fall-Render-from-Scratch\photos\2026-11-09-CornellBox(1).png" alt="2026-11-09-CornellBox(1)" style="zoom:33%;" />
+<img src="C:\Users\13377\Desktop\Web\lizpink-terminal\content\entries\2026Fall-Render-from-Scratch\photos\20261109-CornellBox(1).png" alt="2026-11-09-CornellBox(1)" style="zoom:33%;" />
 
 :::
 
 通过另外一张更加明显的场景图片，我们可以看到，全局光照技术极大提升了场景渲染的真实度。例如在天花板，你可以看到天花板的左侧被红色的光映照成了浅红色、天花板的右侧被蓝色光映照成了浅蓝色；与此同时在左边的小球中，左侧表面被红色的墙体反射成了红色、右侧的表面被右边的墙体反射成了蓝色。
 
-<img src="C:\Users\13377\Desktop\Web\lizpink-terminal\content\entries\2026Fall-Render-from-Scratch\photos\2026-11-09-CornellBox(2).png" alt="2026-11-09-CornellBox(2)" style="zoom:33%;" />
+<img src="C:\Users\13377\Desktop\Web\lizpink-terminal\content\entries\2026Fall-Render-from-Scratch\photos\20261109-CornellBox(2).png" alt="2026-11-09-CornellBox(2)" style="zoom:33%;" />
 
 当然全局光照技术并不是百利而无一害的，为了引入局部光照，我们需要更多的计算开销才能渲染一个像素点。也就是说渲染上面这张图片的时间比渲染之前图片的时间明显增加了。
 
@@ -54,9 +54,43 @@ publishedAt:	"2026-10-01"
 
 :::
 
-### 2026-11-？ 镜面反射材质
+### 2026-11-10 多线程智能指针优化
 
-预告：我们最近将引入新的材质——镜面反射材质（Specular Material），这将是完全不同于 Lambert 的材质，它具有完全的镜面反射性质，也就是说它的 BRDF 将只在某一个特定方向具有脉冲分布！
+大家好！这是一期杂谈。今天我们想来谈谈C++项目中的智能指针与计算优化问题，尤其是多线程的智能指针优化问题。在C++11标准中引入了三类智能指针 `unique_ptr`、`shared_ptr`、`weak_ptr` 用来代替裸指针的地位。智能指针引入的初衷是为了自动解决资源释放的问题——原来裸指针需要依赖程序员手动管理资源的申请与释放，而资源释放经常被忽略，从而造成内存泄漏与未定义的访问行为。
 
-具体来说，镜面材质的 BRDF 分为两种情况：导体和绝缘体。因为物质内部的电子行为会影响光的作用效果，需要分别讨论。针对导体，物理学家菲涅尔（Fresnel）在1820年代通过实验确定了光学折射的规律：
+不过今天，我们不是要讨论智能指针在资源释放方面的作用，而是着重于讨论（1）智能指针的工作原理与（2）多线程中智能指针的使用心得与技巧。
+
+在我们的渲染器项目中，混杂着裸指针智能指针
+
+### 2026-11-11 镜面反射材质
+
+晚上好！我们的渲染器引入新的材质——镜面反射材质（Specular Material）与与之相关的折射光渲染技术。镜面材质是完全不同于 Lambert 的材质，它具有完全的镜面反射性质！在光学上，镜面材质在光学上也分为导体（金属）和绝缘体（玻璃）两种性质，我们的渲染器将完全支持两种镜面材质的渲染！
+
+金属镜面材质物体，支持光在其表面上发生镜面反射，但是不支持光在其表面发生折射，也就是说金属球本身不透光（吸收的光能被完全转换为了热能）。
+
+<img src="C:\Users\13377\Desktop\Web\lizpink-terminal\content\entries\2026Fall-Render-from-Scratch\photos\20261111-ConellBox-ConductiveSpecular.png" alt="20261111-ConellBox-ConductiveSpecular" style="zoom:33%;" />
+
+而绝缘镜面材质物体，不仅支持光在其表面上发生镜面反射，还支持光在其表面发生折射，也就是说绝缘球体本身能吸收的光能有限，仍将有光透过球体本身。
+
+<img src="C:\Users\13377\Desktop\Web\lizpink-terminal\content\entries\2026Fall-Render-from-Scratch\photos\20261111-CornellBox-DielectricSpecular(1).png" alt="20261111-CornellBox-DielectricSpecular" style="zoom:33%;" />
+
+<img src="C:\Users\13377\Desktop\Web\lizpink-terminal\content\entries\2026Fall-Render-from-Scratch\photos\20261111-CornellBox-DielectricSpecular(2).png" alt="20261111-CornellBox-DielectricSpecular(2)" style="zoom:33%;" />
+
+两种镜面材质的共性与特性决定了我们渲染的结构。具体来说，镜面材质的 BRDF 分为两种情况：导体（例如金属）和绝缘体（例如玻璃）。因为物质内部的电子行为会影响光的作用效果，需要分别讨论。针对导体材质，其 BRDF 公式满足:
+$$
+\text{BRDF}_{\text{conductor}}(p,\omega_o,\omega_i)=
+\begin{cases}
+	0,&\omega_i\neq R_{\bold{n}}(\omega_o)
+	\\[0.8em]
+	\dfrac{F_{\text{conductor}}(\theta)}{\cos\theta}, &\omega_i=R_{\bold{n}}(\omega_o)
+\end{cases}
+\tag{1}
+$$
+其中 $\omega_i=R(\omega_o)$ 表示入射方向与出射方向具有镜面反射关系，条件 $R_{\bold{n}}$ 表示可以通过该点的法向量方向判断这种关系。系数 $F_{\text{conductor}}$ 是导体材料的菲涅尔（Fresnel）系数，表示发生镜面反射时，出射亮度相对于入射亮度的比例。
+
+
+
+### 2026-11-? 采样算法优化
+
+预告：我们会在11月份的晚些时候，提出采样相关的基础理论和算法——包括均匀采样和重要性采样，并且根据相应的采样算法，优化我们的渲染过程。
 
