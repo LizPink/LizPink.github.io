@@ -1,6 +1,7 @@
 // Native dialog enhancement; the original image link remains a usable fallback.
 (() => {
   "use strict";
+  const t = (source, parameters = {}) => window.LIZPINK_I18N?.t(source, parameters) ?? String(source).replace(/\{(\w+)\}/g, (match, key) => Object.hasOwn(parameters, key) ? String(parameters[key]) : match);
 
   let root = null;
   let scrollRoot = null;
@@ -25,7 +26,7 @@
       comparison.style.removeProperty("height");
       comparison.style.removeProperty("--comparison-ratio");
     }
-    if (title) title.textContent = "图片预览";
+    if (title) title.textContent = t("图片预览");
     dialog.dataset.mode = "";
     dialog.dataset.state = "closed";
   }
@@ -79,7 +80,7 @@
       if (!valid() || settled) return;
       settled = true;
       dialog.dataset.state = "error";
-      status.textContent = "图片暂时无法显示，请关闭后重试。";
+      status.textContent = t("图片暂时无法显示，请关闭后重试。");
       status.hidden = false;
       image.hidden = true;
     };
@@ -108,7 +109,7 @@
       settled = true;
       dialog.dataset.state = "error";
       comparison.hidden = true;
-      status.textContent = "对比图片暂时无法显示，请关闭后重试。";
+      status.textContent = t("对比图片暂时无法显示，请关闭后重试。");
       status.hidden = false;
     };
     const fit = () => {
@@ -176,8 +177,8 @@
     image.alt = session.alt || "";
     caption.textContent = session.caption;
     caption.hidden = !caption.textContent;
-    if (title && session.kind === "comparison") title.textContent = "图片对比";
-    status.textContent = "正在加载图片…";
+    if (title && session.kind === "comparison") title.textContent = t("图片对比");
+    status.textContent = t("正在加载图片…");
     status.hidden = false;
     try { onOpen(); }
     finally {
@@ -232,7 +233,7 @@
       media.src = urls[index];
     });
     open(snapshot(button, { kind: "comparison", region: copy, images,
-      caption: `${before.alt || "之前"} / ${after.alt || "之后"}` }), event);
+      caption: `${before.alt || t("之前")} / ${after.alt || t("之后")}` }), event);
   }
   function activate(event) {
     if (event.defaultPrevented || event.button !== 0 || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey) return;

@@ -1,0 +1,631 @@
+{
+  "version": 1,
+  "glossaryVersion": "graphics-v1",
+  "recipeVersion": "en-v1",
+  "segments": {
+    "55ab24a7079d5519c04dab7fba9c84bbcfb764f33f2e49b23dcf86ad3751f0b1": {
+      "source": "首页",
+      "text": "Home"
+    },
+    "1ca85e2db73c8cedf3b9bd6ca237fc2caee2bd51e56ba0c264652d0ef1845321": {
+      "source": "生活",
+      "text": "Life"
+    },
+    "a1295a521b2e2fe928909d90a49fbca887f2dd8d537d08e698e5e5124ed5d82c": {
+      "source": "经历",
+      "text": "Experience"
+    },
+    "233a62df995f3fd10119a1678835ef65f875ee98d2add308d09cbbe160643876": {
+      "source": "项目",
+      "text": "Projects"
+    },
+    "3b5f763c0693da3ecfd5289bdf7312b119b8bff2319fa328fcd801f72c926eaa": {
+      "source": "帮助",
+      "text": "Help"
+    },
+    "eb0d1a879d6601a1ee1a120be5db346ee8c18ca17e63b26342802fa855b4036c": {
+      "source": "展开",
+      "text": "Expand"
+    },
+    "e3f51f0602e07251126643c15eaa996b51a969da66e3ab32bbfe7ebe02fd87b9": {
+      "source": "收起",
+      "text": "Collapse"
+    },
+    "9dee13aad243c47e075348bc669db92754292c48d84a64674f082698e7fb7ff5": {
+      "source": "浏览路线",
+      "text": "Browse"
+    },
+    "e6816829d8819ce0166aad3ed89d18e6a3bf3f7483466ab08f58c05385872e83": {
+      "source": "操作",
+      "text": "Actions"
+    },
+    "0c4cb7809c3afc975d730e0a253f5b20af08a95ad8a1ea7c2c842b07bcef524a": {
+      "source": "内容目录",
+      "text": "Contents"
+    },
+    "30a82148a97c79c8ade2f66c2db40adb4c32c887019edf482dcfa992788f5056": {
+      "source": "本页目录",
+      "text": "On this page"
+    },
+    "4dd13a70ae4b9c462016aafc2eb3f8eb09ce5403095d126a7d18bb48f4f8334c": {
+      "source": "全部内容",
+      "text": "All entries"
+    },
+    "bc9fd1a06886c81d0a0b19d75ab75baa901a33eb621da673020a64085a2533dd": {
+      "source": "最近内容",
+      "text": "Recent entries"
+    },
+    "ebdaf51146bd6579dca4fc453d7d0abc92e56c91ec63857ff2123d17f4b2a572": {
+      "source": "简历",
+      "text": "Résumé"
+    },
+    "24c777d46ce27f0a83f93c9a1c04380f39a705a5fe33b285d01855dce3d39c38": {
+      "source": "打开 PDF 简历 ↗",
+      "text": "Open PDF résumé ↗"
+    },
+    "216674426a5c377c28ed4cd5f08e8071cfb344d3ae4d6a847d8825dd1e983b2f": {
+      "source": "打开 PDF 简历",
+      "text": "Open PDF résumé"
+    },
+    "7351a8114de2753a385fca967711d61ceb80fa1699300df9940f7ff91567e7cd": {
+      "source": "PDF 待添加",
+      "text": "PDF coming soon"
+    },
+    "cac35a08849095afe3de831101a0fbbed817c89f3d032356ee8343f74e87925f": {
+      "source": "职业：{role}",
+      "text": "Role: {role}"
+    },
+    "6672ff267d525f1ff1451f210215299143152856800ed8fe465957be1298961c": {
+      "source": "关注：{interests}",
+      "text": "Interests: {interests}"
+    },
+    "7582dfb9bdf983c517d6278b1170dfbbaf9113ffaea3884409fbe94506b406df": {
+      "source": "这个分区还没有内容。",
+      "text": "There are no entries in this section yet."
+    },
+    "9c95ee379dd10dc06b62deca332edc0bbeb2a1e29ac15a035b744fb353542964": {
+      "source": "这个栏目还没有内容。",
+      "text": "There are no entries in this section yet."
+    },
+    "79affb316eb16cc2f439c184192308324652e08c70f908670030927b97f78cd4": {
+      "source": "这个角落还在整理，之后会陆续放入内容。",
+      "text": "This section is taking shape. More entries will be added soon."
+    },
+    "29c03589f3bbb3f7b96da7ff62cb72aea35560446b8cdee66e93ea2568c931c5": {
+      "source": "未找到这个栏目",
+      "text": "Section not found"
+    },
+    "fc18652899f37a25cb1373d220a09311257565802f49c7b7c67599444cd7a0cf": {
+      "source": "未命名内容",
+      "text": "Untitled entry"
+    },
+    "e92e8a510f3b3d0b24ff53f1e5ef328fd6c900fdc136e1a56795876d634a57c5": {
+      "source": "未填写",
+      "text": "Not specified"
+    },
+    "e5537c5729e2693d101e6c4214897e87098e62adffc865baaf5da5c2cd2a27b3": {
+      "source": "创建于",
+      "text": "Published"
+    },
+    "2b091e12c7fa811737bed4d8a5915b54c376d42bec481290140fd3006ada9068": {
+      "source": "更新于",
+      "text": "Updated"
+    },
+    "10fd81f37c1ed3075588d24773a5df3b77005ad3a44cb74c88ef09f4c019b730": {
+      "source": "更新",
+      "text": "Updated"
+    },
+    "2bed20d01188010fd5abccee3ca346b96a9443467cc15c76a26995a69c4594b8": {
+      "source": "日期",
+      "text": "Date"
+    },
+    "7d6c3d768863dc9da91bc65b903299310e0c8206393a1b812f492d08342d9a86": {
+      "source": "就绪",
+      "text": "Ready"
+    },
+    "91333ce3d41f50bd631dba7549b85e4bb2b1fa538784f76a3635b8a077310dde": {
+      "source": "输入中",
+      "text": "Typing"
+    },
+    "0bca8050474b22df4cf52c5bfeecb2ac773c7d5e6cae543d16a381a7ac1667b4": {
+      "source": "已打开：{title}",
+      "text": "Opened: {title}"
+    },
+    "2c54ce314ec9d2c13ad714321720e087761a1db706f3d206f884e7d94fdce424": {
+      "source": "输入 help 查看命令。",
+      "text": "Type help to see available commands."
+    },
+    "c1daf1064f299ff2564ccfddfac8d0935f1914ec3fc9a44d05eca27dc98465c2": {
+      "source": "没有匹配的命令。输入 help 查看命令。",
+      "text": "No matching command. Type help to see available commands."
+    },
+    "492d4e6095a6189629ba0344630adb36ea90f9e9443b11ccd1c12d7b6142fd2e": {
+      "source": "最近的输出没有可展开的详情。",
+      "text": "There are no expandable details in the current view."
+    },
+    "b9f17442c03980f17858748218c29e158e4aafc5a4ed86ab4dd30ab4602b0d1f": {
+      "source": "未识别“{command}”。{suggestion}",
+      "text": "Unknown command “{command}”. {suggestion}"
+    },
+    "bed1753d14e222a6adf686d0dd2706ce7dc3cbe1c6a920045dfc7e21f3376f6f": {
+      "source": "试试 {commands}。",
+      "text": "Try {commands}."
+    },
+    "34fef0f401e67b89f352c4db744d8f00cfd5015cd5190ca45a3922b1e51b20fd": {
+      "source": "或",
+      "text": "or"
+    },
+    "194da51dd7609c581cac81a1e77ace51737a7a566f12db0fbd2a8686481109c7": {
+      "source": "这段媒体暂时无法显示。",
+      "text": "This media is currently unavailable."
+    },
+    "c94cfdb4b8707a1e74f1fbe74d4da398f3f49b835345004e5014dd829f1d5383": {
+      "source": "侧栏快捷键",
+      "text": "Sidebar shortcuts"
+    },
+    "fd3035188052fdc40e0ad3d6a949b6ed13acd91f6bebc3016e365ba8bff30579": {
+      "source": "显示/隐藏左侧目录",
+      "text": "Show or hide the contents sidebar"
+    },
+    "cf845d9ba19aca8712abaca4716a32d2726028325bad31f57bd59d4679f3a2dc": {
+      "source": "显示/隐藏右侧目录",
+      "text": "Show or hide the page outline"
+    },
+    "6954f2aeb140df527060fd3fbe2c4361ba90d6a23f4629fa41843562cbc1c8c5": {
+      "source": "执行",
+      "text": "Run"
+    },
+    "1b7b6b80de16d46f7f47b7bf4afe86548991c3a721c41110df1dc2c226172097": {
+      "source": "补全",
+      "text": "Complete"
+    },
+    "5d3d8fba17d3dfdabae97f9bec2d3965ae4a1cc00d14c785b72064054b306808": {
+      "source": "历史",
+      "text": "History"
+    },
+    "b84f87c009ed498dda39a633c540abca16aa5d97afd95ff7771da2f345c27472": {
+      "source": "开始输入",
+      "text": "Start typing"
+    },
+    "b9536e6af744700c038f327762ec0b3b1071b20005543a22b56d49c8e9e4aa54": {
+      "source": "返回阅读",
+      "text": "Return to reading"
+    },
+    "bb4030ae15b779e14ac1fe78ba434e9ec4a3b8bf8053fa8224f08f2f52d8d9ed": {
+      "source": "离开",
+      "text": "Move focus"
+    },
+    "a970335706315de1e91e9d09307932fecdd41f1414ca57fbfe8c782e3b66fb86": {
+      "source": "或 {number}",
+      "text": "or {number}"
+    },
+    "10ac0ea9900fd09ce5f515c69665d6097ee2312c3940d3cc2aea003312ceabc8": {
+      "source": "按下斜杠键开始输入，输入 help 查询命令",
+      "text": "Press slash to start typing, or type help to see commands"
+    },
+    "397f59b391926aa1ca606c8024565532d8f4b33207f19e90778894afc4d1ee47": {
+      "source": "按下 / 输入命令",
+      "text": "Press / to type a command"
+    },
+    "d7698006907c5a23c55a1f62e20380df55239c2b186c999e7a00cd34846c46e0": {
+      "source": "输入 help 查询命令",
+      "text": "Type help to see commands"
+    },
+    "a587881aa6a3ff9e68805bbde3c70084de1496d37bb08e4bde567358c77928a3": {
+      "source": "输入 help 查询命令。按 Enter 执行，按 Escape 返回阅读。",
+      "text": "Type help to see commands. Press Enter to run, or Escape to return to reading."
+    },
+    "8a3afccb11057b2e4c708f97d49042ea38a19bf262d4dc945d3b02f578433ad6": {
+      "source": "按斜杠键或点击开始输入命令",
+      "text": "Press slash or click to type a command"
+    },
+    "ecfb4c32b1cee1c5e8d41831c5a0b195332b9891961d9820b5fbac82aa8e9f48": {
+      "source": "返回阅读并保留草稿",
+      "text": "Return to reading and keep your draft"
+    },
+    "1c380ff6cbf7560cbb0a9a628ea10f30b8099fcd15cad4637744810fd7648175": {
+      "source": "Esc 返回阅读",
+      "text": "Esc to read"
+    },
+    "f3a26bdb3377828332eb922cd282cbeecfe65531fb9f1151b69c35d8d7134415": {
+      "source": "命令模式，按 Escape 返回阅读并保留草稿。",
+      "text": "Command mode. Press Escape to return to reading and keep your draft."
+    },
+    "91fbdd7f9ff8f8d7259639c448a63a41929cce73af8da4bff46d343533b02eea": {
+      "source": "阅读模式，草稿已保留，按斜杠键继续输入。",
+      "text": "Reading mode. Your draft is saved. Press slash to continue typing."
+    },
+    "52c7d9345999e87b6fea12916c5418417eecf0dcddeef6fd81235be7a4f165b6": {
+      "source": "图片预览",
+      "text": "Image preview"
+    },
+    "005e0bdb11afa6fd114ef5fa1f6dcd246b8f5deb807f108e0acf19dc562f5b6b": {
+      "source": "图片对比",
+      "text": "Image comparison"
+    },
+    "da64eaea0beb6cd6d80d2cb5f2d38a9b79efbd9a276c0b9625fd9bbcc972ef68": {
+      "source": "Esc 关闭",
+      "text": "Esc to close"
+    },
+    "7aeac5312a874663692219122aaefed2886fef11dccbdf671819ae68360aef98": {
+      "source": "关闭图片预览",
+      "text": "Close image preview"
+    },
+    "b6abfc10ffaa57cd84cd6f0bc88905af3d38508ab57e889e0cfa3cf8a9b573d0": {
+      "source": "关闭图片预览（Esc）",
+      "text": "Close image preview (Esc)"
+    },
+    "39b6d48bbad524bb3170abf40aa569e780e868577cfd2436c5181ca73d69e474": {
+      "source": "图片暂时无法显示，请关闭后重试。",
+      "text": "This image is unavailable. Close the preview and try again."
+    },
+    "3e9cb89e301d8c4b5fe49d617cf1097c70537f6e008d4a8af67274312a9c5a3f": {
+      "source": "对比图片暂时无法显示，请关闭后重试。",
+      "text": "The comparison images are unavailable. Close the preview and try again."
+    },
+    "604b84c1b8b4fb2ef943fc64306fc6461c263ab631b2f5fe4b106cbb924aff2f": {
+      "source": "正在加载图片…",
+      "text": "Loading image…"
+    },
+    "8554c3bd7bbbd1ec161f82122d280b6fa00f45b1d27b68ad1d993f73f59adbd0": {
+      "source": "之前",
+      "text": "Before"
+    },
+    "c5fc90add958c7bbd59bec8700b42aef365aa4b43cc373c46ebf7105a7dfea4f": {
+      "source": "之后",
+      "text": "After"
+    },
+    "88d01aa0ab7bea71a90a05cdf803c9337f00ab2e767b152780138a93bb935a43": {
+      "source": "正在加载对比图片…",
+      "text": "Loading comparison images…"
+    },
+    "b99282e83d806d4df3821bc72af23b2a50e33ed799f1b07983b878bd42e66ec3": {
+      "source": "左图显示 {left}%，右图显示 {right}%",
+      "text": "Left image {left}%, right image {right}%"
+    },
+    "8d9071a2f27110eb1c9c91fd9f50836352252d8b5e4be786abefc492de7db279": {
+      "source": "第一张图片暂时无法加载，请刷新页面重试。",
+      "text": "The first image could not be loaded. Refresh the page to try again."
+    },
+    "5409d64b6b35cace8d224a5ce62ec423665146458ec8150d347c3138fab28bd6": {
+      "source": "第二张图片暂时无法加载，请刷新页面重试。",
+      "text": "The second image could not be loaded. Refresh the page to try again."
+    },
+    "4f0acaf2144796cb0976873a0ca64637c988dd608cbc4a685b829313340f476c": {
+      "source": "打开第一张原图",
+      "text": "Open the first original image"
+    },
+    "03882bfd4246272e4d5570201af37867fb44ad478516cbe58a790134efbd36d3": {
+      "source": "打开第二张原图",
+      "text": "Open the second original image"
+    },
+    "7b00682bd0a207f301d5ace552cdce04aa9a5a3bd3f5d7c3b6344973ec0f4f5e": {
+      "source": "跳到正文",
+      "text": "Skip to content"
+    },
+    "681e8781ee1f49992af8d6907a23681e27b255e9b68eb8912ca6409d1b210a14": {
+      "source": "外观模式",
+      "text": "Appearance"
+    },
+    "f3f7c749fe8cdcebb294a1f76f41a62fe53f82bd64f8bffef657006e74f63cac": {
+      "source": "浅色模式",
+      "text": "Light mode"
+    },
+    "f70ee77bb54d7dbe07df2e35ea04889fe13f035ff29ef110b2473abc5bb034f2": {
+      "source": "深色模式",
+      "text": "Dark mode"
+    },
+    "1fa519fcc0809e99f1c5dd7fb932b087379303a235dff5ead0eea8f986fd9d5f": {
+      "source": "栏目",
+      "text": "Sections"
+    },
+    "46e06dc3d7a9c914446ac63bc9ca7327fb9ce1238dbc10e931006b7c12cf4aa6": {
+      "source": "终端输出",
+      "text": "Terminal output"
+    },
+    "3f2cbc4e49cd7aadc2c1544463eab76bfb8d556e1b6668495aa732f8532929e9": {
+      "source": "会话记录",
+      "text": "Session output"
+    },
+    "9428d614c560229d6d84f15c7532d1fe260c0968eb5a7a90c9477d4fc21ac913": {
+      "source": "命令行终端",
+      "text": "Command terminal"
+    },
+    "d1fe538900e7e9c94be242bcf37e066c43539cbc549b212386dba9c99036fc93": {
+      "source": "输入命令",
+      "text": "Type a command"
+    },
+    "8df2a6e8aa7fa3e468857c153cf17f9a1083d4fe7382faf8de4ca5beaf607826": {
+      "source": "可补全命令",
+      "text": "Command suggestions"
+    },
+    "075a39f1d0aa282ac13562e6b9bb0b43787a4809e34c2abe93a5c9b72c22a1c8": {
+      "source": "请启用 JavaScript 后浏览目录或使用命令。",
+      "text": "Enable JavaScript to browse the contents or use commands."
+    },
+    "04278a3329141a1864669e4af9d3b91e3c66a22aa63e364ba5998afc8728d77d": {
+      "source": "{name} 首页",
+      "text": "{name} home"
+    },
+    "6b6759e7e05fbf59bab612de6c4d97dc4d20db079f3f1dd2a6d309dfcf7be99d": {
+      "source": "展开内容目录",
+      "text": "Expand contents"
+    },
+    "32f271c265efdaa1b730ad84bbc0db1010bd725470f83f241897892296101ed6": {
+      "source": "收起内容目录",
+      "text": "Collapse contents"
+    },
+    "8165c6ea208b1428a70296dc90ad11278a7048cb5cbd2754966cf9120c8247b2": {
+      "source": "关闭内容目录",
+      "text": "Close contents"
+    },
+    "6f1cededeef45605a33016b11963f214c472d8382c92104da185241fb46bc659": {
+      "source": "关闭目录",
+      "text": "Close contents"
+    },
+    "803f7978d9cbde0be362abf2fc8caccc2d9e6519c2973bb193251f7ca51cff3a": {
+      "source": "展开目录",
+      "text": "Expand contents"
+    },
+    "df430a44dbb11b37087edffc66f558713b3af9b41c5f164d052c57eba4e90a7a": {
+      "source": "收起目录",
+      "text": "Collapse contents"
+    },
+    "5e361f499e961ab1a47356527845e3f8f8ac5b4fc053dbf470513a025073447e": {
+      "source": "展开内容目录（Ctrl+Alt+A）",
+      "text": "Expand contents (Ctrl+Alt+A)"
+    },
+    "5a2a27b27a1120f1f88a581b664fcc23be621c918fffc32ed55ea2c418eb698b": {
+      "source": "收起内容目录（Ctrl+Alt+A）",
+      "text": "Collapse contents (Ctrl+Alt+A)"
+    },
+    "3a2593cab2cf98c06db0d3fa9192b3636575391bc1e79954ea13193b07c55295": {
+      "source": "显示本页目录",
+      "text": "Show page outline"
+    },
+    "750e622817b1d387717b0c15ccce89230fed886bbe84b3a718938679c2c42d62": {
+      "source": "隐藏本页目录",
+      "text": "Hide page outline"
+    },
+    "616890885055ef6ec3cd1d87a662ff24dd1306861d10ec22c06331bb92e7ac13": {
+      "source": "展开本页目录",
+      "text": "Expand page outline"
+    },
+    "360fc97e5caadc3507df3ff0bc4b08bbb42d72b16e7a9391b3ff8bc5c4ebf140": {
+      "source": "收起本页目录",
+      "text": "Collapse page outline"
+    },
+    "19efe85b03791db869a1c29e87e1980d7bcccffc3869ea57388adcec2eae3120": {
+      "source": "显示本页目录（Ctrl+Alt+B）",
+      "text": "Show page outline (Ctrl+Alt+B)"
+    },
+    "8e6b42d351d6c532e3283d774d41f508bad96085e59b40d4b22b5c32bfb7a726": {
+      "source": "隐藏本页目录（Ctrl+Alt+B）",
+      "text": "Hide page outline (Ctrl+Alt+B)"
+    },
+    "e89b222045a826804aad8a3cd0ce16ee9f30508cd9b7a69b57bb1be1715dfdad": {
+      "source": "展开本页目录（Ctrl+Alt+B）",
+      "text": "Expand page outline (Ctrl+Alt+B)"
+    },
+    "f9a3c206c542060abd4ca686410a63d8d20be711d36d7ac75c8896911509dee3": {
+      "source": "收起本页目录（Ctrl+Alt+B）",
+      "text": "Collapse page outline (Ctrl+Alt+B)"
+    },
+    "34899d0c846818286ebeaad200d5c101090b5cde7befd75587bbe4bcfa8e935a": {
+      "source": "目录宽度 {width} 像素",
+      "text": "Contents width: {width} pixels"
+    },
+    "f6b694677f0698bc3600d0fcb953297ebd727db0896c19a117b065d9a5316811": {
+      "source": "调整内容目录宽度，左右方向键调节，Home 最窄，End 最宽",
+      "text": "Resize contents. Use arrow keys to adjust, Home for the minimum, or End for the maximum."
+    },
+    "71c68f42fad213a7d4d427a97d9d08e297650ace56972a3dd348d66612138b00": {
+      "source": "拖动调整目录宽度；双击恢复默认宽度",
+      "text": "Drag to resize contents; double-click to restore the default width"
+    },
+    "d1021c500ba35ff8f041591bfe17e4e0d0dae80ec73c23a610df527006c7ef44": {
+      "source": "{count} 项",
+      "text": "{count} entries"
+    },
+    "76a4300f601e5ba924f8cebfd2c24867a5d006b330d4cffcd126c350df1a443e": {
+      "source": "1 项",
+      "text": "1 entry"
+    },
+    "90c8601e2e9ae11f97d7630ce4461756b7e5efeb43e7b11b0228f0476cfdfe0b": {
+      "source": "个人终端",
+      "text": "Personal terminal"
+    },
+    "3598c1aa49b882a3f626f4a80d7302ead8a5ec266fc423d34f48bb4a8af9ce0d": {
+      "source": "你好，我是 LizPink.",
+      "text": "Hi, I'm LizPink."
+    },
+    "cff3f880e404b3c92de0e642099119ce16b43e9f60505659e4f4ae5973359723": {
+      "source": "学生",
+      "text": "Student"
+    },
+    "dac73aa83a771db5d33bc7909502cc6601bc8b80761f9da798ca70c25aae2d3a": {
+      "source": "这个网站是我的个人空间。你可以从生活、经历或项目三个方向浏览。",
+      "text": "This website is my personal space. Explore my life, experience, and projects."
+    },
+    "55d538a332451e41a6715e1c2bca2841b6e11a7d0655ac7e40d1dda6b87cfcac": {
+      "source": "记录兴趣、随笔和生活片段，给学习之外的日常留一点位置，也保留过去的记录。",
+      "text": "Interests, notes, and moments from everyday life—a space beyond studying, and a record to look back on."
+    },
+    "1a1478e7f546a6b3d61d3828e4cd320567606ed1f2fd81dd07bd0bc171ac1110": {
+      "source": "整理学习经历、实践项目与技能，提供简历入口。",
+      "text": "My education, practical experience, projects, and skills, with a link to my résumé."
+    },
+    "24b7681ed3f294ff4a974e4b2d5e1cc4490c4d404b86f92c00f359f5553354f4": {
+      "source": "记录项目实践、学习过程，以及把想法变成作品的探索。",
+      "text": "Project work, learning in progress, and the process of turning ideas into things I can build."
+    },
+    "4b4cf714e009825ddd2b61c250f0771e3498cc8d20695a2e6bdcdb1769b95031": {
+      "source": "这这个项目中，我打算从零开始实现一个自己的光线追踪（离线）渲染器！这个项目的源代码已经发布到 GitHub 项目主页，这里会同步更新项目的开发信息。",
+      "text": "In this project, I plan to build my own ray-tracing (offline) renderer from scratch! The source code is available on the GitHub project page, and I will post development updates here."
+    },
+    "7260512b0920add3b7e6a03e2e31c78d4d190c64f3a16fd87b645192f9506cc5": {
+      "source": "这这个项目中，我打算从零开始实现一个自己的光线追踪（离线）渲染器！这个项目的源代码已经发布到 GitHub",
+      "text": "In this project, I plan to build my own ray-tracing (offline) renderer from scratch! The source code is available on the GitHub"
+    },
+    "1c26eb301358cdd0d070a0d4c294031451d2b221f218c7c735a6918fbb67ce24": {
+      "source": "项目主页",
+      "text": "project page"
+    },
+    "231ceaff29e46f054aabfa556cfc4af1c0717cb311f7b4ed99544ad2b836c5d6": {
+      "source": "，这里会同步更新项目的开发信息。",
+      "text": ", and I will post development updates here."
+    },
+    "26020ead7d713859b9eda7a290ee86d3c92f2d807cece5caec736c153c547b11": {
+      "source": "代码规范",
+      "text": "Coding conventions"
+    },
+    "b7583a74ec9a125435cf502c6a1e7c81a1e1e91915025935091b41f41b392be2": {
+      "source": "更新日志",
+      "text": "Development log"
+    },
+    "176a0a507a377274c070acd29c5912e75ec479d6667cfbac1f307a8bd3675cc9": {
+      "source": "漫反射材质",
+      "text": "Diffuse materials"
+    },
+    "607ee2044892d08ba6504a5d2b872a9190f673a799aeeba4f4c98934899f135e": {
+      "source": "更新了材质设定，在添加了基础光源模块的基础上，引入了基础的材质（Lambert Material）. 这是一个完全漫反射的材质（反射光能的空间分布是均匀的），其 BRDF 为一个常函数。为了检测渲染器的最新功能，我们仍然采用 Cornell Box 作为检测的场景，只不过我们在场景里额外为各个物体添加了 Lambert 材质。",
+      "text": "I updated the material system. With the basic light module in place, I introduced a Lambert material. It is a perfectly diffuse material, with a uniform spatial distribution of reflected light energy and a constant BRDF. To test the renderer's latest features, I used the Cornell Box again, this time assigning Lambert materials to the objects in the scene."
+    },
+    "89fb9ec953f30094580a337f7e20800dcbff154df61cd8f88bbb11ec7d1c1b25": {
+      "source": "查看大图：20261104-CornellBox",
+      "text": "View full-size image: 20261104-CornellBox"
+    },
+    "f1fc7fcadf8e431eeeda6a791d3c49ad859c47c96b4d2ec22e39f0aa02599dd6": {
+      "source": "可以看到，在这样一个具有两个光源的直射光场景中，漫反射材质整体不会有特别明亮的反射点。因为没有引入全局光照（间接光照部分），整个场景的亮度还是偏低，有一种比较暗淡的感觉。",
+      "text": "In this scene with two direct light sources, the diffuse materials do not produce particularly bright reflection spots. Without global illumination (the indirect lighting component), the overall scene is still fairly dark."
+    },
+    "fc5d14fb40a3ba4bce08204b3fcdb01688f6a21aee312b664ffe62bee8b30702": {
+      "source": "间接光照技术",
+      "text": "Indirect lighting"
+    },
+    "d2f163da833e72a70668d8773537d21f30cf0ddc86c3ae097551a9baec7ef69d": {
+      "source": "晚上好，我们最近引入了新的照明技术——间接光照技术（Indirect Lighting），这将完善我们已有的直接光照技术，使我们的照明渲染从局部光照拓展为全局光照！对于同样的场景，采用全局光照技术渲染的对比结果如下，明显比上一次更新时渲染的场景更加明亮了，同时左右两边墙体的反光颜色也能反映在天花板和球体表面上。",
+      "text": "Good evening! We recently added indirect lighting to complement our existing direct lighting, extending the renderer from local to global illumination. The comparison below shows the same scene rendered with global illumination. It is noticeably brighter than in the previous update, and light reflected from the walls on either side now brings their colors onto the ceiling and the spheres."
+    },
+    "55ac23850eadfde1e037f2ec9e625a2612c8327257edbc166b4ebee5fc9137df": {
+      "source": "拖动分割线对比两张图片",
+      "text": "Drag the divider to compare two images"
+    },
+    "eb23620a2ecc59a08e79f23d6acd106c243320a7fc0762d38e68089783a18e47": {
+      "source": "放大对比",
+      "text": "Enlarge comparison"
+    },
+    "94c709453d032670baeff9164e085d0724cc8add3173981b6e421ededb6b6276": {
+      "source": "通过另外一张更加明显的场景图片，我们可以看到，全局光照技术极大提升了场景渲染的真实度。例如在天花板，你可以看到天花板的左侧被红色的光映照成了浅红色、天花板的右侧被蓝色光映照成了浅蓝色；与此同时在左边的小球中，左侧表面被红色的墙体反射成了红色、右侧的表面被右边的墙体反射成了蓝色。",
+      "text": "Another, more striking image shows how much global illumination improves realism. On the ceiling, the left side is tinted pale red and the right side pale blue. On the small sphere at the left, its left surface reflects the red wall, while its right surface reflects the blue wall on the other side."
+    },
+    "693039a621c3c496af6afe3b1703676176e288820c96a1870f6e3e67b3ba1472": {
+      "source": "查看大图：2026-11-09-CornellBox(2)",
+      "text": "View full-size image: 2026-11-09-CornellBox(2)"
+    },
+    "71c5adc12abba58860f10f03944c70a7504df8cda8663f894ed3322908d6fc15": {
+      "source": "当然全局光照技术并不是百利而无一害的，为了引入局部光照，我们需要更多的计算开销才能渲染一个像素点。也就是说渲染上面这张图片的时间比渲染之前图片的时间明显增加了。",
+      "text": "Global illumination also comes at a cost: accounting for additional lighting requires more computation per pixel. Rendering the image above therefore takes noticeably longer than rendering the earlier image."
+    },
+    "8149e00e01c3e37b62aa760988ca3ceae8e912c0561e5bbc1d949295c4337bd8": {
+      "source": "在我们的测试中，设置 Release 模式、渲染 1920x1080 个像素、同时开启 20 个渲染线程、每个像素采样 100 次、全局光照最大递归深度为 10 层），在实验组和对照组各自进行了 5 次测试。情况表明：在开启直接光照的情况下，渲染时间的中位数为 47 秒，而开启了全局光照之后，这一数字跃升至 274 秒。",
+      "text": "In our tests, we used a Release build at 1920×1080 pixels, with 20 rendering threads, 100 samples per pixel, and a maximum global-illumination recursion depth of 10. We ran five tests for each configuration. The median rendering time was 47 seconds with direct lighting, rising to 274 seconds with global illumination."
+    },
+    "76b3020172c14ed0d54a25b94052c38a31e83e68ff03663beb45ecae3e6365bc": {
+      "source": "为此，在项目中我们采用了一项优化技术——俄罗斯轮盘（Russian Roulette）算法，在保证采样精度的情况下尽可能缩短渲染的时间，以下是俄罗斯轮盘算法的优点：我们的局部光照技术是使用递归完成计算的，为了防止计算的开销过大，我们限制了最大递归深度。因此，理论上如果需要还原真实的亮度，需要进行无限次递归。如果限制了采样（递归）次数，那么得到的估计值，在统计意义上一定是存在系统性偏误的。俄罗斯轮盘算法引入了统计意义上无偏的估计方法：每次计算时随即开始抛硬币，如果不幸则停止递归（计算反射光），如果幸运采取递归，并且对计算的亮度结果进行奖励，以补偿没有采取递归（没有计算反射光）的亮度损失。",
+      "text": "To reduce rendering time while preserving sampling accuracy, we introduced Russian roulette. Our lighting calculation is recursive, and we cap the recursion depth to limit computational cost. In theory, reproducing the full lighting contribution requires infinitely many recursive steps. A fixed sampling or recursion limit therefore introduces systematic bias. Russian roulette instead uses a statistically unbiased estimator: at each step, we flip a virtual coin. An unsuccessful outcome stops recursion and discards the remaining reflected-light calculation. A successful outcome continues recursion and increases the resulting contribution to compensate for the light lost when other paths terminate."
+    },
+    "5dd8a401f6b373196d3f65c1ca9a7da0aa671cbb0ea75738303318180fac4bcf": {
+      "source": "比如，一种俄罗斯轮盘算法如下：进行成功概率为 0.8 的一次赌博。如果成功，就递归计算采样值，并且将采样值除以0.8 补偿不采样时造成的损失，否则就不递归采样。",
+      "text": "For example, one Russian roulette scheme uses a survival probability of 0.8. If the path survives, recursively calculate the sample and divide its value by 0.8 to compensate for terminated paths. Otherwise, stop sampling recursively."
+    },
+    "ef35994b33299690e0bb60ff34d901946d9d37a034178273134a918674b78dae": {
+      "source": "在具体实现中，我们会同时结合递归限制与俄罗斯轮盘算法进行采样计算，设置一个最大 Max 和最小 Min 的深度：保护前 Min 次的反射光计算以保证精度，同时最多进行 Max 次计算以节省计算开销。这样做的好处是可以避免过于不幸（导致实际精度损失）和过于幸运（计算开销过大）的问题，同时仍然保持不错的渲染效果。",
+      "text": "In the implementation, we combine recursion limits with Russian roulette, setting minimum and maximum depths, Min and Max. The first Min reflections are protected to preserve accuracy, and computation stops after at most Max steps to control cost. This avoids paths that are either too unlucky, reducing practical accuracy, or too lucky, consuming excessive computation, while maintaining a good rendering result."
+    },
+    "3061533faa1e26de3c2641fa9afea87763f7b1632e4085095a5372775792e320": {
+      "source": "在我们的测试中，设置 Release 模式、渲染 1920x1080 个像素、同时开启 20 个渲染线程、每个像素采样 100 次、全局光照迭代最大递归深度为 12 层、俄罗斯轮盘有 80% 的存活率，在实验组和对照组各自进行了5次交替渲染。结果表明：开启了俄罗斯轮盘算法的实验组，渲染时间的中位数为 183.83 秒，范围为164.75～200.40秒。没有开启俄罗斯轮盘算法的对照组，渲染时间的中位数为 277.26秒，范围为 267.29～305.18秒，总体节省了节时 33.70% 的渲染时间。",
+      "text": "In our tests, we used a Release build at 1920×1080 pixels, with 20 rendering threads, 100 samples per pixel, a maximum global-illumination recursion depth of 12, and an 80% Russian roulette survival probability. We alternated between the two configurations for five renders each. With Russian roulette enabled, the median rendering time was 183.83 seconds, ranging from 164.75 to 200.40 seconds. Without it, the median was 277.26 seconds, ranging from 267.29 to 305.18 seconds. Overall, rendering time decreased by 33.70%."
+    },
+    "fb33954ee532d7f4ebdd5d66f546c47baffc07649c4ce75e914309075d56408c": {
+      "source": "多线程智能指针优化",
+      "text": "Smart pointer optimization in multithreaded code"
+    },
+    "14663b0ccca60f393dc495733d93e5581660438d73bdc8f1e47cd825ebabf09f": {
+      "source": "大家好！这是一期杂谈。今天我们想来谈谈C++项目中的智能指针与计算优化问题，尤其是多线程的智能指针优化问题。在C++11标准中引入了三类智能指针",
+      "text": "Hello! This update is a discussion of smart pointers and computational optimization in C++, especially smart pointer optimization in multithreaded code. C++11 introduced three kinds of smart pointers"
+    },
+    "23a63086a4767ae4aa8d2563a4ca5df445b2994fc1812f96d9fc88836be7d810": {
+      "source": "用来代替裸指针的地位。智能指针引入的初衷是为了自动解决资源释放的问题——原来裸指针需要依赖程序员手动管理资源的申请与释放，而资源释放经常被忽略，从而造成内存泄漏与未定义的访问行为。",
+      "text": "to replace raw pointers. Smart pointers were designed to automate resource release. With raw pointers, programmers must manage allocation and release manually; forgetting to release resources can cause memory leaks and undefined access behavior."
+    },
+    "67608bf9d20091bb0cf6e54dbeedef76df589e4ce2b9eddf8618ad772837a965": {
+      "source": "不过今天，我们不是要讨论智能指针在资源释放方面的作用，而是着重于讨论（1）智能指针的工作原理与（2）多线程中智能指针的使用心得与技巧。",
+      "text": "Today, I want to focus on (1) how smart pointers work and (2) practical experience and techniques for using them in multithreaded code."
+    },
+    "6e7bdcdb3534bbf912594eb5c5ec1d3189bf0640d51b50401854c1b53b0db2e7": {
+      "source": "在我们的渲染器项目中，混杂着裸指针智能指针",
+      "text": "Our renderer project uses a mixture of raw and smart pointers"
+    },
+    "d6e2688ac1ab52452391e44e788f13698dfe12b1b57b3254146931620e935e19": {
+      "source": "镜面反射材质",
+      "text": "Specular materials"
+    },
+    "ced516d3bcc645125101f34afe66e1b61966611bc65cba41364130e7c8599944": {
+      "source": "晚上好！我们的渲染器引入新的材质——镜面反射材质（Specular Material）与与之相关的折射光渲染技术。镜面材质是完全不同于 Lambert 的材质，它具有完全的镜面反射性质！在光学上，镜面材质在光学上也分为导体（金属）和绝缘体（玻璃）两种性质，我们的渲染器将完全支持两种镜面材质的渲染！",
+      "text": "Good evening! Our renderer now includes specular materials and the related rendering of refraction. Specular materials behave very differently from Lambert materials: they produce perfect mirror reflection. In optics, these materials include conductors, such as metals, and dielectrics, such as glass. Our renderer will support both types."
+    },
+    "7db7fc507fc425cecd1196f6503eab64d4955d81641addc93c32fbb51814006a": {
+      "source": "金属镜面材质物体，支持光在其表面上发生镜面反射，但是不支持光在其表面发生折射，也就是说金属球本身不透光（吸收的光能被完全转换为了热能）。",
+      "text": "Metallic specular objects reflect light at their surface but do not transmit refracted light through it. A metal sphere is therefore opaque, with absorbed light energy converted into heat."
+    },
+    "075ad7544700d163cb2f821e560c5098b9c168cb6a43e5dfe4202789a448f1be": {
+      "source": "查看大图：20261111-ConellBox-ConductiveSpecular",
+      "text": "View full-size image: 20261111-ConellBox-ConductiveSpecular"
+    },
+    "18fb94a95ff01ef8431d84cf9fc1c7b3d5d63bd2d3dfa0b7b98af49ba43b2a50": {
+      "source": "而绝缘镜面材质物体，不仅支持光在其表面上发生镜面反射，还支持光在其表面发生折射，也就是说绝缘球体本身能吸收的光能有限，仍将有光透过球体本身。",
+      "text": "Dielectric specular objects support both reflection and refraction at their surface. A dielectric sphere absorbs only part of the light energy, allowing some light to pass through it."
+    },
+    "52a4995f697e078570f311fd172d514cf2194c2a87d577882a1fe4b8e0f23001": {
+      "source": "查看大图：20261111-CornellBox-DielectricSpecular",
+      "text": "View full-size image: 20261111-CornellBox-DielectricSpecular"
+    },
+    "a47ce1c579b2546afa27aaededdc428618f160bef30f7577be21640ac1307358": {
+      "source": "查看大图：20261111-CornellBox-DielectricSpecular(2)",
+      "text": "View full-size image: 20261111-CornellBox-DielectricSpecular(2)"
+    },
+    "931e3375f73406283f0237ecdd269f9c414d3652a615f89c1061132759823cbc": {
+      "source": "两种镜面材质的共性与特性决定了我们渲染的结构。具体来说，镜面材质的 BRDF 分为两种情况：导体（例如金属）和绝缘体（例如玻璃）。因为物质内部的电子行为会影响光的作用效果，需要分别讨论。针对导体材质，其 BRDF 公式满足:",
+      "text": "The shared and distinct properties of these two specular materials determine the renderer's structure. More specifically, we distinguish the BRDFs of conductors, such as metals, and dielectrics, such as glass. The behavior of electrons inside a material affects its interaction with light, so the two cases require separate treatment. For a conductor, the BRDF satisfies:"
+    },
+    "6e07a01d40bbc17052b95a440de55b45ed17ffdcbc4162b217ed7b350b7fd37b": {
+      "source": "独立公式",
+      "text": "Display equation"
+    },
+    "0daf3d19280b56c67fbf7a6cce74ad4daba421d96f4754cfa12df22099f5af62": {
+      "source": "其中",
+      "text": "Here,"
+    },
+    "33954a5ceaf4d8df2845cf41ffbcdf75fa8c7466ec5bd89c11764043697582d9": {
+      "source": "表示入射方向与出射方向具有镜面反射关系，条件",
+      "text": "means that the incident and outgoing directions are related by mirror reflection. The condition"
+    },
+    "04c9df5943bc60bb6ae5b0c208a8ebf0c09ce59934af54c69174ffa9adad3dce": {
+      "source": "表示可以通过该点的法向量方向判断这种关系。系数",
+      "text": "indicates that this relationship can be determined from the surface normal at the point. The coefficient"
+    },
+    "770c61373b3a68e9f52bbad0cc19fa092688a66ef5cd62b1c50286a2aeeeca44": {
+      "source": "是导体材料的菲涅尔（Fresnel）系数，表示发生镜面反射时，出射亮度相对于入射亮度的比例。",
+      "text": "is the conductor's Fresnel coefficient, expressing the ratio of outgoing to incoming brightness under specular reflection."
+    },
+    "53333409c59b9e264aca3396e09ae1386df47a7407e61e625ae83c67462b240b": {
+      "source": "采样算法优化",
+      "text": "Sampling algorithm optimization"
+    },
+    "63ca09e2dfa82bce352d22266161d52058048362650a28151ec800c1dbc800b6": {
+      "source": "预告：我们会在11月份的晚些时候，提出采样相关的基础理论和算法——包括均匀采样和重要性采样，并且根据相应的采样算法，优化我们的渲染过程。",
+      "text": "Coming up: later in November, we will introduce the basic theory and algorithms of sampling, including uniform and importance sampling, and use them to optimize the rendering process."
+    }
+  }
+}

@@ -309,27 +309,27 @@ test("global toggle reports no available outline without changing the responsive
   assert.equal(h.nav().getAttribute("aria-label"), "本页目录");
 });
 
-test("wide toggling hides/restores the aside while preserving input focus, scroll position and route", () => {
+test("wide toggling retains an accessible edge control while preserving input focus, scroll position and route", () => {
   const h = harness(); h.mount();
   const input = new h.Node("input"); h.container.append(input); input.focus(); h.scrollRoot.scrollTop = 230;
   const initialNotifications = h.layouts;
   assert.equal(h.api.toggle(), true);
-  assert.equal(h.aside().hidden, true); assert.equal(h.details().open, false);
+  assert.equal(h.aside().hidden, false); assert.equal(h.aside().dataset.open, "false"); assert.equal(h.details().open, false);
   assert.equal(h.api.isAvailable(), true); assert.equal(h.api.isOpen(), false);
   assert.equal(h.document.activeElement, input); assert.equal(h.scrollRoot.scrollTop, 230);
   assert.equal(h.window.location.hash, "#project/example");
   assert.equal(h.layouts > initialNotifications, true);
-  h.flush(); assert.equal(h.aside().hidden, true);
+  h.flush(); assert.equal(h.aside().hidden, false); assert.equal(h.aside().dataset.open, "false");
   assert.equal(h.api.toggle(), true);
   assert.equal(h.aside().hidden, false); assert.equal(h.details().open, true); assert.equal(h.api.isOpen(), true);
   assert.equal(h.document.activeElement, input); assert.equal(h.scrollRoot.scrollTop, 230);
 });
 
-test("hiding a focused wide outline moves focus to the scroll root without scrolling", () => {
+test("collapsing a focused wide outline returns focus to its visible summary without scrolling", () => {
   const h = harness(); h.mount(); h.links()[1].focus(); h.scrollRoot.scrollTop = 210;
   h.api.toggle();
-  assert.equal(h.document.activeElement, h.scrollRoot);
-  assert.equal(h.scrollRoot.lastFocusOptions.preventScroll, true);
+  assert.equal(h.document.activeElement, h.details().children[0]);
+  assert.equal(h.details().children[0].lastFocusOptions.preventScroll, true);
   assert.equal(h.scrollRoot.scrollTop, 210);
 });
 
@@ -340,13 +340,13 @@ test("narrow toggling opens then closes disclosure while retaining its visible s
   h.links()[0].focus(); h.api.toggle();
   assert.equal(h.details().open, false); assert.equal(h.aside().hidden, false);
   assert.equal(h.details().children[0].tagName, "SUMMARY");
-  assert.equal(h.document.activeElement, h.scrollRoot); assert.equal(h.scrollRoot.scrollTop, 120);
+  assert.equal(h.document.activeElement, h.details().children[0]); assert.equal(h.scrollRoot.scrollTop, 120);
 });
 
 test("explicit visibility preference survives clear, article replacement and responsive changes", () => {
   const h = harness(); h.mount(); h.api.toggle(); h.api.clear();
   assert.equal(h.api.toggle(), false);
-  h.mount(); assert.equal(h.aside().hidden, true);
+  h.mount(); assert.equal(h.aside().hidden, false); assert.equal(h.aside().dataset.open, "false");
   h.container.clientWidth = 800; h.resize(); h.flush();
   assert.equal(h.aside().hidden, false); assert.equal(h.details().open, false);
   h.api.toggle(); assert.equal(h.details().open, true);
@@ -360,9 +360,9 @@ test("closed ancestor disclosures are excluded and adopt the session preference 
   const other = anotherArticle(h, { open: false });
   assert.equal(other.aside.hidden, false);
   h.api.toggle();
-  assert.equal(h.aside().hidden, true); assert.equal(other.aside.hidden, false);
+  assert.equal(h.aside().hidden, false); assert.equal(h.aside().dataset.open, "false"); assert.equal(other.aside.hidden, false);
   other.wrapper.open = true; const before = h.layouts; h.resize(); h.flush();
-  assert.equal(other.aside.hidden, true); assert.equal(h.layouts > before, true);
+  assert.equal(other.aside.hidden, false); assert.equal(other.aside.dataset.open, "false"); assert.equal(h.layouts > before, true);
   h.body.hidden = true; other.wrapper.open = false; h.resize(); h.flush();
   assert.equal(h.api.isAvailable(), false); assert.equal(h.api.isOpen(), false); assert.equal(h.api.toggle(), false);
 });
@@ -402,7 +402,7 @@ test("native summary choices are remembered and programmatic toggle events do no
   const h = harness({ width: 800 }); h.mount();
   h.details().open = true; h.details().emit("toggle");
   h.details().open = false; h.details().emit("toggle");
-  h.container.clientWidth = 1200; h.resize(); h.flush(); assert.equal(h.aside().hidden, true);
-  h.details().emit("toggle"); h.flush(); assert.equal(h.aside().hidden, true);
-  h.api.clear(); h.mount(); assert.equal(h.aside().hidden, true);
+  h.container.clientWidth = 1200; h.resize(); h.flush(); assert.equal(h.aside().hidden, false); assert.equal(h.aside().dataset.open, "false");
+  h.details().emit("toggle"); h.flush(); assert.equal(h.aside().hidden, false); assert.equal(h.aside().dataset.open, "false");
+  h.api.clear(); h.mount(); assert.equal(h.aside().hidden, false); assert.equal(h.aside().dataset.open, "false");
 });

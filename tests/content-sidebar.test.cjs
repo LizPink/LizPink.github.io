@@ -79,7 +79,7 @@ function harness({ mobile = false, width = 1200, entries } = {}) {
     const button = new Node("button"); button.dataset.route = route; menu.append(button);
   });
   menu.append(make("content-index-title", "h2"), make("content-index-count", "span"), list);
-  layout.append(menu, resizer, reading, backdrop); frame.append(reveal, layout); body.append(frame);
+  layout.append(reveal, menu, resizer, reading, backdrop); frame.append(layout); body.append(frame);
   const preference = Object.assign(new Signals(), { matches: mobile });
   const frames = new Map();
   let sequence = 0, observer;
@@ -118,11 +118,29 @@ test("desktop initializes open with width and separator semantics; init is idemp
   assert.equal(h.api.isOpen(), true);
   assert.equal(h.currentWidth(), 200);
   assert.equal(h.nodes["route-menu"].hidden, false);
+  assert.equal(h.nodes["menu-reveal"].hidden, true);
   assert.equal(h.nodes["frame-main"].inert, false);
   assert.equal(h.nodes["sidebar-resizer"].hidden, false);
   assert.equal(h.nodes["sidebar-resizer"].getAttribute("aria-valuemin"), "180");
   assert.equal(h.nodes["sidebar-resizer"].getAttribute("aria-valuemax"), "420");
   h.api.init(); assert.equal(h.document.count("keydown"), 1);
+});
+
+test("the sidebar title collapses to a visible edge control that reopens the same width", () => {
+  const h = harness();
+  h.nodes["sidebar-resizer"].emit("keydown", { key: "End" });
+  h.nodes["menu-close"].focus();
+  h.nodes["menu-close"].emit("click");
+  assert.equal(h.api.isOpen(), false);
+  assert.equal(h.nodes["route-menu"].hidden, true);
+  assert.equal(h.nodes["menu-reveal"].hidden, false);
+  assert.equal(h.nodes["menu-reveal"].getAttribute("aria-expanded"), "false");
+  assert.equal(h.document.activeElement, h.nodes["menu-reveal"]);
+  h.nodes["menu-reveal"].emit("click");
+  assert.equal(h.api.isOpen(), true);
+  assert.equal(h.nodes["menu-reveal"].hidden, true);
+  assert.equal(h.document.activeElement, h.nodes["menu-close"]);
+  assert.equal(h.currentWidth(), 420);
 });
 
 test("public toggle shares button behavior and preserves desktop preference across mobile", () => {
@@ -202,6 +220,7 @@ test("mobile starts closed and opening traps focus across all content controls",
   assert.equal(h.api.isOpen(), true);
   assert.equal(h.document.activeElement, h.nodes["menu-close"]);
   assert.equal(h.nodes["frame-main"].inert, true);
+  assert.equal(h.nodes["frame-main"].contains(h.nodes["menu-reveal"]), false);
   assert.equal(h.nodes["sidebar-resizer"].hidden, true);
   const controls = h.controls(); controls.at(-1).focus();
   h.document.emit("keydown", { key: "Tab" }); assert.equal(h.document.activeElement, controls[0]);

@@ -1,6 +1,7 @@
 // Pure content metadata and hash helpers. Rendering and truncation belong to the UI.
 (() => {
   "use strict";
+  const t = (source, parameters = {}) => window.LIZPINK_I18N?.t(source, parameters) ?? String(source).replace(/\{(\w+)\}/g, (match, key) => Object.hasOwn(parameters, key) ? String(parameters[key]) : match);
 
   const contentRoutes = new Set(["life", "resume", "project"]);
   const routes = new Set(["home", "life", "resume", "project", "help"]);
@@ -12,14 +13,14 @@
     if (year < 1 || month < 1 || month > 12 || day < 1) return null;
     const leap = year % 4 === 0 && (year % 100 !== 0 || year % 400 === 0);
     const days = [31, leap ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    return day <= days[month - 1] ? { value, text: value.replaceAll("-", ".") } : null;
+    return day <= days[month - 1] ? { value, text: window.LIZPINK_I18N?.current() === "en" ? new Intl.DateTimeFormat("en", {year:"numeric", month:"short", day:"numeric", timeZone:"UTC"}).format(new Date(value + "T00:00:00Z")) : value.replaceAll("-", ".") } : null;
   }
 
   function dateFor(sample) {
     const updated = formatDate(sample.updatedAt);
-    if (updated) return { ...updated, label: "更新" };
+    if (updated) return { ...updated, label: t("更新") };
     const published = formatDate(sample.publishedAt);
-    return published ? { ...published, label: "日期" } : null;
+    return published ? { ...published, label: t("日期") } : null;
   }
 
   function items(route) {
@@ -38,7 +39,7 @@
         seen.add(key);
         result.push({
           key, route: path.id,
-          routeTitle: typeof path.title === "string" && path.title.trim() ? path.title : routeTitles[path.id],
+          routeTitle: typeof path.title === "string" && path.title.trim() ? path.title : t(routeTitles[path.id]),
           title: typeof sample.title === "string" ? sample.title : "",
           excerpt: typeof sample.text === "string" ? sample.text.replace(/\s+/g, " ").trim() : "",
           type: typeof sample.type === "string" ? sample.type : "text",

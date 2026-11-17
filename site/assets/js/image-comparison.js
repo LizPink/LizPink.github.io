@@ -1,6 +1,7 @@
 // Page-specific enhancement for the locally bundled img-comparison-slider.
 (() => {
   "use strict";
+  const t = (source, parameters = {}) => window.LIZPINK_I18N?.t(source, parameters) ?? String(source).replace(/\{(\w+)\}/g, (match, key) => Object.hasOwn(parameters, key) ? String(parameters[key]) : match);
 
   const sessions = new WeakMap();
   const selector = "[data-image-comparison]";
@@ -35,13 +36,13 @@
     slider.setAttribute("aria-valuemax", "100");
     slider.setAttribute("aria-busy", "true");
     slider.setAttribute("aria-disabled", "true");
-    status.textContent = "正在加载对比图片…";
+    status.textContent = t("正在加载对比图片…");
 
     function describePosition() {
       const position = Number(slider.value);
       const value = Math.round(Number.isFinite(position) ? Math.min(100, Math.max(0, position)) : 50);
       slider.setAttribute("aria-valuenow", String(value));
-      slider.setAttribute("aria-valuetext", `左图显示 ${value}%，右图显示 ${100 - value}%`);
+      slider.setAttribute("aria-valuetext", t("左图显示 {left}%，右图显示 {right}%", {left:value, right:100 - value}));
     }
 
     function update() {
@@ -63,7 +64,7 @@
         slider.setAttribute("aria-disabled", "true");
         if (labels) labels.hidden = true;
         status.hidden = false;
-        status.textContent = `${failed === 0 ? "第一" : "第二"}张图片暂时无法加载，请刷新页面重试。`;
+        status.textContent = t(failed === 0 ? "第一张图片暂时无法加载，请刷新页面重试。" : "第二张图片暂时无法加载，请刷新页面重试。");
         if (!frame.querySelector("[data-comparison-originals]")) {
           const links = document.createElement("div");
           links.className = "comparison-originals";
@@ -73,7 +74,7 @@
             link.href = image.currentSrc || image.src;
             link.target = "_blank";
             link.rel = "noopener noreferrer";
-            link.textContent = `打开第${index === 0 ? "一" : "二"}张原图`;
+            link.textContent = t(index === 0 ? "打开第一张原图" : "打开第二张原图");
             links.append(link);
           });
           frame.append(links);

@@ -1,5 +1,6 @@
 (() => {
   "use strict";
+  const t = (source, parameters = {}) => window.LIZPINK_I18N?.t(source, parameters) ?? String(source).replace(/\{(\w+)\}/g, (match, key) => Object.hasOwn(parameters, key) ? String(parameters[key]) : match);
   // Old experience links now resolve to the same final interface.
   const url = new URL(location.href);
   if (url.searchParams.has("input")) {
@@ -36,16 +37,16 @@
   idleHint.id = "command-idle-hint";
   idleHint.className = "command-idle-hint";
   idleHint.setAttribute("aria-controls", "command-input");
-  idleHint.setAttribute("aria-label", "按下斜杠键开始输入，输入 help 查询命令");
+  idleHint.setAttribute("aria-label", t("按下斜杠键开始输入，输入 help 查询命令"));
   const idleCopy = document.createElement("span");
   idleCopy.className = "command-idle-copy";
   const idleShortcut = document.createElement("span");
-  idleShortcut.textContent = "按下 / 输入命令";
+  idleShortcut.textContent = t("按下 / 输入命令");
   const idleSeparator = document.createElement("span");
   idleSeparator.className = "command-idle-separator";
   idleSeparator.textContent = "·";
   const idleHelp = document.createElement("span");
-  idleHelp.textContent = "输入 help 查询命令";
+  idleHelp.textContent = t("输入 help 查询命令");
   idleCopy.append(idleShortcut, idleSeparator, idleHelp);
   idleHint.append(idleCopy);
   input.closest(".command-editor").append(idleHint);
@@ -53,12 +54,12 @@
   const emptyHelp = document.createElement("span");
   emptyHelp.className = "command-empty-help";
   emptyHelp.setAttribute("aria-hidden", "true");
-  emptyHelp.textContent = "输入 help 查询命令";
+  emptyHelp.textContent = t("输入 help 查询命令");
   input.closest(".command-editor").append(emptyHelp);
   const inputHelp = document.createElement("span");
   inputHelp.id = "command-input-help";
   inputHelp.className = "sr-only";
-  inputHelp.textContent = "输入 help 查询命令。按 Enter 执行，按 Escape 返回阅读。";
+  inputHelp.textContent = t("输入 help 查询命令。按 Enter 执行，按 Escape 返回阅读。");
   composer.append(inputHelp);
   const inputDescriptions = new Set((input.getAttribute("aria-describedby") || "").split(/\s+/).filter(Boolean));
   inputDescriptions.add(inputHelp.id);
@@ -69,8 +70,8 @@
   modeToggle.className = "command-mode-toggle";
   modeToggle.setAttribute("aria-controls", "command-input");
   modeToggle.setAttribute("aria-pressed", "false");
-  modeToggle.setAttribute("aria-label", "按斜杠键或点击开始输入命令");
-  modeToggle.textContent = "按下 / 输入命令";
+  modeToggle.setAttribute("aria-label", t("按斜杠键或点击开始输入命令"));
+  modeToggle.textContent = t("按下 / 输入命令");
   composer.querySelector(".command-row").append(modeToggle);
   const modeAnnouncement = document.createElement("span");
   modeAnnouncement.className = "sr-only";
@@ -84,9 +85,9 @@
     commandActive = active;
     composer.dataset.commandMode = String(active);
     modeToggle.setAttribute("aria-pressed", String(active));
-    modeToggle.setAttribute("aria-label", active ? "返回阅读并保留草稿" : "按斜杠键或点击开始输入命令");
-    modeToggle.textContent = active ? "Esc 返回阅读" : "按下 / 输入命令";
-    modeAnnouncement.textContent = active ? "命令模式，按 Escape 返回阅读并保留草稿。" : "阅读模式，草稿已保留，按斜杠键继续输入。";
+    modeToggle.setAttribute("aria-label", t(active ? "返回阅读并保留草稿" : "按斜杠键或点击开始输入命令"));
+    modeToggle.textContent = t(active ? "Esc 返回阅读" : "按下 / 输入命令");
+    modeAnnouncement.textContent = t(active ? "命令模式，按 Escape 返回阅读并保留草稿。" : "阅读模式，草稿已保留，按斜杠键继续输入。");
     refresh();
   }
   const reading = () => Boolean(records.querySelector(".output-details[open]"));
@@ -154,6 +155,16 @@
   input.addEventListener("focus", () => { syncPageFocus(); setCommandMode(true); schedule(); });
   composer.addEventListener("focusout", event => {
     if (!composer.contains(event.relatedTarget)) setCommandMode(false);
+  });
+  window.addEventListener("lizpink:languagechange", () => {
+    idleHint.setAttribute("aria-label", t("按下斜杠键开始输入，输入 help 查询命令"));
+    idleShortcut.textContent = t("按下 / 输入命令");
+    idleHelp.textContent = t("输入 help 查询命令");
+    emptyHelp.textContent = t("输入 help 查询命令");
+    inputHelp.textContent = t("输入 help 查询命令。按 Enter 执行，按 Escape 返回阅读。");
+    modeToggle.setAttribute("aria-label", t(commandActive ? "返回阅读并保留草稿" : "按斜杠键或点击开始输入命令"));
+    modeToggle.textContent = t(commandActive ? "Esc 返回阅读" : "按下 / 输入命令");
+    refresh();
   });
   fitViewport();
   refresh();

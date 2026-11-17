@@ -1,5 +1,5 @@
 /* Content navigation shares the terminal surface and its single reading area. */
-.terminal-frame { --sidebar-width: 200px; }
+.terminal-frame { --sidebar-width: 200px; --sidebar-rail-width: 44px; }
 
 .toolbar-start {
   display: flex;
@@ -10,40 +10,42 @@
 }
 
 #menu-reveal {
-  position: static;
+  position: relative;
   inset: auto;
+  z-index: 4;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  gap: 6px;
-  width: auto;
-  min-width: 44px;
-  height: 44px;
-  padding: 0 6px;
+  grid-column: 1;
+  grid-row: 1;
+  align-self: start;
+  width: var(--sidebar-rail-width);
+  min-height: 44px;
+  margin-top: 12px;
+  padding: 0;
   color: var(--muted);
   font: 15px/1.5 var(--font-body);
   white-space: nowrap;
 }
 
+#menu-reveal[hidden] { display: none; }
 #menu-reveal svg { width: 18px; height: 18px; }
-#menu-reveal:hover, #menu-reveal[aria-expanded="true"] { color: var(--accent); }
+#menu-reveal:hover { color: var(--accent); background: var(--accent-soft); }
 #menu-reveal:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 #frame-location { overflow: hidden; overflow-wrap: normal; text-overflow: ellipsis; white-space: nowrap; }
 
 .toolbar-end { display: flex; align-items: center; gap: 10px; margin-left: auto; flex-shrink: 0; }
 .toolbar-end .theme-control { margin-left: 0; }
-#outline-toggle { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-width: 44px; min-height: 44px; padding: 0 6px; color: var(--muted); font: 14px/1.5 var(--font-body); white-space: nowrap; }
-#outline-toggle[hidden] { display: none; }
-#outline-toggle:is(:hover, [aria-expanded="true"]) { color: var(--accent); }
-#outline-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.language-toggle { display: inline-flex; align-items: center; justify-content: center; min-width: 44px; min-height: 44px; padding: 0 8px; color: var(--muted); font: 14px/1.5 var(--font-body); white-space: nowrap; }
+.language-toggle:hover { color: var(--accent); background: var(--accent-soft); }
+.language-toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 
 .terminal-frame[data-menu-open="true"] .frame-layout {
   grid-template-columns: minmax(0, var(--sidebar-width)) minmax(0, 1fr);
 }
 
 .terminal-frame[data-menu-open="false"] .frame-layout {
-  grid-template-columns: minmax(0, 1fr);
+  grid-template-columns: var(--sidebar-rail-width) minmax(0, 1fr);
 }
 
 .frame-layout > .frame-main { grid-column: -2 / -1; grid-row: 1; }
@@ -68,10 +70,12 @@
 }
 
 .terminal-frame[data-menu-open="false"] #route-menu { display: none; }
-#route-menu .sidebar-header { gap: 8px; margin-bottom: 8px; }
+#route-menu .sidebar-header { gap: 0; margin-bottom: 8px; }
 #route-menu .sidebar-header :is(h2, p) { margin: 0; font: 500 16px/1.5 var(--font-body); }
-#menu-close { display: inline-flex; margin-left: auto; }
-#menu-close:focus-visible { outline-offset: -2px; }
+#menu-close { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; min-height: 44px; padding: 0 4px 0 0; color: var(--muted); font: 500 16px/1.5 var(--font-body); text-align: left; }
+#menu-close svg { flex-shrink: 0; }
+#menu-close:hover { color: var(--accent); }
+#menu-close:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 
 .sidebar-routes {
   display: grid;
@@ -237,13 +241,11 @@
 
 @media (max-width: 760px) {
   .toolbar-end { gap: 4px; }
-  #outline-toggle { width: 44px; padding: 0; }
-  #outline-toggle > span { display: none; }
   .frame-toolbar { gap: 8px; padding-right: 10px; padding-left: 10px; }
   .toolbar-start { gap: 8px; }
-  #menu-reveal { gap: 4px; padding-right: 4px; padding-left: 4px; font-size: 14px; }
+  #menu-reveal { top: auto; bottom: auto; justify-content: center; padding: 0; }
   .terminal-frame[data-menu-open="true"] .frame-layout,
-  .terminal-frame[data-menu-open="false"] .frame-layout { grid-template-columns: minmax(0, 1fr); }
+  .terminal-frame[data-menu-open="false"] .frame-layout { grid-template-columns: var(--sidebar-rail-width) minmax(0, 1fr); }
   #route-menu {
     position: absolute;
     inset: 0 auto 0 0;
@@ -257,8 +259,7 @@
 
 @media (max-width: 360px) {
   .frame-toolbar { gap: 6px; padding-right: 8px; padding-left: 8px; }
-  #menu-reveal { width: 44px; padding: 0; }
-  #menu-reveal > span { display: none; }
+  .language-toggle { padding: 0 4px; }
   .toolbar-start { gap: 6px; flex-shrink: 1; }
   .wordmark { gap: 6px; flex-shrink: 1; font-size: 20px; }
   .wordmark > span:last-child { overflow: hidden; text-overflow: ellipsis; }

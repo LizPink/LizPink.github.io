@@ -5,6 +5,7 @@
   const sessions = new Set();
   const mounted = new WeakMap();
   const WIDE_WIDTH = 1000;
+  const t = text => window.LIZPINK_I18N?.t(text) ?? text;
   // Null preserves the responsive default until the visitor makes a choice.
   // Clearing rendered articles deliberately keeps this session preference.
   let visibilityPreference = null;
@@ -37,12 +38,25 @@
     let container = layout.closest(".frame-main") || scrollRoot;
     const aside = element("aside", "article-outline");
     aside.id = `outline-${entries[0].id}`;
-    const title = element("p", "article-outline-title", "本页目录");
-    title.setAttribute("aria-hidden", "true");
     const details = element("details", "article-outline-details");
-    const summary = element("summary", "", "本页目录");
+    const summary = element("summary", "article-outline-toggle");
+    summary.append(element("span", "article-outline-title", t("本页目录")));
+    summary.setAttribute("aria-keyshortcuts", "Control+Alt+B");
+    const icon = document.createElementNS
+      ? document.createElementNS("http://www.w3.org/2000/svg", "svg") : element("svg");
+    icon.setAttribute("width", "20"); icon.setAttribute("height", "20");
+    icon.setAttribute("viewBox", "0 0 24 24"); icon.setAttribute("fill", "none");
+    icon.setAttribute("stroke", "currentColor"); icon.setAttribute("stroke-width", "1.5");
+    icon.setAttribute("stroke-linecap", "round"); icon.setAttribute("stroke-linejoin", "round");
+    icon.setAttribute("aria-hidden", "true");
+    const path = document.createElementNS
+      ? document.createElementNS("http://www.w3.org/2000/svg", "path") : element("path");
+    path.setAttribute("d", "M4 4h16v16H4zM15 4v16m-6-11 3 3-3 3");
+    icon.append(path); summary.append(icon);
     const nav = element("nav", "article-outline-nav");
-    nav.setAttribute("aria-label", "本页目录");
+    nav.id = `${aside.id}-nav`;
+    summary.setAttribute("aria-controls", nav.id);
+    nav.setAttribute("aria-label", t("本页目录"));
     const list = element("ol", "article-outline-list");
     entries.forEach(entry => {
       const row = element("li");
@@ -52,7 +66,7 @@
       link.dataset.outlineTarget = entry.id;
       row.append(link); list.append(row); entry.link = link;
     });
-    nav.append(list); details.append(summary, nav); aside.append(title, details);
+    nav.append(list); details.append(summary, nav); aside.append(details);
     layout.insertBefore(aside, body);
 
     let disposed = false;
@@ -73,13 +87,16 @@
     }
     function isOpen() { return !aside.hidden && details.open; }
     function applyVisibility(open) {
-      const hidden = wide && !open;
-      const changed = aside.hidden !== hidden || details.open !== open;
+      const changed = aside.dataset.open !== String(open) || details.open !== open;
       const focus = document.activeElement;
-      if ((hidden && aside.contains(focus)) || (!open && nav.contains(focus))) scrollRoot.focus({ preventScroll: true });
+      if (!open && nav.contains(focus)) summary.focus({ preventScroll: true });
       expectedDetailsOpen = open;
       details.open = open;
-      aside.hidden = hidden;
+      aside.hidden = false;
+      aside.dataset.open = String(open);
+      summary.setAttribute("aria-expanded", String(open));
+      summary.setAttribute("aria-label", t(open ? "收起本页目录" : "展开本页目录"));
+      summary.title = `${t(open ? "收起本页目录" : "展开本页目录")} (Ctrl+Alt+B)`;
       if (changed) { notifyLayout(); queueUpdate(); }
       return changed;
     }

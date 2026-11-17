@@ -1,0 +1,5 @@
+{
+  "baseURL": "https://api.deepseek.com",
+  "model": "deepseek-flash",
+  "reasoningEffort": "high"
+}

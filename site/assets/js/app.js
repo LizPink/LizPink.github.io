@@ -1,6 +1,7 @@
 (() => {
   "use strict";
-  const content = window.LIZPINK_CONTENT;
+  const t = (source, parameters = {}) => window.LIZPINK_I18N?.t(source, parameters) ?? String(source).replace(/\{(\w+)\}/g, (match, key) => Object.hasOwn(parameters, key) ? String(parameters[key]) : match);
+  let content = window.LIZPINK_CONTENT;
   let view = document.createElement("div");
   const records = document.querySelector("#terminal-records");
   const input = document.querySelector("#command-input");
@@ -13,40 +14,32 @@
   const sidebar = window.LIZPINK_SIDEBAR;
   const articleOutline = window.LIZPINK_OUTLINE;
   const imageViewer = window.LIZPINK_IMAGE_VIEWER;
-  const outlineButton = document.querySelector("#outline-toggle");
   let followingOutput = true;
   let followFrame;
   const history = [];
   let historyPosition = 0;
   let activeRoute = "home";
   let activeItem = null;
+  let restoringLanguage = false;
+  let languageRevision = 0;
   const commandCatalog = window.LIZPINK_COMMANDS;
   const routes = commandCatalog.routes;
   const titles = { home:"首页", resume:"经历", project:"项目", life:"生活", help:"帮助" };
   const $ = (tag, className, text) => {
     const element = document.createElement(tag);
     if (className) element.className = className;
-    if (text !== undefined) element.textContent = text;
+    if (text !== undefined) element.textContent = t(text);
     return element;
   };
   function home() {
+    const heading = document.querySelector("#intro-title");
+    const greeting = content.greeting || "";
+    const position = greeting.indexOf(content.name);
+    if (position >= 0) {
+      const name = $("span", "", content.name);
+      heading.replaceChildren(document.createTextNode(greeting.slice(0, position)), name, document.createTextNode(greeting.slice(position + content.name.length)));
+    } else heading.textContent = greeting;
     document.querySelector("#home-profile").replaceChildren(window.LIZPINK_SUMMARIES.create("home").node);
-  }
-  function syncOutlineButton() {
-    const drawerOpen = sidebar.isMobile() && sidebar.isOpen();
-    const available = !drawerOpen && Boolean(articleOutline?.isAvailable());
-    const open = available && articleOutline.isOpen();
-    if (!available && document.activeElement === outlineButton) {
-      (drawerOpen ? document.querySelector("#menu-close") : main).focus({preventScroll:true});
-    }
-    outlineButton.hidden = !available;
-    outlineButton.setAttribute("aria-expanded", String(open));
-    outlineButton.setAttribute("aria-label", `${open ? "隐藏" : "显示"}本页目录`);
-    outlineButton.title = `${open ? "隐藏" : "显示"}本页目录（Ctrl+Alt+B）`;
-    const ids = [...document.querySelectorAll(".article-outline")]
-      .filter(node => node.id && node.parentElement.getClientRects().length).map(node => node.id);
-    if (ids.length) outlineButton.setAttribute("aria-controls", ids.join(" "));
-    else outlineButton.removeAttribute("aria-controls");
   }
   function toggleLeftDirectory() {
     if (commandComposing || imageViewer?.isOpen()) return false;
@@ -57,7 +50,6 @@
     if (commandComposing || imageViewer?.isOpen() || (sidebar.isMobile() && sidebar.isOpen()) || !articleOutline?.isAvailable()) return false;
     beginReading();
     const handled = articleOutline.toggle();
-    syncOutlineButton();
     return handled;
   }
   function help() {
@@ -100,14 +92,14 @@
       [["创建于", createdDate], ["更新于", updatedDate]].forEach(([label, date], index) => {
         if (index) metadata.append(document.createTextNode(" "));
         const field = $("span", "reader-date-field");
-        field.append(document.createTextNode(`${label} `));
+        field.append(document.createTextNode(`${t(label)} `));
         if (date) {
           const time = $("time", "", date.text);
           time.dateTime = date.value;
           field.append(time);
         } else {
           const missing = $("span", "reader-date-empty", "—");
-          missing.setAttribute("aria-label", "未填写");
+          missing.setAttribute("aria-label", t("未填写"));
           field.append(missing);
         }
         metadata.append(field);
@@ -149,7 +141,7 @@
       layout.append(body); article.append(layout); view.append(article);
       window.LIZPINK_IMAGE_COMPARISON?.init(body);
       articleOutline?.mount({ layout, body, headings:sample.headings || [], scrollRoot:main,
-        onNavigate:beginReading, onLayout:() => { commandInput.refresh(); syncOutlineButton(); } });
+        onNavigate:beginReading, onLayout:() => commandInput.refresh() });
     });
   }
   function project() { renderPathSamples(pathFor("project")); }
@@ -194,7 +186,7 @@
     details.addEventListener("toggle", () => {
       if (!details.isConnected) return;
       commandInput.refresh();
-      if (details.open) { pauseFollowing(); populate(); label.textContent = "收起"; scrollWithinTerminal(result.node); }
+      if (details.open) { pauseFollowing(); populate(); label.textContent = t("收起"); if (!restoringLanguage) scrollWithinTerminal(result.node); }
       else { label.textContent = result.detailLabel; body.querySelectorAll("video").forEach(video => video.pause()); }
       updateFollowState();
     });
@@ -272,11 +264,10 @@
     updateFollowState();
     document.querySelector("#frame-location").textContent = `~/${activeRoute}${activeItem ? `/${activeItem.key}` : ""}`;
     sidebar.update(activeRoute, activeItem?.key || null);
-    syncOutlineButton();
-    document.title = `${activeItem?.title || titles[activeRoute]} · ${content.name}`;
-    document.querySelector("#terminal-status").textContent = "就绪";
+    document.title = `${activeItem?.title || t(titles[activeRoute])} · ${content.name}`;
+    document.querySelector("#terminal-status").textContent = t("就绪");
     syncCursor();
-    document.querySelector("#route-announcement").textContent = `已打开：${activeItem?.title || titles[activeRoute]}`;
+    document.querySelector("#route-announcement").textContent = t("已打开：{title}", {title:activeItem?.title || t(titles[activeRoute])});
   }
   function navigate(route, moveFocus = false, options = {}) {
     input.value = "";
@@ -311,7 +302,7 @@
   function syncCursor() {
     document.querySelector("#cursor-text").textContent = input.value.slice(0, input.selectionStart ?? input.value.length);
     document.querySelector("#cursor-layer").style.left = `${-input.scrollLeft}px`;
-    document.querySelector("#terminal-status").textContent = input.value ? "输入中" : "就绪";
+    document.querySelector("#terminal-status").textContent = t(input.value ? "输入中" : "就绪");
   }
   function resetCompletion() {
     completion = null;
@@ -324,7 +315,7 @@
     if (!completion || input.value !== completion.matches[completion.index]) {
       const prefix = input.value.trim().toLowerCase();
       const matches = commandCatalog.completions.filter(command => command.startsWith(prefix));
-      if (!matches.length) { resetCompletion(); feedback.textContent = "没有匹配的命令。输入 help 查看命令。"; return; }
+      if (!matches.length) { resetCompletion(); feedback.textContent = t("没有匹配的命令。输入 help 查看命令。"); return; }
       completion = {prefix, matches, index: 0};
     } else completion.index = (completion.index + 1) % completion.matches.length;
     const value = completion.matches[completion.index];
@@ -352,12 +343,12 @@
     outputMotion?.finish();
     const command = commandCatalog.normalize(raw);
     resetCompletion();
-    if (!command) { feedback.textContent = "输入 help 查看命令。"; return; }
+    if (!command) { feedback.textContent = t("输入 help 查看命令。"); return; }
     history.push(raw.trim()); historyPosition = history.length;
     if (command === "open" || command === "close") {
       const details = records.lastElementChild?.querySelector(".output-details");
       input.value = ""; syncCursor();
-      if (!details) { feedback.textContent = "最近的输出没有可展开的详情。"; resumeFollowing(); return; }
+      if (!details) { feedback.textContent = t("最近的输出没有可展开的详情。"); resumeFollowing(); return; }
       if (command === "open") {
         pauseFollowing(); details.populate(); details.open = true;
         commandInput.refresh();
@@ -372,7 +363,7 @@
     if (routes.includes(route)) { input.value = ""; navigate(route, false, {label:route}); input.focus({preventScroll:true}); syncCursor(); }
     else {
       const suggestions = commandCatalog.suggest(command);
-      feedback.textContent = `未识别“${raw.trim()}”。${suggestions.length ? `试试 ${suggestions.join(" 或 ")}。` : "输入 help 查看命令。"}`;
+      feedback.textContent = t("未识别“{command}”。{suggestion}", {command:raw.trim(), suggestion:suggestions.length ? t("试试 {commands}。", {commands:suggestions.join(t(" 或 "))}) : t("输入 help 查看命令。")});
     }
   }
   document.addEventListener("click", event => {
@@ -474,13 +465,51 @@
     if (menuHadFocus) main.focus({preventScroll:true});
     if (state.key) { pauseFollowing(); main.scrollTop = 0; }
   }
+  window.addEventListener("lizpink:languagechange", () => {
+    // Shared heading IDs anchor the translated article at the same reading point.
+    const oldTop = main.scrollTop;
+    const oldRange = Math.max(1, main.scrollHeight - main.clientHeight);
+    const viewportTop = main.getBoundingClientRect().top;
+    const headings = [...records.querySelectorAll(".article-body [id]")].filter(node => /^H[2-6]$/.test(node.tagName));
+    let anchor = null;
+    for (const heading of headings) {
+      if (heading.getBoundingClientRect().top <= viewportTop + 48) anchor = heading;
+      else break;
+    }
+    const anchorID = anchor?.id;
+    const anchorOffset = anchor ? anchor.getBoundingClientRect().top - viewportTop : 0;
+    const itemKey = activeItem?.key || null;
+    const routeForRestore = activeRoute;
+    const revision = ++languageRevision;
+    const focusWasInArticle = records.contains(document.activeElement);
+    const detailsOpen = Boolean(records.querySelector(".output-details[open]"));
+    restoringLanguage = true;
+    content = window.LIZPINK_CONTENT;
+    home();
+    render(activeRoute, { itemKey });
+    if (detailsOpen) {
+      const details = records.querySelector(".output-details");
+      if (details) { details.populate(); details.open = true; }
+    }
+    beginReading();
+    const restorePosition = () => {
+      if (revision !== languageRevision) return;
+      if (activeRoute !== routeForRestore || (activeItem?.key || null) !== itemKey) { restoringLanguage = false; return; }
+      const target = anchorID && [...records.querySelectorAll(".article-body [id]")].find(node => node.id === anchorID);
+      if (target) main.scrollTop += target.getBoundingClientRect().top - main.getBoundingClientRect().top - anchorOffset;
+      else main.scrollTop = oldTop / oldRange * Math.max(0, main.scrollHeight - main.clientHeight);
+      if (focusWasInArticle) main.focus({ preventScroll:true });
+      restoringLanguage = false;
+      commandInput.refresh();
+    };
+    requestAnimationFrame(restorePosition);
+  });
   window.addEventListener("hashchange", restoreLocation);
   window.addEventListener("popstate", restoreLocation);
   window.LIZPINK_THEME.apply(window.LIZPINK_THEME.current());
   document.documentElement.dataset.pageHidden = String(document.hidden);
   document.addEventListener("visibilitychange", () => { document.documentElement.dataset.pageHidden = String(document.hidden); });
-  sidebar.init({onLayout:() => { beginReading(); commandInput.refresh(); syncOutlineButton(); }});
-  outlineButton.addEventListener("click", togglePageOutline);
+  sidebar.init({onLayout:() => { beginReading(); commandInput.refresh(); }});
   window.LIZPINK_SIDEBAR_SHORTCUTS.init({toggleLeft:toggleLeftDirectory, toggleRight:togglePageOutline});
   imageViewer?.init({root:records, scrollRoot:main, onOpen:beginReading});
   home();

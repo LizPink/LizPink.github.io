@@ -1,6 +1,7 @@
 // Shared public command catalog for parsing, completion, and help.
 (() => {
   "use strict";
+  const t = (source, parameters = {}) => window.LIZPINK_I18N?.t(source, parameters) ?? String(source).replace(/\{(\w+)\}/g, (match, key) => Object.hasOwn(parameters, key) ? String(parameters[key]) : match);
 
   const items = Object.freeze([
     { name: "home", description: "首页", kind: "view", group: "浏览路线", number: "0" },
@@ -64,7 +65,7 @@
   const element = (tag, className, text) => {
     const node = document.createElement(tag);
     if (className) node.className = className;
-    if (text !== undefined) node.textContent = String(text);
+    if (text !== undefined) node.textContent = t(String(text));
     return node;
   };
 
@@ -82,10 +83,10 @@
         const button = element("button", "help-command");
         button.type = "button";
         button.dataset.command = item.name;
-        button.setAttribute("aria-label", `${item.name}：${item.description}`);
+        button.setAttribute("aria-label", t("{command}：{description}", {command:item.name, description:t(item.description)}));
         button.append(element("code", "", item.name));
         term.append(button);
-        if (item.number !== undefined) term.append(element("span", "help-number", `或 ${item.number}`));
+        if (item.number !== undefined) term.append(element("span", "help-number", t("或 {number}", {number:item.number})));
         row.append(term, element("dd", "", item.description));
         list.append(row);
       });

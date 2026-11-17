@@ -8,8 +8,11 @@
   },
   "scripts": {
     "build": "node scripts/build.mjs",
+    "build:release": "node scripts/build.mjs --require-translations",
     "dev": "node scripts/dev.mjs",
     "preview": "npm run build && node scripts/serve.mjs",
+    "translate": "node scripts/translate.mjs",
+    "translate:check": "node scripts/translate.mjs --check",
     "test": "npm run build && node --test tests/*.test.cjs"
   },
   "devDependencies": {

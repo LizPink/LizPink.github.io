@@ -4,3 +4,7 @@ dist/
 .sites-runtime/
 *.tar.gz
 .impeccable/review/
+.env
+.env.*
+!.env.example
+output/playwright/

@@ -11,12 +11,12 @@
   cursor: default;
 }
 .article-outline[hidden] { display: none; }
-.article-outline-title { display: none; margin: 0 0 10px; color: var(--muted); font: 500 14px/1.6 var(--font-body); }
+.article-outline-title { min-width: 0; font: 500 14px/1.6 var(--font-body); }
 .article-outline-details > summary {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
+  gap: 8px;
   min-height: 44px;
   padding: 8px 0;
   color: var(--accent);
@@ -24,17 +24,10 @@
   cursor: pointer;
 }
 .article-outline-details > summary::-webkit-details-marker { display: none; }
-.article-outline-details > summary::after {
-  content: "";
-  width: 6px;
-  height: 6px;
-  margin-right: 4px;
-  border-right: 1px solid currentColor;
-  border-bottom: 1px solid currentColor;
-  transform: rotate(45deg);
-}
-.article-outline-details[open] > summary::after { transform: rotate(225deg); }
-.article-outline-details > summary:focus-visible { outline-offset: 2px; }
+.article-outline-details > summary svg { flex-shrink: 0; transform: rotate(180deg); }
+.article-outline-details[open] > summary svg { transform: none; }
+.article-outline-details > summary:hover { color: var(--text); }
+.article-outline-details > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .article-outline-nav {
   max-height: var(--outline-max-height, 50dvh);
   padding: 2px 4px 4px 0;
@@ -60,11 +53,15 @@
 .article-outline-link:focus-visible { outline-offset: -2px; }
 
 @container reader (min-width: 1000px) {
-  .article-layout:has(> .article-outline:not([hidden])) {
+  .article-layout:has(> .article-outline) {
     display: grid;
     grid-template-columns: minmax(0, 1fr) 180px;
     align-items: start;
     column-gap: 32px;
+  }
+  .article-layout:has(> .article-outline[data-open="false"]) {
+    grid-template-columns: minmax(0, 1fr) 44px;
+    column-gap: 16px;
   }
   .article-layout > .article-body { grid-column: 1; grid-row: 1; }
   .article-layout > .article-outline {
@@ -75,6 +72,8 @@
     align-self: start;
     margin: 0;
   }
-  .article-outline-title { display: block; }
-  .article-outline-details > summary { display: none; }
+  .article-outline-details > summary { color: var(--muted); padding: 0; margin-bottom: 10px; }
+  .article-outline[data-open="false"] .article-outline-title { display: none; }
+  .article-outline[data-open="false"] .article-outline-toggle { justify-content: center; }
+  .article-outline[data-open="false"] .article-outline-toggle:hover { background: var(--accent-soft); }
 }

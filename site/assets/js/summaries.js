@@ -1,12 +1,13 @@
 // Section introductions stay visible; recent entries give the first reading choices.
 (() => {
   "use strict";
+  const t = (source, parameters = {}) => window.LIZPINK_I18N?.t(source, parameters) ?? String(source).replace(/\{(\w+)\}/g, (match, key) => Object.hasOwn(parameters, key) ? String(parameters[key]) : match);
 
   const sectionTitles = { life: "生活", resume: "经历", project: "项目" };
   const element = (tag, className, text) => {
     const node = document.createElement(tag);
     if (className) node.className = className;
-    if (text !== undefined) node.textContent = String(text);
+    if (text !== undefined) node.textContent = t(String(text));
     return node;
   };
 
@@ -14,9 +15,9 @@
 
   function profile(content) {
     const node = element("section", "home-profile");
-    if (hasText(content.role)) node.append(element("p", "home-role", `职业：${content.role}`));
+    if (hasText(content.role)) node.append(element("p", "home-role", t("职业：{role}", {role:content.role})));
     const interests = Array.isArray(content.interests) ? content.interests.filter(hasText) : [];
-    if (interests.length) node.append(element("p", "home-interests", `关注：${interests.join(" · ")}`));
+    if (interests.length) node.append(element("p", "home-interests", t("关注：{interests}", {interests:interests.join(" · ")})));
     const paragraphs = Array.isArray(content.about?.paragraphs) ? content.about.paragraphs.filter(hasText) : [];
     if (paragraphs.length) {
       const about = element("div", "home-about");
@@ -41,9 +42,9 @@
       link.href = href;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
-      link.setAttribute("aria-label", "打开 PDF 简历");
+      link.setAttribute("aria-label", t("打开 PDF 简历"));
       valueNode.append(link);
-    } else valueNode.textContent = "PDF 待添加";
+    } else valueNode.textContent = t("PDF 待添加");
     row.append(element("dt", "", "简历"), valueNode);
     facts.append(row);
     node.append(facts);
@@ -59,7 +60,7 @@
       return;
     }
     const list = element("ul", "summary-preview");
-    list.setAttribute("aria-label", "最近内容");
+    list.setAttribute("aria-label", t("最近内容"));
     items.slice(0, 10).forEach(item => {
       const row = element("li", "summary-preview-item");
       if (item.date) {
@@ -93,7 +94,7 @@
     const overview = element("div", "summary-overview");
     addRecent(overview, items);
     node.append(overview);
-    return { node, detailLabel: items.length || (route === "resume" && hasResumeEntries(content)) ? "展开" : null };
+    return { node, detailLabel: items.length || (route === "resume" && hasResumeEntries(content)) ? t("展开") : null };
   }
 
   window.LIZPINK_SUMMARIES = Object.freeze({ create });

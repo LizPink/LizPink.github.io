@@ -5,6 +5,8 @@ import { buildContent } from "./build-content.mjs";
 import { assetVersion, withAssetVersion } from "./asset-version.mjs";
 import { renameWithRetry, removeWithRetry, unlinkWithRetry } from "./build-files.mjs";
 import { copyMathAssets } from "./math-assets.mjs";
+import { readManifest, localizeContent, translationStatus } from "./translations.mjs";
+import { attachUIMessages } from "./ui-messages.mjs";
 
 export const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 
@@ -62,7 +64,7 @@ async function versionSiteAssets(directory, html) {
   });
 }
 
-export async function build(root = projectRoot) {
+export async function build(root = projectRoot, { requireTranslations = false } = {}) {
   root = path.resolve(root);
   const work = generatedPath(root, ".build");
   await fs.mkdir(work, { recursive: true });
@@ -82,6 +84,14 @@ export async function build(root = projectRoot) {
     await fs.cp(path.join(root, "site"), staging, { recursive: true, errorOnExist: true, force: false });
     await copyMathAssets(staging);
     content = await buildContent({ contentDir: path.join(root, "content"), outputDir: staging });
+    const sourceContent = await attachUIMessages(content, root);
+    const manifest = await readManifest(path.join(root, "content/translations/en.json"));
+    const status = translationStatus(sourceContent, manifest);
+    const english = localizeContent(sourceContent, manifest, { strict: requireTranslations });
+    const locales = { "zh-CN": sourceContent, en: english };
+    const serialize = value => `JSON.parse(${JSON.stringify(JSON.stringify(value).replace(/</g, "\\u003c"))})`;
+    await fs.writeFile(path.join(staging, "assets/js/content.js"),
+      `// Generated bilingual content. Edit content/ instead.\nwindow.LIZPINK_LOCALES = ${serialize(locales)};\nwindow.LIZPINK_TRANSLATIONS = ${serialize({ complete: status.complete, missing: status.missing.length })};\nwindow.LIZPINK_CONTENT = window.LIZPINK_LOCALES["zh-CN"];\n`);
     const publicFiles = path.join(root, "content/files");
     async function checkFiles(directory) {
       for (const entry of await fs.readdir(directory, { withFileTypes: true })) {
@@ -136,7 +146,9 @@ export async function build(root = projectRoot) {
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   try {
-    const content = await build();
+    const arguments_ = process.argv.slice(2);
+    if (arguments_.some(value => value !== "--require-translations")) throw new Error("Usage: node scripts/build.mjs [--require-translations]");
+    const content = await build(projectRoot, { requireTranslations: arguments_.includes("--require-translations") });
     console.log(`已生成 ${Object.keys(content.samples).length} 篇内容 → dist/`);
   } catch (error) {
     console.error(`构建失败：${error.message}`);

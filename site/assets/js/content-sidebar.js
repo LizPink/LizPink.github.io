@@ -6,6 +6,8 @@
   const MIN_WIDTH = 180;
   const MAX_WIDTH = 420;
   const CONTENT_MIN_WIDTH = 320;
+  const t = (text, values = {}) => window.LIZPINK_I18N?.t(text, values)
+    ?? text.replace(/\{(\w+)\}/g, (match, key) => values[key] ?? match);
   const titles = { home: "全部内容", help: "全部内容", life: "生活", resume: "经历", project: "项目" };
   const media = window.matchMedia("(max-width: 760px)");
   let initialized = false;
@@ -39,7 +41,7 @@
     resizer.setAttribute("aria-valuemin", String(min));
     resizer.setAttribute("aria-valuemax", String(max));
     resizer.setAttribute("aria-valuenow", String(value));
-    resizer.setAttribute("aria-valuetext", `目录宽度 ${value} 像素`);
+    resizer.setAttribute("aria-valuetext", t("目录宽度 {width} 像素", { width: value }));
     if (value !== renderedWidth) {
       renderedWidth = value;
       frame.style.setProperty("--sidebar-width", `${value}px`);
@@ -118,13 +120,14 @@
     frame.dataset.menuOpen = String(opened);
     frame.dataset.menuPeek = "false";
     frame.dataset.menuPinned = String(opened && !media.matches);
-    reveal.hidden = false;
+    reveal.hidden = opened;
     reveal.setAttribute("aria-expanded", String(opened));
-    reveal.setAttribute("aria-label", opened ? "收起目录" : "展开目录");
-    reveal.title = `${opened ? "收起" : "展开"}内容目录（Ctrl+Alt+A）`;
-    collapse.setAttribute("aria-label", media.matches ? "关闭目录" : "收起目录");
-    collapse.title = media.matches ? "关闭目录" : "收起目录";
-    if (opened && focusInside) collapse.focus({ preventScroll: true });
+    reveal.setAttribute("aria-label", t("展开内容目录"));
+    reveal.title = `${t("展开内容目录")} (Ctrl+Alt+A)`;
+    collapse.setAttribute("aria-expanded", String(opened));
+    collapse.setAttribute("aria-label", t(media.matches ? "关闭内容目录" : "收起内容目录"));
+    collapse.title = `${t(media.matches ? "关闭内容目录" : "收起内容目录")} (Ctrl+Alt+A)`;
+    if (opened && (focusInside || document.activeElement === reveal)) collapse.focus({ preventScroll: true });
     else if (!opened && (restoreFocus || wasInside)) reveal.focus({ preventScroll: true });
     onLayout();
   }
@@ -219,8 +222,8 @@
     route = Object.hasOwn(titles, route) ? route : "home";
     const items = window.LIZPINK_CONTENT_INDEX.items(route);
     const signature = JSON.stringify([route, items]);
-    document.querySelector("#content-index-title").textContent = titles[route];
-    document.querySelector("#content-index-count").textContent = `${items.length} 项`;
+    document.querySelector("#content-index-title").textContent = t(titles[route]);
+    document.querySelector("#content-index-count").textContent = t("{count} 项", { count: items.length });
     menu.querySelectorAll("[data-route]").forEach(button => {
       if (button.dataset.route === route) button.setAttribute("aria-current", "page");
       else button.removeAttribute("aria-current");
@@ -248,7 +251,7 @@
       });
       if (!rows.length) {
         const row = element("li");
-        row.append(element("p", "content-index-empty", "这个栏目还没有内容。")); rows.push(row);
+        row.append(element("p", "content-index-empty", t("这个栏目还没有内容。"))); rows.push(row);
       }
       list.replaceChildren(...rows);
       listSignature = signature;
@@ -258,6 +261,9 @@
       if (button.dataset.contentRoute === route && button.dataset.contentKey === key) button.setAttribute("aria-current", "location");
       else button.removeAttribute("aria-current");
     });
+    // A language change also refreshes controls whose geometry has not changed.
+    setOpen(opened);
+    applyWidth(preferredWidth);
   }
 
   window.LIZPINK_SIDEBAR = Object.freeze({ init, update, close, toggle, isOpen: () => opened, isMobile: () => media.matches });
