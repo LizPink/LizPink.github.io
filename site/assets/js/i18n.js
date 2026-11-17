@@ -109,10 +109,11 @@
     if (wordmark) wordmark.setAttribute("aria-label", t("{name} 首页", { name: window.LIZPINK_CONTENT?.name || "LizPink" }));
     const button = document.querySelector("#language-toggle");
     if (button) {
-      button.textContent = language === "en" ? "中文" : "EN";
-      button.lang = language === "en" ? "zh-CN" : "en";
-      button.setAttribute("aria-label", language === "en" ? "切换到中文" : "Switch to English");
-      button.title = language === "en" ? "切换到中文" : "Switch to English";
+      button.textContent = language === "en" ? "EN" : "中文";
+      button.lang = language;
+      const description = language === "en" ? "Current language: English; switch to Chinese" : "当前语言：中文；点击切换到英文";
+      button.setAttribute("aria-label", description);
+      button.title = description;
       button.disabled = !locales.en;
     }
   }

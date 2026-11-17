@@ -49,9 +49,10 @@
     icon.setAttribute("stroke", "currentColor"); icon.setAttribute("stroke-width", "1.5");
     icon.setAttribute("stroke-linecap", "round"); icon.setAttribute("stroke-linejoin", "round");
     icon.setAttribute("aria-hidden", "true");
+    icon.setAttribute("class", "directory-chevron");
     const path = document.createElementNS
       ? document.createElementNS("http://www.w3.org/2000/svg", "path") : element("path");
-    path.setAttribute("d", "M4 4h16v16H4zM15 4v16m-6-11 3 3-3 3");
+    path.setAttribute("d", "m9 6 6 6-6 6");
     icon.append(path); summary.append(icon);
     const nav = element("nav", "article-outline-nav");
     nav.id = `${aside.id}-nav`;

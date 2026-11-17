@@ -83,10 +83,17 @@ test("switching preserves the article, theme and other URL parameters while pers
 
 test("static text and accessibility labels switch in both directions without visiting article content", () => {
   const h = harness();
+  assert.equal(h.toggle.textContent, "中文");
+  assert.equal(h.toggle.lang, "zh-CN");
+  assert.equal(h.toggle.attributes["aria-label"], "当前语言：中文；点击切换到英文");
+  assert.equal(h.toggle.title, "当前语言：中文；点击切换到英文");
   h.clickToggle();
   assert.equal(h.skip.textContent, "Skip to content");
   assert.equal(h.light.attributes["aria-label"], "Light mode");
-  assert.equal(h.toggle.textContent, "中文");
+  assert.equal(h.toggle.textContent, "EN");
+  assert.equal(h.toggle.lang, "en");
+  assert.equal(h.toggle.attributes["aria-label"], "Current language: English; switch to Chinese");
+  assert.equal(h.toggle.title, "Current language: English; switch to Chinese");
   assert.equal(h.api.t("就绪"), "All set");
   assert.equal(h.api.t("已打开：{title}", { title: "Glass" }), "Opened: Glass");
   assert.equal(h.article.textContent, "这是文章，不应由界面字典修改。");
@@ -94,7 +101,22 @@ test("static text and accessibility labels switch in both directions without vis
   h.clickToggle();
   assert.equal(h.skip.textContent, "跳到正文");
   assert.equal(h.light.attributes["aria-label"], "浅色模式");
+  assert.equal(h.toggle.textContent, "中文");
+  assert.equal(h.toggle.lang, "zh-CN");
+  assert.equal(h.toggle.attributes["aria-label"], "当前语言：中文；点击切换到英文");
+  assert.equal(h.toggle.title, "当前语言：中文；点击切换到英文");
+});
+
+test("a direct English link shows the current language and the Chinese switch action on first render", () => {
+  const h = harness({ url: "https://example.test/?lang=en#project/article", saved: "zh-CN" });
   assert.equal(h.toggle.textContent, "EN");
+  assert.equal(h.toggle.lang, "en");
+  assert.equal(h.toggle.attributes["aria-label"], "Current language: English; switch to Chinese");
+  assert.equal(h.toggle.title, h.toggle.attributes["aria-label"]);
+  h.clickToggle();
+  assert.equal(h.api.current(), "zh-CN");
+  assert.equal(h.toggle.textContent, "中文");
+  assert.equal(h.location.hash, "#project/article");
 });
 
 test("optional preference storage and invalid language choices do not break switching", () => {

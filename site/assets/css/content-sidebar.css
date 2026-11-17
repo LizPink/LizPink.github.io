@@ -30,7 +30,7 @@
 
 #menu-reveal[hidden] { display: none; }
 #menu-reveal svg { width: 18px; height: 18px; }
-#menu-reveal:hover { color: var(--accent); background: var(--accent-soft); }
+#menu-reveal:hover { color: var(--accent); }
 #menu-reveal:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 #frame-location { overflow: hidden; overflow-wrap: normal; text-overflow: ellipsis; white-space: nowrap; }
 
@@ -76,6 +76,26 @@
 #menu-close svg { flex-shrink: 0; }
 #menu-close:hover { color: var(--accent); }
 #menu-close:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+/* Motion stays inside the controls so the reader's text does not reflow mid-action. */
+#menu-reveal, #menu-close { border-radius: 7px; }
+#menu-reveal .directory-chevron, #menu-close .directory-chevron {
+  --chevron-angle: 0deg;
+  --chevron-shift: 0px;
+  width: 32px;
+  height: 32px;
+  padding: 6px;
+  border-radius: 50%;
+  transform: rotate(var(--chevron-angle)) translateX(var(--chevron-shift));
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), background-color 140ms ease-out, color 140ms ease-out;
+}
+#menu-close .directory-chevron { --chevron-angle: 180deg; }
+#menu-reveal:is(:hover, :focus-visible) .directory-chevron,
+#menu-close:is(:hover, :focus-visible) .directory-chevron {
+  --chevron-shift: 2px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
 
 .sidebar-routes {
   display: grid;
@@ -272,6 +292,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  #menu-reveal .directory-chevron, #menu-close .directory-chevron { --chevron-shift: 0px !important; transition: none; }
   .content-item, #sidebar-resizer::before { transition: none; }
   #route-menu { animation: none; }
 }
