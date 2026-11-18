@@ -55,6 +55,14 @@
       "source": "最近内容",
       "text": "Recent entries"
     },
+    "8d13a2eefa0b9a8d67fd2388e05971c062045c2f9c943c7541bb46310a59a1f1": {
+      "source": "首页推荐",
+      "text": "Featured"
+    },
+    "105ab020b052f6b14e68570a01e9b7df193e87925f518bbcb5551d497dfab7f7": {
+      "source": "最近更新",
+      "text": "Latest updates"
+    },
     "ebdaf51146bd6579dca4fc453d7d0abc92e56c91ec63857ff2123d17f4b2a572": {
       "source": "简历",
       "text": "Résumé"
@@ -459,9 +467,17 @@
       "source": "记录项目实践、学习过程，以及把想法变成作品的探索。",
       "text": "Project work, learning in progress, and the process of turning ideas into things I can build."
     },
-    "4b4cf714e009825ddd2b61c250f0771e3498cc8d20695a2e6bdcdb1769b95031": {
-      "source": "这这个项目中，我打算从零开始实现一个自己的光线追踪（离线）渲染器！这个项目的源代码已经发布到 GitHub 项目主页，这里会同步更新项目的开发信息。",
-      "text": "In this project, I plan to build my own ray-tracing (offline) renderer from scratch! The source code is available on the GitHub project page, and I will post development updates here."
+    "fb25e1dc0723eac35dbf0776fe3a2b9f967b7dd5e03ca52016a836401769992c": {
+      "source": "用同一个 Cornell Box 场景，记录从直接光照到间接光照，再到镜面反射与折射的渲染实验。",
+      "text": "Experiments in the same Cornell Box trace the progression from direct and indirect lighting to specular reflection and refraction."
+    },
+    "7af2db49f0b2d10a80e41aefec51a3aab36c764475d0db3451ab31e5a80cc5b4": {
+      "source": "从零写一个光线追踪渲染器",
+      "text": "Building a Ray Tracer from Scratch"
+    },
+    "1969a3280a4f26ac21ed9940c14445e794ddb3c0f0929bb3684366916f8ef5cb": {
+      "source": "加入间接光照后，Cornell Box 两侧墙壁的红蓝色映在天花板和球面上。",
+      "text": "With indirect lighting, light from the red and blue walls of the Cornell Box tints the ceiling and the spheres."
     },
     "7260512b0920add3b7e6a03e2e31c78d4d190c64f3a16fd87b645192f9506cc5": {
       "source": "这这个项目中，我打算从零开始实现一个自己的光线追踪（离线）渲染器！这个项目的源代码已经发布到 GitHub",
