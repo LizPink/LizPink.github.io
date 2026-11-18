@@ -11,6 +11,7 @@
 | 新增或修改一篇文章 | `content/entries/文章文件夹/index.md` |
 | 文章中的图片、视频、封面、字幕 | 放在这篇文章的文件夹内 |
 | 首页问候、职业、兴趣、个人介绍 | `content/site.yml` |
+| 更换首页推荐文章 | `content/site.yml` 的 `featuredEntry`，填写文章文件夹名 |
 | 栏目名称、栏目说明、经历条目 | `content/site.yml` |
 | PDF 简历 | 文件放在 `content/files/`，链接填在 `content/site.yml` |
 
@@ -227,11 +228,31 @@ Markdown 和 HTML 资源路径均兼容 `/`、`\`，例如 `./images/photo.jpg` 
 | `role` | 首页“职业”，只填值，例如 `学生` |
 | `interests` | 首页“关注”内容，每行一个条目 |
 | `about.paragraphs` | 首页个人介绍，每行一段 |
+| `featuredEntry` | 首页推荐文章的文件夹名，留空或移除此项可撤下推荐 |
 | `paths` 中的 `title`、`description` | 对应栏目的名称和说明 |
 | `resume.sections` | 经历栏目展开后的经历条目 |
 | `resume.pdfUrl` | 经历栏目中的 PDF 简历入口 |
 
 保留栏目 `id` 为 `life`、`resume`、`project`，文章通过这些名称归入栏目。新增文章后，列表会自动生成，无需再往 `site.yml` 添加文章名称。
+
+### 更新首页推荐与最近更新
+
+平时照常在 `content/entries/` 下新增文章或修改已有文章。首页的“最近更新”从所有栏目中按更新日期选出最多三篇，缺少更新日期时使用创建日期。跨栏目文章只出现一次，已推荐的文章会跳过。没有其他文章时，这一栏自动隐藏。
+
+想换推荐时，在 `content/site.yml` 中把这一行改成另一篇已有文章的文件夹名：
+
+```yaml
+featuredEntry: "2026Fall-Render-from-Scratch"
+```
+
+首页默认使用文章标题和正文首段；纯文字文章也可以推荐。想单独设置首页的展示内容，可在该篇 `index.md` 顶部的 YAML 中添加以下可选字段：
+
+| 字段 | 用途 |
+| --- | --- |
+| `previewTitle` | 首页推荐标题，例如“从零写一个光线追踪渲染器” |
+| `summary` | 一句摘要 |
+| `cover` | 本篇文章内的封面图路径，例如 `./photos/cover.webp` |
+| `coverAlt` | 简要描述封面里能看到什么 |
 
 ### 添加经历条目
 

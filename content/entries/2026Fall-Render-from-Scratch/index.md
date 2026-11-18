@@ -2,6 +2,10 @@
 title:		"2026Fall-Render-from-Scratch"
 sections: 	[project]
 publishedAt:	"2026-10-01"
+previewTitle: "从零写一个光线追踪渲染器"
+summary: "用同一个 Cornell Box 场景，记录从直接光照到间接光照，再到镜面反射与折射的渲染实验。"
+cover: "./photos/home-preview.webp"
+coverAlt: "加入间接光照后，Cornell Box 两侧墙壁的红蓝色映在天花板和球面上。"
 ---
 
 这这个项目中，我打算从零开始实现一个自己的光线追踪（离线）渲染器！这个项目的源代码已经发布到 GitHub [项目主页](https://github.com/LizPink/2026Fall-Renderer-from-Scratch)，这里会同步更新项目的开发信息。

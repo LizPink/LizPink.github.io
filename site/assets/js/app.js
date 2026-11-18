@@ -379,6 +379,7 @@
     }
     const contentButton = event.target.closest("[data-content-key][data-content-route]");
     if (contentButton) {
+      if (contentButton.tagName === "A" && (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)) return;
       const item = contentIndex.get(contentButton.dataset.contentRoute, contentButton.dataset.contentKey);
       if (item) { event.preventDefault(); navigate(item.route, true, {itemKey:item.key, animate:false}); }
       return;

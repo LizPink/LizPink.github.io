@@ -115,6 +115,26 @@ test("build and client display agree on update-first sorting across years, stabl
   assert.equal(api.get("project", "renewed").route, "project");
 });
 
+test("home cover assets can live outside the article body and an unknown featured key fails the build", async t => {
+  const site = { ...defaultSite(), featuredEntry: "article" };
+  const cover = '<svg xmlns="http://www.w3.org/2000/svg"/>';
+  const f = await fixture(t, { site, entries: [{
+    key: "article", metadata: { cover: "./photos/preview.svg" }, files: { "photos/preview.svg": cover }
+  }] });
+  const { samples } = await f.build();
+  const first = samples.article.cover;
+  assert.ok(first.includes("preview.svg"));
+  const output = path.join(f.outputDir, first.split("?")[0]);
+  assert.equal(await fs.readFile(output, "utf8"), cover);
+  assert.equal(samples.article.mediaCounts.images, 0);
+  await write(path.join(f.contentDir, "entries/article/photos/preview.svg"), cover + "\n");
+  assert.notEqual((await f.build()).samples.article.cover, first);
+  await write(path.join(f.contentDir, "site.yml"), stringify({ ...site, featuredEntry: "missing" }));
+  await assert.rejects(f.build(), /featuredEntry/);
+  await write(path.join(f.contentDir, "site.yml"), stringify({ ...site, featuredEntry: "" }));
+  assert.ok(!(await f.build()).featuredEntry);
+});
+
 test("column descriptions replace legacy introductions and obsolete fields fail with migration guidance", async t => {
   const site = defaultSite();
   site.paths[0].description = "Combined column introduction";

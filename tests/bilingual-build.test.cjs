@@ -18,12 +18,12 @@ async function fixture(t) {
   await fs.cp(path.join(project, "site"), path.join(root, "site"), { recursive: true });
   await fs.mkdir(path.join(root, "content/entries/article"), { recursive: true });
   await fs.writeFile(path.join(root, "content/site.yml"), stringify({
-    name: "Author", greeting: "你好 Author", role: "学生", interests: ["Graphics"],
+    name: "Author", greeting: "你好 Author", featuredEntry: "article", role: "学生", interests: ["Graphics"],
     about: { paragraphs: ["中文介绍"] }, resume: { sections: [], pdfUrl: "" },
     paths: ["life", "resume", "project"].map(id => ({ id, title: "中文栏目", description: "栏目介绍" }))
   }));
   await fs.writeFile(path.join(root, "content/entries/article/index.md"),
-    '---\ntitle: 中文文章\nsections: [project]\npublishedAt: "2026-11-01"\n---\n中文正文\n\n## 第一节\n\n`保留代码` and $x^2$\n\n## 第二节\n\n![图注](image.svg)\n');
+    '---\ntitle: 中文文章\nsections: [project]\npreviewTitle: 推荐短标题\nsummary: 推荐摘要\ncover: image.svg\ncoverAlt: 光照效果\npublishedAt: "2026-11-01"\n---\n中文正文\n\n## 第一节\n\n`保留代码` and $x^2$\n\n## 第二节\n\n![图注](image.svg)\n');
   await fs.writeFile(path.join(root, "content/entries/article/image.svg"), '<svg xmlns="http://www.w3.org/2000/svg"/>');
   return root;
 }
@@ -47,6 +47,14 @@ test("bilingual release preserves shared IDs, dates, code, formulas and media", 
   assert.equal(window.LIZPINK_TRANSLATIONS.complete, true);
   assert.equal(english.greeting, "English: 你好 Author");
   assert.equal(chinese.greeting, "你好 Author");
+  assert.equal(english.featuredEntry, "article");
+  assert.equal(chinese.featuredEntry, english.featuredEntry);
+  assert.equal(english.samples.article.previewTitle, "English: 推荐短标题");
+  assert.equal(english.samples.article.text, "English: 推荐摘要");
+  assert.equal(english.samples.article.coverAlt, "English: 光照效果");
+  assert.ok(chinese.samples.article.cover);
+  assert.equal(english.samples.article.cover, chinese.samples.article.cover);
+  assert.ok(chinese.samples.article.body.includes(chinese.samples.article.cover));
   assert.deepEqual(english.samples.article.headings.map(item => item.id), chinese.samples.article.headings.map(item => item.id));
   assert.ok(english.samples.article.headings.every(item => item.text.startsWith("English:")));
   assert.equal(english.samples.article.publishedAt, chinese.samples.article.publishedAt);

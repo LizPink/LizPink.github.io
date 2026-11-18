@@ -140,6 +140,7 @@
   new ResizeObserver(schedule).observe(frame);
   new ResizeObserver(schedule).observe(composer);
   new ResizeObserver(schedule).observe(records);
+  new ResizeObserver(schedule).observe(document.querySelector("#home-profile"));
   new MutationObserver(schedule).observe(suggestions, {childList:true, attributes:true, attributeFilter:["hidden"]});
   new MutationObserver(schedule).observe(records, {childList:true, subtree:true, attributes:true, attributeFilter:["open"]});
   window.addEventListener("resize", schedule);

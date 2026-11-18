@@ -12,7 +12,7 @@ import { renameWithRetry, removeWithRetry } from "./build-files.mjs";
 
 const projectRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const routeNames = { life: "生活", resume: "经历", project: "项目" };
-const fields = new Set(["title", "sections", "publishedAt", "updatedAt", "summary", "order"]);
+const fields = new Set(["title", "sections", "publishedAt", "updatedAt", "summary", "order", "previewTitle", "cover", "coverAlt"]);
 const imageExtensions = new Set([".svg", ".png", ".jpg", ".jpeg", ".webp", ".gif", ".avif", ".bmp"]);
 const compareText = (left, right) => left < right ? -1 : left > right ? 1 : 0;
 const record = value => value !== null && typeof value === "object" && !Array.isArray(value);
@@ -54,6 +54,9 @@ function configureSite(site, file) {
     if (typeof site[field] !== "string" || !site[field].trim()) throw error(file, `${field}必须是非空文字。`);
   }
   if (typeof site.role !== "string") throw error(file, "role必须是文字。");
+  if (site.featuredEntry != null && typeof site.featuredEntry !== "string") {
+    throw error(file, "featuredEntry必须是文章文件夹名。");
+  }
   if (!Array.isArray(site.interests) || !site.interests.every(item => typeof item === "string")) {
     throw error(file, "interests必须是文字数组。");
   }
@@ -76,7 +79,7 @@ function configureSite(site, file) {
     throw error(file, "resume.introduction已移除，请在about.paragraphs填写首页介绍。");
   }
   const content = withoutLegacyFlags({
-    ...site, paths,
+    ...site, paths, featuredEntry: site.featuredEntry?.trim() || "",
     about: { paragraphs: [], ...site.about },
     resume: { sections: [], pdfUrl: "", ...site.resume },
     samples: {}
@@ -136,7 +139,9 @@ async function readEntry(directory, key) {
   for (const field of ["publishedAt", "updatedAt"]) {
     if (Object.hasOwn(metadata, field) && !validDate(metadata[field])) throw error(file, `${field}必须是有效的YYYY-MM-DD日期。`);
   }
-  if (Object.hasOwn(metadata, "summary") && typeof metadata.summary !== "string") throw error(file, "summary必须是文字。");
+  for (const field of ["summary", "previewTitle", "cover", "coverAlt"]) {
+    if (Object.hasOwn(metadata, field) && typeof metadata[field] !== "string") throw error(file, `${field}必须是文字。`);
+  }
   if (Object.hasOwn(metadata, "order") && (typeof metadata.order !== "number" || !Number.isFinite(metadata.order))) {
     throw error(file, "order必须是有限数字。");
   }
@@ -373,13 +378,21 @@ async function renderEntry(entry, content, entries, assets, versionOf) {
   let body;
   try { body = markdown.renderer.render(rendered, markdown.options, {}); }
   catch (failure) { throw error(entry.file, failure.message); }
-  return {
+  const sample = {
     title: entry.metadata.title,
     text: compact(entry.metadata.summary ?? firstParagraph),
     type: mediaCounts.videos ? "video" : mediaCounts.images ? "image" : "text",
     body, headings, mediaCounts,
     ...Object.fromEntries(["publishedAt", "updatedAt"].filter(field => Object.hasOwn(entry.metadata, field)).map(field => [field, entry.metadata[field]]))
   };
+  if (entry.metadata.previewTitle?.trim()) sample.previewTitle = entry.metadata.previewTitle.trim();
+  if (entry.metadata.cover?.trim()) {
+    const cover = await asset(entry.metadata.cover.trim());
+    if (!imageExtensions.has(path.extname(cover.target).toLowerCase())) throw error(entry.file, "cover必须是图片文件。");
+    sample.cover = cover.url;
+    if (entry.metadata.coverAlt?.trim()) sample.coverAlt = entry.metadata.coverAlt.trim();
+  }
+  return sample;
 }
 
 async function publish(content, assets, outputDir) {
@@ -470,6 +483,9 @@ export async function buildContent({ contentDir = path.join(projectRoot, "conten
     const entryDir = path.join(root, directory.name);
     const entry = await readEntry(entryDir, directory.name);
     entries.set(entry.key, entry);
+  }
+  if (content.featuredEntry && !entries.has(content.featuredEntry)) {
+    throw error(siteFile, `featuredEntry引用的文章不存在：${content.featuredEntry}`);
   }
   await applyGitUpdateDates(entries, contentDir);
   for (const route of content.paths) route.items = [...entries.values()]

@@ -77,7 +77,7 @@ function transformContent(content, transform) {
   }
   for (const route of result.paths || []) for (const name of ["title", "description"]) field(route, name);
   for (const sample of Object.values(result.samples || {})) {
-    for (const name of ["title", "text", "summary"]) field(sample, name);
+    for (const name of ["title", "text", "summary", "previewTitle", "coverAlt"]) field(sample, name);
     if (typeof sample.body === "string") sample.body = htmlText(sample.body, transform);
     // Read the final heading text from the translated HTML. Some headings are
     // split across date/title spans, so translating the combined string again

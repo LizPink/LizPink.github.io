@@ -59,6 +59,43 @@ test("real site configuration supplies each persistent title/description and the
   assert.deepEqual(find(node, "home-about").children.map(child => child.textContent), config.about.paragraphs);
 });
 
+test("home features one entry and links to the three newest other entries across sections", () => {
+  const content = contentWith("project", {
+    old: { title: "Old", publishedAt: "2025-12-01" },
+    featured: { title: "Full title", previewTitle: "Short title", text: "Description", cover: "./photo.webp", coverAlt: "The scene" },
+    shared: { title: "Two sections", publishedAt: "2026-01-01", updatedAt: "2026-05-10" },
+    newer: { title: "Newer", publishedAt: "2026-04-01" },
+    newest: { title: "Newest", publishedAt: "2026-06-01" }
+  }, { featuredEntry: "featured" });
+  content.paths = [
+    { id: "project", items: ["old", "featured", "shared"] },
+    { id: "life", items: ["shared", "newer", "newest"] }
+  ];
+  const home = load(content).create("home").node;
+  const featured = find(home, "home-featured"), link = all(featured, "a")[0];
+  assert.equal(link.href, "#project/featured");
+  assert.match(link.textContent, /Short title/);
+  assert.match(featured.textContent, /Description/);
+  assert.equal(all(featured, "img")[0].src, "./photo.webp");
+  assert.equal(all(featured, "img")[0].alt, "The scene");
+  const recent = find(home, "home-recent");
+  assert.deepEqual(all(recent, "a").map(entry => entry.href), ["#life/newest", "#project/shared", "#life/newer"]);
+  assert.equal(all(recent, "time")[1].dateTime, "2026-05-10");
+});
+
+test("a text-only featured article falls back to its title and returns to recent updates when unpinned", () => {
+  const content = contentWith("life", { note: { title: "A note", text: "First paragraph" } }, { featuredEntry: "note" });
+  const { create } = load(content);
+  const home = create("home").node, featured = find(home, "home-featured");
+  assert.equal(all(featured, "img").length, 0);
+  assert.match(all(featured, "a")[0].textContent, /A note/);
+  assert.equal(find(home, "home-recent"), undefined);
+  delete content.featuredEntry;
+  const unpinned = create("home").node;
+  assert.equal(find(unpinned, "home-featured"), undefined);
+  assert.equal(all(find(unpinned, "home-recent"), "a")[0].href, "#life/note");
+});
+
 test("ten newest entries use the index's update-first order instead of path/source order", () => {
   const samples = Object.fromEntries(Array.from({ length: 12 }, (_, index) => [`entry-${index}`, {
     title: `文章${index}`, text: `简介${index}`, publishedAt: `2026-01-${String(index + 1).padStart(2, "0")}`,

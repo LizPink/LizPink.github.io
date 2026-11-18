@@ -5,6 +5,7 @@
     "首页": "Home", "生活": "Life", "经历": "Experience", "项目": "Projects", "帮助": "Help",
     "展开": "Expand", "收起": "Collapse", "浏览路线": "Browse", "操作": "Actions",
     "内容目录": "Contents", "本页目录": "On this page", "全部内容": "All entries", "最近内容": "Recent entries",
+    "首页推荐": "Featured", "最近更新": "Latest updates",
     "简历": "Résumé", "打开 PDF 简历 ↗": "Open PDF résumé ↗", "打开 PDF 简历": "Open PDF résumé", "PDF 待添加": "PDF coming soon",
     "职业：{role}": "Role: {role}", "关注：{interests}": "Interests: {interests}",
     "这个分区还没有内容。": "There are no entries in this section yet.", "这个栏目还没有内容。": "There are no entries in this section yet.",
