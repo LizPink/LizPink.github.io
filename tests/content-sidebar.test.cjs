@@ -143,6 +143,33 @@ test("the sidebar title collapses to a visible edge control that reopens the sam
   assert.equal(h.currentWidth(), 420);
 });
 
+test("route and language refreshes update controls without signaling layout changes that end output motion", () => {
+  const h = harness();
+  const initial = h.notifications;
+  h.api.update("project");
+  h.api.update("help");
+  assert.equal(h.notifications, initial);
+
+  const labels = {
+    "展开内容目录": "Expand contents",
+    "收起内容目录": "Collapse contents",
+    "目录宽度 {width} 像素": "Contents width: {width} pixels"
+  };
+  h.window.LIZPINK_I18N = { t: (source, values = {}) =>
+    (labels[source] ?? source).replace(/\{(\w+)\}/g, (_, name) => values[name]) };
+  h.api.update("help");
+  assert.equal(h.nodes["menu-reveal"].getAttribute("aria-label"), "Expand contents");
+  assert.equal(h.nodes["menu-close"].getAttribute("aria-label"), "Collapse contents");
+  assert.equal(h.nodes["sidebar-resizer"].getAttribute("aria-valuetext"), "Contents width: 200 pixels");
+  assert.equal(h.notifications, initial);
+
+  h.nodes["menu-close"].emit("click");
+  const afterClose = h.notifications;
+  assert.ok(afterClose > initial);
+  h.nodes["menu-reveal"].emit("click");
+  assert.ok(h.notifications > afterClose);
+});
+
 test("public toggle shares button behavior and preserves desktop preference across mobile", () => {
   const h = harness();
   assert.equal(h.api.toggle(), true);

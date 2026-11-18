@@ -191,6 +191,7 @@ h1 > span { color: var(--accent); }
 .output-details[open] > summary::before { transform: rotate(45deg); }
 .details-body { margin-top: 16px; max-width: var(--media-width); font: 17px/1.9 var(--font-body); }
 .output-details[open] > .details-body { animation: detail-reveal 160ms ease-out; }
+.output-details[open] > .details-body[data-streamed="true"] { animation: none; }
 .details-body > p, .profile-introduction, .resume-section { max-width: none; }
 #command-form { display: flex; align-items: center; gap: 13px; width: 100%; min-width: 0; min-height: 48px; margin: 20px 0 0; padding: 0; font: 400 16px/1.6 var(--font-mono); }
 #command-form label { flex-shrink: 0; color: var(--accent); font-size: 18px; }

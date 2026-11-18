@@ -178,16 +178,28 @@
     const body = $("div", "details-body");
     details.append(summary, body);
     let built = false;
-    const populate = () => { if (!built) { buildFullOutput(route, body); built = true; } };
+    let revealOnOpen = false;
+    const populate = ({animate = false} = {}) => {
+      if (animate && route === "project") revealOnOpen = true;
+      if (!built) { buildFullOutput(route, body); built = true; }
+    };
     summary.addEventListener("click", () => {
       pauseFollowing();
-      if (!details.open) populate();
+      if (!details.open) populate({animate:true});
     });
     details.addEventListener("toggle", () => {
       if (!details.isConnected) return;
       commandInput.refresh();
-      if (details.open) { pauseFollowing(); populate(); label.textContent = t("收起"); if (!restoringLanguage) scrollWithinTerminal(result.node); }
-      else { label.textContent = result.detailLabel; body.querySelectorAll("video").forEach(video => video.pause()); }
+      if (details.open) {
+        pauseFollowing(); populate(); label.textContent = t("收起");
+        if (!restoringLanguage) scrollWithinTerminal(result.node);
+        if (revealOnOpen) playProjectOutput(body);
+      } else {
+        if (body.dataset.streaming === "true") outputMotion?.finish();
+        label.textContent = result.detailLabel;
+        body.querySelectorAll("video").forEach(video => video.pause());
+      }
+      revealOnOpen = false;
       updateFollowState();
     });
     details.populate = populate;
@@ -230,6 +242,12 @@
       - parseFloat(style.paddingTop) - parseFloat(style.paddingBottom);
     return entry.getBoundingClientRect().height <= available;
   }
+  function playProjectOutput(container) {
+    const {top, bottom} = main.getBoundingClientRect();
+    const visibleBottom = commandArea.dataset.docked === "true"
+      ? Math.min(bottom, commandArea.getBoundingClientRect().top) : bottom;
+    outputMotion?.play(container, {projectViewport:{top, bottom:visibleBottom}});
+  }
   function render(route, {label = route, animate = false, itemKey = null} = {}) {
     const wasViewingImage = imageViewer?.isOpen();
     if (wasViewingImage) imageViewer.close({restoreFocus:false, restoreScroll:false});
@@ -260,7 +278,10 @@
     main.scrollTop = 0;
     if (wasViewingImage) main.focus({preventScroll:true});
     commandInput.refresh();
-    if (animate && !activeItem && entry && outputFitsViewport(entry)) outputMotion?.play(view);
+    if (animate && entry) {
+      if (activeRoute === "project") playProjectOutput(view);
+      else if (!activeItem && outputFitsViewport(entry)) outputMotion?.play(view);
+    }
     updateFollowState();
     document.querySelector("#frame-location").textContent = `~/${activeRoute}${activeItem ? `/${activeItem.key}` : ""}`;
     sidebar.update(activeRoute, activeItem?.key || null);
@@ -350,7 +371,7 @@
       input.value = ""; syncCursor();
       if (!details) { feedback.textContent = t("最近的输出没有可展开的详情。"); resumeFollowing(); return; }
       if (command === "open") {
-        pauseFollowing(); details.populate(); details.open = true;
+        pauseFollowing(); details.populate({animate:!details.open}); details.open = true;
         commandInput.refresh();
         if (!commandInput.commandMode()) details.querySelector("summary").focus({preventScroll:true});
         scrollWithinTerminal(details.querySelector("summary"));
@@ -381,7 +402,7 @@
     if (contentButton) {
       if (contentButton.tagName === "A" && (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey)) return;
       const item = contentIndex.get(contentButton.dataset.contentRoute, contentButton.dataset.contentKey);
-      if (item) { event.preventDefault(); navigate(item.route, true, {itemKey:item.key, animate:false}); }
+      if (item) { event.preventDefault(); navigate(item.route, true, {itemKey:item.key}); }
       return;
     }
     const button = event.target.closest("[data-route]");
@@ -428,7 +449,9 @@
   ["keyup", "click", "select", "scroll", "focus"].forEach(event => input.addEventListener(event, syncCursor));
   input.addEventListener("beforeinput", resumeFollowing);
   input.addEventListener("blur", resetCompletion);
-  main.addEventListener("wheel", event => { if (event.deltaY < 0) beginReading(); }, {passive:true});
+  main.addEventListener("wheel", event => {
+    if (event.deltaY < 0 || (activeRoute === "project" && event.deltaY > 0)) beginReading();
+  }, {passive:true});
   main.addEventListener("touchmove", beginReading, {passive:true});
   main.addEventListener("pointerdown", event => { if (event.clientX >= main.getBoundingClientRect().right - 20) beginReading(); });
   main.addEventListener("scroll", () => {

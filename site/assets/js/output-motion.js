@@ -7,12 +7,31 @@
     ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
   let active = null;
 
-  function collect(container) {
+  function collect(container, projectViewport) {
     const units = [];
     const add = (...nodes) => {
-      const row = nodes.filter(Boolean);
+      const row = nodes.filter(node => {
+        if (!node) return false;
+        if (!projectViewport) return true;
+        const rect = node.getBoundingClientRect();
+        return rect.bottom > projectViewport.top && rect.top < projectViewport.bottom && rect.bottom > rect.top;
+      });
       if (row.length) units.push(row);
     };
+    if (projectViewport) {
+      const article = container.querySelector(":scope > .content-reader > .sample-entry, :scope > .sample-entry");
+      if (article) {
+        add(article.querySelector(":scope > .sample-heading"));
+        add(article.querySelector(":scope > .reader-date"));
+        const body = article.querySelector(":scope > .article-layout > .article-body");
+        for (let index = 0; body && index < Math.min(3, body.children.length); index++) {
+          const block = body.children[index];
+          if (!/^(p|h[2-6])$/i.test(block.tagName)) break;
+          add(block);
+        }
+        return { units, help: false };
+      }
+    }
     const help = container.querySelector(":scope > .help-reference");
     if (help) {
       add(help.querySelector(":scope > .summary-title"));
@@ -89,20 +108,21 @@
     };
   }
 
-  function play(container) {
+  function play(container, {projectViewport = null} = {}) {
     finish();
     if (!container?.dataset || typeof container.querySelector !== "function" || played.has(container)) return;
     played.add(container);
     container.dataset.streamed = "true";
     container.dataset.streaming = "false";
-    const { units, help } = collect(container);
-    if (!units.length || document.hidden || reducedMotion?.matches ||
-        units.some(row => row.some(node => typeof node.animate !== "function"))) return;
+    if (document.hidden || reducedMotion?.matches) return;
+    const { units, help } = collect(container, projectViewport);
+    if (!units.length || units.some(row => row.some(node => typeof node.animate !== "function"))) return;
 
-    const duration = help ? 120 : 100;
-    const budget = help ? 550 : 280;
+    const detailed = help || Boolean(projectViewport);
+    const duration = detailed ? 120 : 100;
+    const budget = detailed ? 550 : 280;
     const interval = units.length > 1
-      ? Math.min(help ? 44 : 36, (budget - duration) / (units.length - 1)) : 0;
+      ? Math.min(detailed ? 44 : 36, (budget - duration) / (units.length - 1)) : 0;
     const session = { container, animations: [], pending: 0, cleanup: null };
     active = session;
     container.dataset.streaming = "true";

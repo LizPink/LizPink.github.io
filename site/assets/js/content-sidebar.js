@@ -108,6 +108,14 @@
     window.addEventListener("pointercancel", cancelDrag);
     try { resizer.setPointerCapture(event.pointerId); } catch { /* The window listeners remain active. */ }
   }
+  function updateControlLabels() {
+    const expandLabel = t("展开内容目录");
+    const collapseLabel = t(media.matches ? "关闭内容目录" : "收起内容目录");
+    reveal.setAttribute("aria-label", expandLabel);
+    reveal.title = `${expandLabel} (Ctrl+Alt+A)`;
+    collapse.setAttribute("aria-label", collapseLabel);
+    collapse.title = `${collapseLabel} (Ctrl+Alt+A)`;
+  }
   function setOpen(value, { focusInside = false, restoreFocus = false } = {}) {
     if (!value) endDrag(true);
     const wasInside = menu.contains(document.activeElement) || document.activeElement === resizer;
@@ -122,11 +130,8 @@
     frame.dataset.menuPinned = String(opened && !media.matches);
     reveal.hidden = opened;
     reveal.setAttribute("aria-expanded", String(opened));
-    reveal.setAttribute("aria-label", t("展开内容目录"));
-    reveal.title = `${t("展开内容目录")} (Ctrl+Alt+A)`;
     collapse.setAttribute("aria-expanded", String(opened));
-    collapse.setAttribute("aria-label", t(media.matches ? "关闭内容目录" : "收起内容目录"));
-    collapse.title = `${t(media.matches ? "关闭内容目录" : "收起内容目录")} (Ctrl+Alt+A)`;
+    updateControlLabels();
     if (opened && (focusInside || document.activeElement === reveal)) collapse.focus({ preventScroll: true });
     else if (!opened && (restoreFocus || wasInside)) reveal.focus({ preventScroll: true });
     onLayout();
@@ -261,8 +266,7 @@
       if (button.dataset.contentRoute === route && button.dataset.contentKey === key) button.setAttribute("aria-current", "location");
       else button.removeAttribute("aria-current");
     });
-    // A language change also refreshes controls whose geometry has not changed.
-    setOpen(opened);
+    updateControlLabels();
     applyWidth(preferredWidth);
   }
 

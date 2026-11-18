@@ -210,6 +210,83 @@ test("ten recent rows reveal complete dates and titles within the same 280ms bud
   env.api.finish();
 });
 
+function projectOutput(env, blockTags, { expanded = false } = {}) {
+  const element = (tag, className, top) => {
+    const node = env.document.createElement(tag);
+    node.className = className;
+    node.getBoundingClientRect = () => ({ top, bottom: top + 30 });
+    return node;
+  };
+  const output = element("div", expanded ? "details-body" : "terminal-result", 0);
+  const parent = expanded ? output : element("section", "content-reader", 0);
+  if (!expanded) output.append(parent);
+  const article = element("article", "sample-entry", 0);
+  const title = element("div", "sample-heading", 10);
+  title.append(element(expanded ? "h3" : "h2", expanded ? "" : "summary-title", 10));
+  const dates = element("p", "reader-date", 45);
+  dates.append(element("time", "", 45));
+  const layout = element("div", "article-layout", 90);
+  const outline = element("aside", "article-outline", 90);
+  const body = element("div", "article-body", 90);
+  const blocks = blockTags.map((tag, index) => element(tag, "", 90 + index * 45));
+  if (blocks[0]?.tagName === "p") {
+    const link = element("a", "", 90);
+    link.textContent = "Source code";
+    blocks[0].append(link);
+  }
+  body.append(...blocks); layout.append(outline, body); article.append(title, dates, layout); parent.append(article);
+  return { output, title, dates, blocks };
+}
+
+test("a project reader reveals its visible opening blocks in reading order without splitting them", () => {
+  const env = harness();
+  const { output, title, dates, blocks } = projectOutput(env, ["p", "h3", "p", "p", "figure", "p"]);
+  const originalNodes = env.descendants(output);
+  env.api.play(output, { projectViewport: { top: 0, bottom: 400 } });
+  assert.deepEqual(env.calls.map(call => call.node), [title, dates, ...blocks.slice(0, 3)]);
+  assert.deepEqual(env.descendants(output), originalNodes);
+  assert.equal(blocks[0].textContent, "Source code");
+  const delays = env.calls.map(call => call.timing.delay);
+  assert.ok(delays.every((delay, index) => index === 0 || delay > delays[index - 1]));
+  assert.ok(env.calls.every(call => call.timing.delay + call.timing.duration <= 550));
+  output.emit("pointerdown");
+  assertClean(env, output);
+});
+
+test("opening project details skips offscreen headings and stops at the first media block", () => {
+  const env = harness();
+  const { output, dates, blocks } = projectOutput(env, ["p", "figure", "p"], { expanded: true });
+  const other = projectOutput(env, ["p"], { expanded: true });
+  output.append(...other.output.children);
+  env.api.play(output, { projectViewport: { top: 50, bottom: 400 } });
+  assert.deepEqual(env.calls.map(call => call.node), [dates, blocks[0]]);
+  env.api.finish(); assertClean(env, output);
+});
+
+test("only visible project text animates, and reduced motion skips it", () => {
+  for (const [reduce, top] of [[false, 0], [true, 0], [false, 500]]) {
+    const env = harness({ reduce });
+    const { output, title, dates, blocks } = projectOutput(env, ["p", "h3", "p"]);
+    env.api.play(output, { projectViewport: { top, bottom: top + 125 } });
+    assert.deepEqual(env.calls.map(call => call.node), reduce || top > 0 ? [] : [title, dates, blocks[0]]);
+    assert.equal(env.api.isPlaying(), !reduce && top === 0);
+    env.api.finish(); assertClean(env, output);
+  }
+});
+
+test("a project overview reveals visible recent entries and skips rows below the viewport", () => {
+  const env = harness();
+  const overview = env.output("project");
+  const rows = overview.querySelectorAll(".summary-preview > li");
+  for (const node of env.descendants(overview)) node.getBoundingClientRect = () => ({ top: 0, bottom: 20 });
+  rows[1].getBoundingClientRect = () => ({ top: 200, bottom: 220 });
+  rows[2].getBoundingClientRect = () => ({ top: 250, bottom: 270 });
+  env.api.play(overview, { projectViewport: { top: 0, bottom: 190 } });
+  assert.equal(env.calls.some(call => call.node === rows[0]), true);
+  assert.equal(env.calls.some(call => rows.slice(1).includes(call.node)), false);
+  env.api.finish(); assertClean(env, overview);
+});
+
 test("real help reveals command and sidebar shortcut rows whole, batching headings with first rows", () => {
   const env = harness();
   const output = env.output("help");
