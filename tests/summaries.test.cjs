@@ -38,6 +38,14 @@ function contentWith(route, samples = {}, extras = {}) {
   };
 }
 
+function assertHomeProfile(node, content) {
+  const interests = content.interests.filter(value => value.trim());
+  assert.equal(find(node, "home-role")?.textContent, content.role.trim() ? `职业：${content.role}` : undefined);
+  assert.equal(find(node, "home-interests")?.textContent, interests.length ? `关注：${interests.join(" · ")}` : undefined);
+  const paragraphs = find(node, "home-about")?.children ?? [];
+  assert.deepEqual(paragraphs.map(child => child.textContent), Array.from(content.about.paragraphs).filter(value => value.trim()));
+}
+
 test("real site configuration supplies each persistent title/description and the home profile", () => {
   const config = parse(fs.readFileSync(path.join(__dirname, "../content/site.yml"), "utf8"));
   const { create } = load(config);
@@ -54,9 +62,7 @@ test("real site configuration supplies each persistent title/description and the
   }
   const { node } = create("home");
   assert.equal(node.className, "home-profile");
-  assert.equal(find(node, "home-role")?.textContent, `职业：${config.role}`);
-  assert.equal(find(node, "home-interests")?.textContent, `关注：${config.interests.join(" · ")}`);
-  assert.deepEqual(find(node, "home-about").children.map(child => child.textContent), config.about.paragraphs);
+  assertHomeProfile(node, config);
 });
 
 test("home features one entry and links to the three newest other entries across sections", () => {
@@ -73,6 +79,7 @@ test("home features one entry and links to the three newest other entries across
   ];
   const home = load(content).create("home").node;
   const featured = find(home, "home-featured"), link = all(featured, "a")[0];
+  assert.deepEqual(all(featured, "h2"), [find(link, "home-featured-title")]);
   assert.equal(link.href, "#project/featured");
   assert.match(link.textContent, /Short title/);
   assert.match(featured.textContent, /Description/);
@@ -130,10 +137,7 @@ test("an explicitly empty site keeps section introductions, resume status and th
   const resume = create("resume").node;
   assert.equal(all(find(resume, "summary-facts"), "dt")[0].textContent, "简历");
   assert.equal(all(find(resume, "summary-facts"), "dd")[0].textContent, "PDF 待添加");
-  const home = create("home").node;
-  assert.equal(find(home, "home-role").textContent, `职业：${content.role}`);
-  assert.equal(find(home, "home-interests").textContent, `关注：${Array.from(content.interests).join(" · ")}`);
-  assert.deepEqual(find(home, "home-about").children.map(paragraph => paragraph.textContent), Array.from(content.about.paragraphs));
+  assertHomeProfile(create("home").node, content);
 });
 
 test("actual generated summaries adopt current articles without requiring a permanently empty site", () => {
@@ -149,8 +153,7 @@ test("actual generated summaries adopt current articles without requiring a perm
     if (!expected.length) assert.equal(find(node, "summary-empty").textContent, "这个分区还没有内容。");
   }
   assert.equal(all(find(create("resume").node, "summary-facts"), "dt")[0].textContent, "简历");
-  const home = create("home").node;
-  assert.equal(find(home, "home-role").textContent, `职业：${content.role}`);
+  assertHomeProfile(create("home").node, content);
 });
 
 test("undated entries contain only a title and invalid dates do not create empty date slots", () => {

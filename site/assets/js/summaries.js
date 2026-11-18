@@ -24,11 +24,10 @@
 
   function featuredEntry(item, sample) {
     const section = element("section", "home-featured");
-    section.append(element("h2", "home-section-label", "首页推荐"));
     const title = sample.previewTitle || item.title || t("未命名内容");
     const link = entryLink(item, "home-featured-link");
     const copy = element("div", "home-featured-copy");
-    const heading = element("h3", "home-featured-title", title);
+    const heading = element("h2", "home-featured-title", title);
     heading.id = "home-featured-title";
     link.setAttribute("aria-labelledby", heading.id);
     const arrow = element("span", "home-featured-arrow", "→");

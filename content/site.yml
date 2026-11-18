@@ -1,15 +1,11 @@
 name: LizPink
 featuredEntry: "2026Fall-Render-from-Scratch"
 greeting: "你好，我是 LizPink."
-role: "学生"
-interests:
-  - Computer Graphics
-  - Computer Engineering
-  - Games
-  - Artificial Intelligence
+role: ""
+interests: []
 about:
   paragraphs:
-    - "这个网站是我的个人空间。你可以从生活、经历或项目三个方向浏览。"
+    - "欢迎来到我的个人网站，这里放着我做的项目，也记一些学习和生活里的事。"
 resume:
   sections: []
   pdfUrl: ""
