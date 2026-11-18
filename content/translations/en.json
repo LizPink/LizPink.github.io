@@ -55,10 +55,6 @@
       "source": "最近内容",
       "text": "Recent entries"
     },
-    "8d13a2eefa0b9a8d67fd2388e05971c062045c2f9c943c7541bb46310a59a1f1": {
-      "source": "首页推荐",
-      "text": "Featured"
-    },
     "105ab020b052f6b14e68570a01e9b7df193e87925f518bbcb5551d497dfab7f7": {
       "source": "最近更新",
       "text": "Latest updates"
@@ -447,13 +443,9 @@
       "source": "你好，我是 LizPink.",
       "text": "Hi, I'm LizPink."
     },
-    "cff3f880e404b3c92de0e642099119ce16b43e9f60505659e4f4ae5973359723": {
-      "source": "学生",
-      "text": "Student"
-    },
-    "dac73aa83a771db5d33bc7909502cc6601bc8b80761f9da798ca70c25aae2d3a": {
-      "source": "这个网站是我的个人空间。你可以从生活、经历或项目三个方向浏览。",
-      "text": "This website is my personal space. Explore my life, experience, and projects."
+    "e6c489df8274e9b59183e757e264694eee54bd877f560694ecc2ea8e7dff81ec": {
+      "source": "欢迎来到我的个人网站，这里放着我做的项目，也记一些学习和生活里的事。",
+      "text": "Welcome to my website. Here I share my projects and write about what I’m learning and everyday life."
     },
     "55d538a332451e41a6715e1c2bca2841b6e11a7d0655ac7e40d1dda6b87cfcac": {
       "source": "记录兴趣、随笔和生活片段，给学习之外的日常留一点位置，也保留过去的记录。",
